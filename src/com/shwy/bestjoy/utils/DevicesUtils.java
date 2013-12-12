@@ -1,0 +1,30 @@
+package com.shwy.bestjoy.utils;
+
+import android.content.Context;
+import android.telephony.TelephonyManager;
+
+public class DevicesUtils {
+
+	private static final String TAG = "DevicesUtils";
+	private static DevicesUtils INSTANCE = new DevicesUtils();
+	private Context mContext;
+	private String mImeiStr;
+
+	private DevicesUtils(){};
+	
+	public static DevicesUtils getInstance() {
+		return INSTANCE;
+	}
+	
+	public void setContext(Context context) {
+		mContext = context;
+	}
+	
+	public String getImei() {
+		if (mImeiStr == null) {
+			TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+			mImeiStr = tm.getDeviceId();
+		}
+		return mImeiStr;
+	}
+}

@@ -1,0 +1,23 @@
+<resources>
+
+    <string name="app_name">BjnoteCommonLibrary</string>
+     <string name="sms_text">发短信</string>
+     <string name="call_text">打电话</string>
+      <string name="monday">星期一</string>
+     <string name="tuesday">星期二</string>
+     <string name="wenesday">星期三</string>
+     <string name="thursday">星期四</string>
+     <string name="friday">星期五</string>
+     <string name="saturday">星期六</string>
+     <string name="sunday">星期天</string>
+     
+      <string name="msg_intent_failed">抱歉，无法打开所需软件。 条码内容可能无效。</string>
+      
+       <string name="dialog_use_mobile_title">移动网络流量提示</string>
+     <string name="dialog_use_mobile_message">当前正在使用移动数据网络，会产生数据流量费用，是否继续？</string>
+     <string name="dialog_use_mobile_checkbox">不再提醒</string>
+     
+     <string name="dialog_no_network_title">无法访问网络</string>
+     <string name="dialog_no_network_message">请检查网络，确保手机可以正常上网</string>
+
+</resources>
