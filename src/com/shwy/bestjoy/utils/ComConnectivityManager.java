@@ -34,10 +34,10 @@ public class ComConnectivityManager {
 			if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
 		        NetworkInfo mobileInfo = mCm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);  
 		        NetworkInfo wifiInfo = mCm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);  
-		        NetworkInfo activeInfo = mCm.getActiveNetworkInfo();  
-		        DebugUtils.logD(TAG, "mobile:"+mobileInfo.isConnected() + 
-		        		"\n"+"wifi:"+wifiInfo.isConnected() + 
-		        		"\n"+"active:"+activeInfo.getTypeName());
+		        NetworkInfo activeInfo = mCm.getActiveNetworkInfo(); 
+		        DebugUtils.logD(TAG, "mobile:"+(mobileInfo != null ? mobileInfo.isConnected() : "unsupport") + 
+		        		"\n"+"wifi:"+ (wifiInfo != null ? wifiInfo.isConnected() : "unsupport") + 
+		        		"\n"+"active:"+ (activeInfo != null ? activeInfo.getTypeName():"none"));
 		        synchronized(mConnCallbackList){
 		        	for(ConnCallback callback : mConnCallbackList) {
 		        		callback.onConnChanged(INSTANCE);
@@ -64,7 +64,7 @@ public class ComConnectivityManager {
 	
 	public void addConnCallback(ConnCallback callback) {
 		if (mContext == null) {
-			throw new RuntimeException("You must call setContext()");
+			throw new RuntimeException("You must call ComConnectivityManager.getInstance().setContext() in Application.onCreate()");
 		}
 		synchronized(mConnCallbackList) {
 			if (!mConnCallbackList.contains(callback)) {
@@ -83,25 +83,27 @@ public class ComConnectivityManager {
 	
 	public boolean isWifiConnected() {
 		NetworkInfo activeInfo = mCm.getActiveNetworkInfo(); 
-		return activeInfo.isConnected() && activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+		return activeInfo != null && activeInfo.isConnected() && activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
 	}
 	
 	public boolean isMobileConnected() {
 		NetworkInfo activeInfo = mCm.getActiveNetworkInfo(); 
-		return activeInfo.isConnected() && activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
+		return activeInfo != null && activeInfo.isConnected() && activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
 	}
 	
 	public boolean isConnected() {
 		NetworkInfo activeInfo = mCm.getActiveNetworkInfo(); 
-		return activeInfo.isConnected();
+		return activeInfo != null && activeInfo.isConnected();
 	}
 	
-	private void startConnectivityMonitor() {
+	public void startConnectivityMonitor() {
 		IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
 		mContext.registerReceiver(mBroadcastReceiver, filter);
 	}
-    private void endConnectivityMonitor() {
-    	mContext.unregisterReceiver(mBroadcastReceiver);
+    public void endConnectivityMonitor() {
+    	if (mContext != null) {
+    		mContext.unregisterReceiver(mBroadcastReceiver);
+    	}
 	}
     /**
      * 创建使用移动网络提示对话框构建器
