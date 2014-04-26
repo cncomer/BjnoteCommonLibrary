@@ -55,6 +55,16 @@ public class NetworkUtils {
 		return openContectionLocked(encodedUri, securityKeyValues);
 	}
 	
+	public static InputStream openContectionLocked(String[] uris, String[] paths, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException {
+		StringBuffer encodedUri = new StringBuffer();
+		int i = 0;
+		for(String uri : uris) {
+			encodedUri.append(uri);
+			encodedUri.append(URLEncoder.encode(paths[i++]));
+		}
+		return openContectionLocked(encodedUri.toString(), securityKeyValues);
+	}
+	
 	/**
 	 * 
 	 * @param uri ÍøÖ·£¬Èçhttp://www.baidu.com/
