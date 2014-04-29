@@ -121,8 +121,8 @@ public class ComConnectivityManager {
      * 创建使用移动网络提示对话框构建器
      * @return
      */
-    public AlertDialog onCreateNoNetworkDialog() {
-    	return new AlertDialog.Builder(mContext)
+    public AlertDialog onCreateNoNetworkDialog(Context context) {
+    	return new AlertDialog.Builder(context)
     	.setTitle(R.string.dialog_no_network_title)
     	.setMessage(R.string.dialog_no_network_message)
     	.setPositiveButton(android.R.string.ok, null)
