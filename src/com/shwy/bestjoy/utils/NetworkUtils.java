@@ -65,6 +65,16 @@ public class NetworkUtils {
 		return openContectionLocked(encodedUri.toString(), securityKeyValues);
 	}
 	
+	public static String getUrlEncodedString(String[] params, String[] values) {
+		StringBuffer encodedUri = new StringBuffer();
+		int i = 0;
+		for(String param : params) {
+			encodedUri.append(param);
+			encodedUri.append(URLEncoder.encode(values[i++]));
+		}
+		return encodedUri.toString();
+	}
+	
 	/**
 	 * 
 	 * @param uri ÍøÖ·£¬Èçhttp://www.baidu.com/
