@@ -98,7 +98,7 @@ public class NetworkUtils {
 		int stateCode = response.getStatusLine().getStatusCode();
 		DebugUtils.logD(TAG, "return HttpStatus is " + stateCode);
 		if(!httpStatusOk(stateCode)) {
-			return null;
+			throw new IOException(String.valueOf(stateCode));
 		}
 		return response.getEntity().getContent();
 	}
