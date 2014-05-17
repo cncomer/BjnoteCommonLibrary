@@ -34,7 +34,8 @@ public class NetworkUtils {
 		int stateCode = response.getStatusLine().getStatusCode();
 		DebugUtils.logD(TAG, "return HttpStatus is " + stateCode);
 		if(!httpStatusOk(stateCode)) {
-			return null;
+			//这里会丢失数据，我们返回一个异常
+			throw new IOException(String.valueOf(stateCode));
 		}
 		return response.getEntity().getContent();
 	}
