@@ -3,6 +3,7 @@ package com.shwy.bestjoy.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,6 +142,16 @@ public class NetworkUtils {
 		if (is != null) {
 			try {
 				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void closeOutStream(OutputStream out) {
+		if (out != null) {
+			try {
+				out.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

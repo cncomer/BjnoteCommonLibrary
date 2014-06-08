@@ -10,7 +10,7 @@ public class DebugUtils {
 	public static final boolean DEBUG_BJFILE = false;
 	public static final boolean DEBUG_QRGEN = false;
 	public static final boolean DEBUG_ADD_CONTACT = true;
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	public static final boolean DEBUG_VCARD_PARSE = false;
 	
 	public static final boolean CACHEDEBUG = false;
