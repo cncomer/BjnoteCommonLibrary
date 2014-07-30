@@ -62,11 +62,11 @@ public class ImageHelper {
             float scaleHeight =1.0f;
 			
 			if(srcWidth > width || srcHeight > height) {
-				scaleWidth = 1.0f * width / srcWidth;
-				scaleHeight = 1.0f * height / srcHeight;
+				scaleWidth = 1.0f * srcWidth / width;
+				scaleHeight = 1.0f * srcHeight / height;
 			}
 			opt.inJustDecodeBounds = false;
-			opt.inSampleSize = (int) scaleWidth;
+			opt.inSampleSize = (int) Math.max(scaleWidth, scaleHeight);
 			Bitmap scaleBitmap = BitmapFactory.decodeFile(bitmapFile.getAbsolutePath(), opt);
 			Matrix matrix = new Matrix();
 			matrix.setScale(scaleWidth, scaleHeight);
