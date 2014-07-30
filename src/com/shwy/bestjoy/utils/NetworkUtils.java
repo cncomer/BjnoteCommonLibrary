@@ -27,13 +27,13 @@ public class NetworkUtils {
 	private static final String TAG = "NetworkUtils";
 	
 	public static InputStream openContectionLocked(String uri, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException {
-		DebugUtils.logD(TAG, "HttpGet uri=" + uri);
+		DebugUtils.logNetworkOp(TAG, "HttpGet uri=" + uri);
 		HttpGet httpRequest = new HttpGet(uri);
 		addSecurityKeyValuesObject(httpRequest, securityKeyValues);
 		HttpClient httpClient = /*new DefaultHttpClient();*/AndroidHttpClient.newInstance("android");
 		HttpResponse response = httpClient.execute(httpRequest);
 		int stateCode = response.getStatusLine().getStatusCode();
-		DebugUtils.logD(TAG, "return HttpStatus is " + stateCode);
+		DebugUtils.logNetworkOp(TAG, "return HttpStatus is " + stateCode);
 		if(!httpStatusOk(stateCode)) {
 			//这里会丢失数据，我们返回一个异常
 			throw new IOException(String.valueOf(stateCode));
@@ -87,7 +87,7 @@ public class NetworkUtils {
 	 */
 	public static InputStream openPostContectionLocked(String uri, String paramName, String paramValue, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException {
 //		String encodedUri = uri + URLEncoder.encode(path);
-		DebugUtils.logD(TAG, "HttpPost uri=" + uri);
+		DebugUtils.logNetworkOp(TAG, "HttpPost uri=" + uri);
 		HttpPost httpRequest = new HttpPost(uri);
 		/**Post 运行传递变量必须用 NameValuePair[] 数组存储*/  
         List<NameValuePair> params = new ArrayList<NameValuePair>();  
@@ -97,7 +97,7 @@ public class NetworkUtils {
 		HttpClient httpClient = /*new DefaultHttpClient();*/AndroidHttpClient.newInstance("android");
 		HttpResponse response = httpClient.execute(httpRequest);
 		int stateCode = response.getStatusLine().getStatusCode();
-		DebugUtils.logD(TAG, "return HttpStatus is " + stateCode);
+		DebugUtils.logNetworkOp(TAG, "return HttpStatus is " + stateCode);
 		if(!httpStatusOk(stateCode)) {
 			throw new IOException(String.valueOf(stateCode));
 		}
@@ -105,7 +105,7 @@ public class NetworkUtils {
 	}
 	
 	public static HttpResponse openContectionLockedV2(String uri, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException{
-		DebugUtils.logD(TAG, "HttpGet uri=" + uri);
+		DebugUtils.logNetworkOp(TAG, "HttpGet uri=" + uri);
 		HttpGet httpRequest = new HttpGet(uri);
 		addSecurityKeyValuesObject(httpRequest, securityKeyValues);
 		HttpClient httpClient = /*new DefaultHttpClient();*/AndroidHttpClient.newInstance("android");
@@ -114,7 +114,7 @@ public class NetworkUtils {
 	
 	public static String getContentFromInput(InputStream is) {
 		if (is == null) {
-			DebugUtils.logD(TAG, "getContentFromInput passed null InputStream in");
+			DebugUtils.logNetworkOp(TAG, "getContentFromInput passed null InputStream in");
 			return null;
 		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -130,7 +130,7 @@ public class NetworkUtils {
 			buffer = out.toByteArray();
 			out.close();
 			String result = new String(buffer, "UTF-8");
-			DebugUtils.logD(TAG, "getContentFromInput return " + result);
+			DebugUtils.logNetworkOp(TAG, "getContentFromInput return " + result);
 			return result;
 		} catch (IOException e) {
 			e.printStackTrace();

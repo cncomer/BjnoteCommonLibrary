@@ -10,7 +10,8 @@ public class DebugUtils {
 	public static final boolean DEBUG_BJFILE = false;
 	public static final boolean DEBUG_QRGEN = false;
 	public static final boolean DEBUG_ADD_CONTACT = true;
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
+	public static final boolean DEBUG_NETWORK = true;
 	public static final boolean DEBUG_VCARD_PARSE = false;
 	
 	public static final boolean CACHEDEBUG = false;
@@ -25,6 +26,12 @@ public class DebugUtils {
 	public static final boolean DEBUG_DELETE_FILES = true;
 	
 	public static final void logD(String TAG, String MSG) {
+		if (DEBUG) {
+			Log.d(TAG, MSG);
+		}
+	}
+	
+	public static final void logNetworkOp(String TAG, String MSG) {
 		if (DEBUG) {
 			Log.d(TAG, MSG);
 		}
