@@ -29,7 +29,7 @@ public class ImageHelper {
 		mContext = context;
 	}
 	/**
-	 * ´´½¨ÅÄÕÕIntent
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Intent
 	 * @param uri
 	 * @return
 	 */
@@ -39,13 +39,13 @@ public class ImageHelper {
 		return capture;
 	}
 	/**
-	 * ´´½¨±¾µØÍ¼¿âIntent
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Intent
 	 * @param uri
 	 * @return
 	 */
 	public static Intent createGalleryIntent() {
 		Intent intent = new Intent();
-    	// ´ò¿ªPictures»­ÃæTypeÎªimage/*
+    	// ï¿½ï¿½Picturesï¿½ï¿½ï¿½ï¿½TypeÎªimage/*
     	intent.setType("image/*");
     	intent.setAction(Intent.ACTION_GET_CONTENT);
     	return intent;
@@ -82,17 +82,16 @@ public class ImageHelper {
 			BitmapFactory.Options opt = new BitmapFactory.Options();
 			int srcWidth = src.getWidth();
 			int srcHeight = src.getHeight();
-			float scaleWidth = 1.0f;
-            float scaleHeight =1.0f;
+			float scale = 1.0f;
 			
 			if(srcWidth > width || srcHeight > height) {
-				scaleWidth = 1.0f * width / srcWidth;
-				scaleHeight = 1.0f * height / srcHeight;
+				float scaleWidth = 1.0f * width / srcWidth;
+				float scaleHeight = 1.0f * height / srcHeight;
+				scale = Math.min(scaleWidth, scaleHeight);
 			}
 			opt.inJustDecodeBounds = false;
-			opt.inSampleSize = (int) scaleWidth;
 			Matrix matrix = new Matrix();
-			matrix.setScale(scaleWidth, scaleHeight);
+			matrix.setScale(scale, scale);
 			Bitmap bitmap = Bitmap.createBitmap(src, 0, 0, srcWidth, srcHeight, matrix, false);
 			src.recycle();
 			return bitmap;

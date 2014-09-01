@@ -8,7 +8,6 @@ public class DevicesUtils {
 	private static final String TAG = "DevicesUtils";
 	private static DevicesUtils INSTANCE = new DevicesUtils();
 	private Context mContext;
-	private String mImeiStr;
 
 	private DevicesUtils(){};
 	
@@ -21,10 +20,12 @@ public class DevicesUtils {
 	}
 	
 	public String getImei() {
-		if (mImeiStr == null) {
-			TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-			mImeiStr = tm.getDeviceId();
-		}
-		return mImeiStr;
+		TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+		return tm.getDeviceId();
+	}
+	
+	public String getIMSI() {
+		TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+		return tm.getSubscriberId();
 	}
 }
