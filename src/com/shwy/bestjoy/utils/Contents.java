@@ -54,12 +54,12 @@ public final class Contents {
   
   public static final class Value{
 	  /**
-	   * BMÇ°×ººÍºó×ºÊ¹ÓÃÀ´±êÊ¶BM×Ö¶ÎµÄ
-	   * BMS BMÇ°×º
+	   * BMå‰ç¼€å’Œåç¼€ä½¿ç”¨æ¥æ ‡è¯†BMå­—æ®µçš„
+	   * BMS BMå‰ç¼€
 	   */
 	  public static final String BMS="BM:";
 	  /**
-	   * BMS BMºó×º
+	   * BMS BMåç¼€
 	   */
 	  public static final String BME="BM";
 	  
@@ -105,12 +105,12 @@ public final class Contents {
     public static final String CONTACT = "CONTACT_TYPE";
     
     /**
-     * ÎÒµÄÃûÆ¬ÀàĞÍ
+     * æˆ‘çš„åç‰‡ç±»å‹
      */
     public static final String MYCONTACT = "MYCONTACT_TYPE";
     
     /**
-     * ±¸ÓÃÁªÏµÈËÀàĞÍ
+     * å¤‡ç”¨è”ç³»äººç±»å‹
      */
     public static final String MEMOCONTACT = "MEMOCONTACT_TYPE";
 
@@ -149,7 +149,7 @@ public final class Contents {
 	  Contacts.ContactMethodsColumns.TYPE_OTHER
   };
   /**
-   * ÓÃÓÚcard
+   * ç”¨äºcard
    */
   public static final String BID="bid";
   public static final String MODE="mode";
@@ -160,7 +160,7 @@ public final class Contents {
   public static final String MEMO_ID="id";
   public static final String ID ="id";
   
-  /*ÕâÁ½¸öÅäºÏÊ¹ÓÃ£¬ÓÃÓÚÉú³É.jpgÍ¼Æ¬¸ñÊ½µÄqrcodeÍ¼Æ¬*/
+  /*è¿™ä¸¤ä¸ªé…åˆä½¿ç”¨ï¼Œç”¨äºç”Ÿæˆ.jpgå›¾ç‰‡æ ¼å¼çš„qrcodeå›¾ç‰‡*/
   public static final CompressFormat BITMAP_FORMAT=CompressFormat.JPEG;
   public static final String BITMAP_FORMAT_SUFFIX=".jpg";
   
@@ -175,7 +175,7 @@ public final class Contents {
 	  public static final String TAG = "MM:";
 	  public static final String TAG_URL = "URL:";
 	  public static int MM_LENGTH = 17;
-	  /**Ö±½Ó¿ÉÒÔ²é¿´ÃûµµÍøÁªÏµÈËĞÅÏ¢,Èçhttp://c.mingdown.com/17Î»ÃûºÅ£¬µÈÍ¬ÓÚhttp://www.mingdown.com/a.aspx?m=17Î»*/
+	  /**ç›´æ¥å¯ä»¥æŸ¥çœ‹åæ¡£ç½‘è”ç³»äººä¿¡æ¯,å¦‚http://c.mingdown.com/17ä½åå·ï¼Œç­‰åŒäºhttp://www.mingdown.com/a.aspx?m=17ä½*/
 	  public static final String CLOUD_URI = "http://c.mingdown.com/";
 	  public static final String WEB_URI = "http://www.mingdown.com/";
 //	  public static final String WEB_URI_A_PREFIX = "a.aspx?m=";
@@ -188,33 +188,33 @@ public final class Contents {
 	  public static final String WEB_URI_UNKOWN_SMS_PREFIX = "?h=";
 	  private static MingDang mInstance;
 	  private static Pattern mMingDangPattern = Pattern.compile("(?i)^MM:\\s*(\\d{17})");
-	  /**http://c.mingdown.com/[d/]17Î»mmºÅ,ÕâÊÇÌõÂëµÄ±àÂëÑùÊ½,[d\]ÊÇÎªÁËÈÃÆäËûÌõÂëÊ¶±ğÈí¼şÄÜ¹»Ìøµ½ÎÒÃÇµÄapkÏÂÔØÁ¬½Ó£¬¶øÃûµµÍøÈí¼şÔòÖ±½Ó½âÎö17Î»mm*/
+	  /**http://c.mingdown.com/[d/]17ä½mmå·,è¿™æ˜¯æ¡ç çš„ç¼–ç æ ·å¼,[d\]æ˜¯ä¸ºäº†è®©å…¶ä»–æ¡ç è¯†åˆ«è½¯ä»¶èƒ½å¤Ÿè·³åˆ°æˆ‘ä»¬çš„apkä¸‹è½½è¿æ¥ï¼Œè€Œåæ¡£ç½‘è½¯ä»¶åˆ™ç›´æ¥è§£æ17ä½mm*/
 	  private static Pattern mCloudUrlPattern = Pattern.compile("(?i)((http://)*c\\.mingdown\\.com/(d/)*(\\d{17}))");
-	  /**±íÊ¾µÄÊÇÔÚ{@link #mCloudUrlPattern}Ä£Ê½ÖĞmmºÅÂëËùÔÚµÄÆ¥Åä×é£¬ÓÉ0¿ªÊ¼*/
+	  /**è¡¨ç¤ºçš„æ˜¯åœ¨{@link #mCloudUrlPattern}æ¨¡å¼ä¸­mmå·ç æ‰€åœ¨çš„åŒ¹é…ç»„ï¼Œç”±0å¼€å§‹*/
 	  private static final int INDEX_MM = 4;
-	  /**ÉÌ¼ÒÃûºÅÃÜÂë±£Áô×Ö£¬Ò²ÊÇÉÌ¼Ò±êÊ¶£¬¸ÃÃûºÅÃÜÂëÖ»ÄÜÊÇÉÌ¼ÒÊ¹ÓÃ£¬ÇÒÊÇÄ¬ÈÏÖµ*/
+	  /**å•†å®¶åå·å¯†ç ä¿ç•™å­—ï¼Œä¹Ÿæ˜¯å•†å®¶æ ‡è¯†ï¼Œè¯¥åå·å¯†ç åªèƒ½æ˜¯å•†å®¶ä½¿ç”¨ï¼Œä¸”æ˜¯é»˜è®¤å€¼*/
 	  public static final String FLAG_MERCHANT="123456";
-	  /**·¢ËÍÄ£¿é www.mingdown.com/send.aspx?m=ÊÕĞÅÈËÊÖ»úºÅÂë|·¢¼şÈËmmºÅ*/
+	  /**å‘é€æ¨¡å— www.mingdown.com/send.aspx?m=æ”¶ä¿¡äººæ‰‹æœºå·ç |å‘ä»¶äººmmå·*/
 	  public static final String WEB_URI_SEND_PREFIX="http://www.mingdown.com/send.aspx?m=";
-	  /**ÊÕ¶ÌĞÅÄ£¿é wwww.mingdown.com/rece.aspx?m=±¾ÈËÊÖ»úºÅÂë*/
+	  /**æ”¶çŸ­ä¿¡æ¨¡å— wwww.mingdown.com/rece.aspx?m=æœ¬äººæ‰‹æœºå·ç */
 	  public static final String WEB_URI_RECE_PREFIX="http://www.mingdown.com/rece.aspx?m=";
 	  
 	  
-	  /**¸ù¾İMMºÅÈ¡³öºóÁùÎ»£¬Èç¹û²»ÊÇ123456£¬Ôò±íÊ¾ÊÇ¸öÈËÃûºÅ*/
+	  /**æ ¹æ®MMå·å–å‡ºåå…­ä½ï¼Œå¦‚æœä¸æ˜¯123456ï¼Œåˆ™è¡¨ç¤ºæ˜¯ä¸ªäººåå·*/
 	  public static int PERSONAL_POSITION = 11;
 	  public static boolean isPersonal(String mm) {
 		  return !FLAG_MERCHANT.equals(mm.substring(PERSONAL_POSITION));
 	  }
-	  /**¸öÈËÃûÆ¬´óÍ·ÕÕÆ¬µÄÍøÖ·ÊÇ http://www.mingdown.com/mmimage/ÃûºÅ.jpg*/
+	  /**ä¸ªäººåç‰‡å¤§å¤´ç…§ç‰‡çš„ç½‘å€æ˜¯ http://www.mingdown.com/mmimage/åå·.jpg*/
 	  public static final String WEB_URL_PERSONAL_AVATOR = "http://www.mingdown.com/mmimage/";
-	  /**µ¥Î»ÃûÆ¬´óÍ·ÕÕÆ¬µÄÍøÖ·ÊÇ http://www.mingdown.com/com/mmimage/ÃûºÅ.jpg*/
+	  /**å•ä½åç‰‡å¤§å¤´ç…§ç‰‡çš„ç½‘å€æ˜¯ http://www.mingdown.com/com/mmimage/åå·.jpg*/
 	  public static final String WEB_URL_COMPANY_AVATOR = "http://www.mingdown.com/com/mmimage/";
 	  
 	  /**
-	   * À´µç¡¢È¥µç¡¢¶ÌĞÅ¼àÌıµç»°ºÅÂë¹æÔò
-	   * ºôÈëºô³öµç»°£¬´ÓÓÒÍù×óÈ¡11Î»£¬²»×ã11Î»¼ÓÉÏÉèÖÃÖĞÓÃ»§ÌîĞ´µÄÇøºÅºóÔÙ´ÓÓÒÍù×óÈ¡11Î»£¬Èç¹û»¹²»×ã11Î»ÔòÓÒ±ß²¹0
+	   * æ¥ç”µã€å»ç”µã€çŸ­ä¿¡ç›‘å¬ç”µè¯å·ç è§„åˆ™
+	   * å‘¼å…¥å‘¼å‡ºç”µè¯ï¼Œä»å³å¾€å·¦å–11ä½ï¼Œä¸è¶³11ä½åŠ ä¸Šè®¾ç½®ä¸­ç”¨æˆ·å¡«å†™çš„åŒºå·åå†ä»å³å¾€å·¦å–11ä½ï¼Œå¦‚æœè¿˜ä¸è¶³11ä½åˆ™å³è¾¹è¡¥0
 	   * @param orgPhoneNumber
-	   * @return null Èç¹ûÃ»ÓĞÕÒµ½¹æÔòÉú³ÉºÅÂë£¬·ñÔò·µ»Ø¹æÔòºóµÄºÅÂë
+	   * @return null å¦‚æœæ²¡æœ‰æ‰¾åˆ°è§„åˆ™ç”Ÿæˆå·ç ï¼Œå¦åˆ™è¿”å›è§„åˆ™åçš„å·ç 
 	   */
 //	  public static String buildValidPrivacyPhoneNumber(String orgPhoneNumber) {
 //		  if (orgPhoneNumber == null) return orgPhoneNumber;
@@ -227,10 +227,10 @@ public final class Contents {
 //		  } else if (len == MIN_JIANKONG_LENGTH) {
 //			  target = orgPhoneNumber;
 //		  } else if (len < MIN_JIANKONG_LENGTH) {
-//			  //Ö÷ÒªÊÇÕë¶ÔµÄ×ù»ú£¬Çé¿ö´óÖÂÈçÏÂ
-//			  //ËÄÎ»ÇøºÅ + 7Î»ºÅÂë 
-//			  //ÈıÎ»ÇøºÅ + 8Î»ºÅÂë
-//			  //ÇøºÅ+5Î»ºÅÂë£¬Èç021 95599
+//			  //ä¸»è¦æ˜¯é’ˆå¯¹çš„åº§æœºï¼Œæƒ…å†µå¤§è‡´å¦‚ä¸‹
+//			  //å››ä½åŒºå· + 7ä½å·ç  
+//			  //ä¸‰ä½åŒºå· + 8ä½å·ç 
+//			  //åŒºå·+5ä½å·ç ï¼Œå¦‚021 95599
 //			  String area = BJfileApp.getInstance().getPreferAreaCode();
 //			  StringBuilder sb = new StringBuilder(area);
 //			  sb.append(orgPhoneNumber);
@@ -251,10 +251,10 @@ public final class Contents {
 //	  }
 	  
 	  /**
-	   * µç»°ºÅÂë×ª»»¹æÔò,ÓÃÓÚÊäÃûºÅºÍ
-	   * 1.Èç¹ûºÅÂë³¤¶È<=8, ×·¼ÓÇøºÅ£»
-	   * 2.Ç°Ãæ²¹5¸ö0
-	   * 3.´ÓÓÒÍù×óÈ¡³ö11Î»
+	   * ç”µè¯å·ç è½¬æ¢è§„åˆ™,ç”¨äºè¾“åå·å’Œ
+	   * 1.å¦‚æœå·ç é•¿åº¦<=8, è¿½åŠ åŒºå·ï¼›
+	   * 2.å‰é¢è¡¥5ä¸ª0
+	   * 3.ä»å³å¾€å·¦å–å‡º11ä½
 	   */
 	  public static String buildValidPhoneNumber(String orgPhoneNumber, String areacode) {
 		  if (orgPhoneNumber == null) return orgPhoneNumber;
@@ -264,7 +264,7 @@ public final class Contents {
 		  int len = orgPhoneNumber.length();
 		  StringBuilder sb = new StringBuilder(orgPhoneNumber);
 		  if (len <= 8) {
-			  sb.insert(0, areacode);//×·¼ÓÇøºÅ
+			  sb.insert(0, areacode);//è¿½åŠ åŒºå·
 			  DebugUtils.logD(TAG, "add areacode head " + sb.toString());
 		  }
 		  sb.insert(0, "00000");
@@ -276,13 +276,13 @@ public final class Contents {
 	  }
 	  
 	  /**
-	   * µç»°ºÅÂë×ª»»¹æÔò,ÓÃÓÚÊäÃûºÅºÍ
-	   * 1.Èç¹ûºÅÂë³¤¶È<=8, ×·¼ÓÇøºÅ£»
-	   * 2.Ç°Ãæ²¹5¸ö0
-	   * 3.´ÓÓÒÍù×óÈ¡³ö11Î»
-	   * 4.×·¼Ó123456¹¹³É17Î»ÃûºÅ
+	   * ç”µè¯å·ç è½¬æ¢è§„åˆ™,ç”¨äºè¾“åå·å’Œ
+	   * 1.å¦‚æœå·ç é•¿åº¦<=8, è¿½åŠ åŒºå·ï¼›
+	   * 2.å‰é¢è¡¥5ä¸ª0
+	   * 3.ä»å³å¾€å·¦å–å‡º11ä½
+	   * 4.è¿½åŠ 123456æ„æˆ17ä½åå·
 	   * @param orgPhoneNumber
-	   * @return ×ª»»ºóµÄ17Î»ÃûºÅ, Èç¹û²»·ûºÏ¹æÔò£¬·µ»Ønull
+	   * @return è½¬æ¢åçš„17ä½åå·, å¦‚æœä¸ç¬¦åˆè§„åˆ™ï¼Œè¿”å›null
 	   */
 	  public static String buildMerchantMM(String orgPhoneNumber, String areaCode) {
 		  if (orgPhoneNumber == null) return orgPhoneNumber;
@@ -331,7 +331,7 @@ public final class Contents {
 //		  return sb.toString();
 //	  }
 	  /**
-	   * ¹¹½¨ÏÂÔØµØÖ·,½¨ÒéÊ¹ÓÃ{@link #buildDownloadUri(String mm)}
+	   * æ„å»ºä¸‹è½½åœ°å€,å»ºè®®ä½¿ç”¨{@link #buildDownloadUri(String mm)}
 	   * @param mm
 	   * @return
 	   * @deprecated
@@ -345,25 +345,25 @@ public final class Contents {
 		  return sb.toString();
 	  }
 	  /**
-	   * ¹¹½¨vcfÎÄ¼şÏÂÔØµØÖ·www.mingdown.com/vcf/mm.vcf
+	   * æ„å»ºvcfæ–‡ä»¶ä¸‹è½½åœ°å€www.mingdown.com/vcf/mm.vcf
 	   * @param mm
-	   * @deprecated Õâ¸ö·½·¨²»°²È«£¬ÒÑ±»·ÅÆúÊ¹ÓÃÁË,²¢ÇÒÄÚ²¿ÊµÏÖÒ²ÒÑ¾­³ÉÁËºóÃæµÄ·½Ê½£¬²»ÒªÔÚÊ¹ÓÃ¸Ã·½·¨£¬ÇëÊ¹ÓÃ°²È«µÄÏÂÔØ·½Ê½{@link #buildSecurityDownloadUri()}
+	   * @deprecated è¿™ä¸ªæ–¹æ³•ä¸å®‰å…¨ï¼Œå·²è¢«æ”¾å¼ƒä½¿ç”¨äº†,å¹¶ä¸”å†…éƒ¨å®ç°ä¹Ÿå·²ç»æˆäº†åé¢çš„æ–¹å¼ï¼Œä¸è¦åœ¨ä½¿ç”¨è¯¥æ–¹æ³•ï¼Œè¯·ä½¿ç”¨å®‰å…¨çš„ä¸‹è½½æ–¹å¼{@link #buildSecurityDownloadUri()}
 	   * @return
 	   */
 	  public static String buildDownloadUri(String mm) {
-		  //modify by chenkai, 20131123, Ôö¼ÓbuildSecurityDownloadUri·½Ê½ begin
+		  //modify by chenkai, 20131123, å¢åŠ buildSecurityDownloadUriæ–¹å¼ begin
 //		  if (mm == null || mm.length() != MM_LENGTH) return null;
 //		  StringBuilder sb = new StringBuilder();
 //		  sb.append(WEB_URI)
 //		  .append("vcf/").append(mm).append(".vcf");
 //		  return sb.toString();
 		  return buildSecurityDownloadUri(mm);
-		  //modify by chenkai, 20131123, Ôö¼ÓbuildSecurityDownloadUri·½Ê½ end
+		  //modify by chenkai, 20131123, å¢åŠ buildSecurityDownloadUriæ–¹å¼ end
 	  }
 	  
 	  private static final String SECURITY_DOWNLOAD_VCF_URL_PREFIXX = "http://www.mingdown.com/mobile/downLoadVcfByMM.ashx?MM=";
 	  /**
-	   * ¹¹½¨°²È«µÄÃûÆ¬ÏÂÔØURI, ¸ÃÁ´½ÓĞèÒªÔÚÇëÇóÍ·ÖĞÔö¼ÓKeyºÍCell,key=md5(ÓÃ»§ÊÖ»ú(ÊÖ»úºÅÂë1Ìæ»»³Éi£¬È¥µô×îºóÒ»Î»),µ±Ç°ÈÕÆÚ)</br>
+	   * æ„å»ºå®‰å…¨çš„åç‰‡ä¸‹è½½URI, è¯¥é“¾æ¥éœ€è¦åœ¨è¯·æ±‚å¤´ä¸­å¢åŠ Keyå’ŒCell,key=md5(ç”¨æˆ·æ‰‹æœº(æ‰‹æœºå·ç 1æ›¿æ¢æˆiï¼Œå»æ‰æœ€åä¸€ä½),å½“å‰æ—¥æœŸ)</br>
 	   * http://www.mingdown.com/mobile/downLoadVcfByMM.ashx?MM=18696632323138465
 	   * @return
 	   */
@@ -376,7 +376,7 @@ public final class Contents {
 	  }
 	  
 	  /**
-	   * ¹¹½¨À´µçÎ´ÖªºÅÂë²éÑ¯URL
+	   * æ„å»ºæ¥ç”µæœªçŸ¥å·ç æŸ¥è¯¢URL
 	   * @param phoneNumber
 	   * @return
 	   */
@@ -397,7 +397,7 @@ public final class Contents {
 		  }
 	  }
 	  /**
-	   * ¹¹½¨ÌØÕ÷¶ÌĞÅ²éÑ¯URL
+	   * æ„å»ºç‰¹å¾çŸ­ä¿¡æŸ¥è¯¢URL
 	   * @param phoneNumber
 	   * @return
 	   */
@@ -412,20 +412,20 @@ public final class Contents {
 		  return null;
 	  }
 	  
-	  //add by chenkai, 2012-11-24, ×Ô¶¯×¢²á¹¦ÄÜ begin
-      //http:www.mingdown.com/ljzc.asmx/quickCreate?para=ĞÕÃû|µ¥Î»|Ö°Îñ|ÊÖ»ú|ÃûºÅÃÜÂë
+	  //add by chenkai, 2012-11-24, è‡ªåŠ¨æ³¨å†ŒåŠŸèƒ½ begin
+      //http:www.mingdown.com/ljzc.asmx/quickCreate?para=å§“å|å•ä½|èŒåŠ¡|æ‰‹æœº|åå·å¯†ç 
 	  public static final String WEB_NEW_ACCOUNT_URI = "http://www.mingdown.com/ljzc.asmx/quickCreate1?para=";
 	  
-	  //add by chenkai, 2012-11-24, ×Ô¶¯×¢²á¹¦ÄÜ end
+	  //add by chenkai, 2012-11-24, è‡ªåŠ¨æ³¨å†ŒåŠŸèƒ½ end
 	  
-	  //add by chenkai, 2013-02-02, Ôö¼Ó´´½¨ÃûÆ¬api begin
-	  /**Èç¹ûÉèÖÃÀï±£´æÁËµµ°¸ºÅMD, Ôò×Ô¶¯ÌîÈë±¾»úºÅÂë,ÓÃ»§Éè¶¨6Î»Êı×ÖÃûÆ¬ÏÂÔØÃÜÂë,ÔòÁªÍø£¬
-	   * www.mingdown.com/quickCreateMM?para=urlencode(ĞÕÃû|µ¥Î»|Ö°Îñ|ÊÖ»ú|ÃûºÅÃÜÂë|MD|Email|Tag)*/
+	  //add by chenkai, 2013-02-02, å¢åŠ åˆ›å»ºåç‰‡api begin
+	  /**å¦‚æœè®¾ç½®é‡Œä¿å­˜äº†æ¡£æ¡ˆå·MD, åˆ™è‡ªåŠ¨å¡«å…¥æœ¬æœºå·ç ,ç”¨æˆ·è®¾å®š6ä½æ•°å­—åç‰‡ä¸‹è½½å¯†ç ,åˆ™è”ç½‘ï¼Œ
+	   * www.mingdown.com/quickCreateMM?para=urlencode(å§“å|å•ä½|èŒåŠ¡|æ‰‹æœº|åå·å¯†ç |MD|Email|Tag)*/
 	  public static final String WEB_CREATE_CARD_URI = "http://www.mingdown.com/ljzc.asmx/quickCreateMM1?para=";
-	  //add by chenkai, 2013-02-02, Ôö¼Ó´´½¨ÃûÆ¬api end
+	  //add by chenkai, 2013-02-02, å¢åŠ åˆ›å»ºåç‰‡api end
 	  
 	  /**http://www.mingdown.com/cell/updatevcf.aspx?
-	   * MM=xx&&org=xx&&username=xx&&title=xx&&memo=xx&&email=xx&&tag=xx ÆäÖĞxxÊÇurlencode¹ıºóµÄ, ³É¹¦ok,Ê§°Üfailed*/
+	   * MM=xx&&org=xx&&username=xx&&title=xx&&memo=xx&&email=xx&&tag=xx å…¶ä¸­xxæ˜¯urlencodeè¿‡åçš„, æˆåŠŸok,å¤±è´¥failed*/
 	  public static final String WEB_UPDATE_CARD_URI = "http://www.mingdown.com/mobile/updatevcf.ashx?"/*"http://www.mingdown.com/cell/updatevcf1.aspx?"*/;
 	  
 	  /**
@@ -451,7 +451,7 @@ public final class Contents {
 	  
 	  /**
 	   * 
-	   * @return mmºÅÒÔ¼°http://c.mingdown.com/d/mmÁªÏµÈË²é¿´ÍøÖ·
+	   * @return mmå·ä»¥åŠhttp://c.mingdown.com/d/mmè”ç³»äººæŸ¥çœ‹ç½‘å€
 	   */
 	  public static String[] getCloudUri(String url) {
 		  String[] result = null;
@@ -465,7 +465,7 @@ public final class Contents {
 		  return result;
 	  }
 	  /**
-	   * Èç¹ûÊÇhttp://c.mingdown.com/[d/]17µÄURL£¬·µ»Ø·Ç¿ÕµÄ17Î»MMºÅ,[d/]±íÊ¾¿ÉÓĞ¿ÉÎŞ
+	   * å¦‚æœæ˜¯http://c.mingdown.com/[d/]17çš„URLï¼Œè¿”å›éç©ºçš„17ä½MMå·,[d/]è¡¨ç¤ºå¯æœ‰å¯æ— 
 	   * @param url
 	   * @return mm or null
 	   */
@@ -482,7 +482,7 @@ public final class Contents {
 		  return result;
 	  }
 	  /***
-	   * ¹¹½¨ĞÎÈçhttp://c.mingdown.com/d/17Î»µÄÃûºÅURL
+	   * æ„å»ºå½¢å¦‚http://c.mingdown.com/d/17ä½çš„åå·URL
 	   * @param mm
 	   * @return
 	   */
@@ -497,7 +497,7 @@ public final class Contents {
 	  }
 	  
 	  /***
-	   * ¹¹½¨ĞÎÈçhttp://c.mingdown.com/17Î»µÄÃûºÅURL
+	   * æ„å»ºå½¢å¦‚http://c.mingdown.com/17ä½çš„åå·URL
 	   * @param mm
 	   * @return
 	   */
@@ -512,9 +512,9 @@ public final class Contents {
 	  
 	  /**
 	   * 
-	   * @param recipients ÊÕĞÅÈËºÅÂë£¬¶ººÅ·Ö¸î
-	   * @param senderMM ·¢ĞÅÈËÃûµµºÅ
-	   * @return path±àÂëºóµÄurl
+	   * @param recipients æ”¶ä¿¡äººå·ç ï¼Œé€—å·åˆ†å‰²
+	   * @param senderMM å‘ä¿¡äººåæ¡£å·
+	   * @return pathç¼–ç åçš„url
 	   */
 	  public static String buildSendUrl(String recipients, String senderMM) {
 		  if (TextUtils.isEmpty(recipients) || TextUtils.isEmpty(senderMM)) {
@@ -534,7 +534,7 @@ public final class Contents {
 		  return sb.toString();
 	  }
 	  /**
-	   * ¹¹½¨¸öÈËÃûÆ¬´óÍ·ÌùÏÂÔØÍøÖ·
+	   * æ„å»ºä¸ªäººåç‰‡å¤§å¤´è´´ä¸‹è½½ç½‘å€
 	   * @param mm
 	   * @return
 	   */
@@ -544,7 +544,7 @@ public final class Contents {
 		  return sb.toString();
 	  }
 	  /**
-	   * ¹¹½¨ÃûµµÍøÃûÆ¬´óÍ·ÌùÏÂÔØÍøÖ·£¬ÒÀ¾İMM×îºó6Î»ÊÇ·ñÎª123456À´Ñ¡Ôñ¶ÔÓ¦µÄ¸öÈËºÍÆóÒµ´óÍ·ÌùÍøÖ·
+	   * æ„å»ºåæ¡£ç½‘åç‰‡å¤§å¤´è´´ä¸‹è½½ç½‘å€ï¼Œä¾æ®MMæœ€å6ä½æ˜¯å¦ä¸º123456æ¥é€‰æ‹©å¯¹åº”çš„ä¸ªäººå’Œä¼ä¸šå¤§å¤´è´´ç½‘å€
 	   * @param mm
 	   * @return
 	   */
@@ -557,7 +557,7 @@ public final class Contents {
 		  sb.append(mm).append(".jpg");
 		  return sb.toString();
 	  }
-	  /**¸ù¾İÓÃ»§pmdÀ´»ñÈ¡Í·Ïñ£¬Èçhttp://www.mingdown.com/image/md.jpg*/
+	  /**æ ¹æ®ç”¨æˆ·pmdæ¥è·å–å¤´åƒï¼Œå¦‚http://www.mingdown.com/image/md.jpg*/
 	  public static String buildPmdAvatorUrl(String pmd) {
 		  StringBuilder sb = new StringBuilder(WEB_URI);
 		  sb.append("image/");
@@ -565,7 +565,7 @@ public final class Contents {
 		  return sb.toString();
 	  }
 	  /**
-	   * ¹¹½¨ÆóÒµÃûÆ¬´óÍ·ÌùÏÂÔØÍøÖ·
+	   * æ„å»ºä¼ä¸šåç‰‡å¤§å¤´è´´ä¸‹è½½ç½‘å€
 	   * @param mm
 	   * @return
 	   */
@@ -575,8 +575,8 @@ public final class Contents {
 		  return sb.toString();
 	  }
 	  /**
-	   * www.mingdown.com/cell/new1.aspx?vcf=mm|½»»»µÄÃÜÂë|×Ô¼ºµÄÊÖ»ú|½ØÖ¹ÈÕÆÚ|»î¶¯Ö÷Ìâ|»î¶¯Ê±¼ä|»î¶¯µØÖ· ´«µİµÄ²ÎÊıÇëÓÃURLENCODE±àÂë (Èç¹û¼ÇÂ¼ÏàÍ¬»á±¨´í·µ»Ø¡£)
-	   * Èçhttp://www.mingdown.com/cell/new1.aspx?vcf=13816284988201202|bestjoy2|13816284988|20130103|title001|201301020816|didian008
+	   * www.mingdown.com/cell/new1.aspx?vcf=mm|äº¤æ¢çš„å¯†ç |è‡ªå·±çš„æ‰‹æœº|æˆªæ­¢æ—¥æœŸ|æ´»åŠ¨ä¸»é¢˜|æ´»åŠ¨æ—¶é—´|æ´»åŠ¨åœ°å€ ä¼ é€’çš„å‚æ•°è¯·ç”¨URLENCODEç¼–ç  (å¦‚æœè®°å½•ç›¸åŒä¼šæŠ¥é”™è¿”å›ã€‚)
+	   * å¦‚http://www.mingdown.com/cell/new1.aspx?vcf=13816284988201202|bestjoy2|13816284988|20130103|title001|201301020816|didian008
 	   */
 	  public static String buildCreateExchangeBC(String mm, String password, String tel, String deadline, String subject, String time, String where) {
 		  StringBuilder sb = new StringBuilder();
@@ -591,8 +591,8 @@ public final class Contents {
 		  return "http://www.mingdown.com/cell/new1.aspx?vcf=" + path;
 	  }
 	  /**
-	   * ÊäÈë±¾´Î¾Û»áµÄÃûÆ¬½»»»ÃÜÂë£¬¼ÓÈë½»»»¡£
-	   * www.mingdown.com/cell/add.aspx?vcf=mm|½»»»µÄÃÜÂë|×Ô¼ºµÄÊÖ»ú ´«µİµÄ²ÎÊıÇëÓÃURLENCODE±àÂë(×¢:Èç¹ûÊÇ´ÓÅÄÒ»ÏÂ°´Å¥¹ıÀ´µÄ,ÃÜÂë°µºÅ×Ô¶¯ÌîÈë)
+	   * è¾“å…¥æœ¬æ¬¡èšä¼šçš„åç‰‡äº¤æ¢å¯†ç ï¼ŒåŠ å…¥äº¤æ¢ã€‚
+	   * www.mingdown.com/cell/add.aspx?vcf=mm|äº¤æ¢çš„å¯†ç |è‡ªå·±çš„æ‰‹æœº ä¼ é€’çš„å‚æ•°è¯·ç”¨URLENCODEç¼–ç (æ³¨:å¦‚æœæ˜¯ä»æ‹ä¸€ä¸‹æŒ‰é’®è¿‡æ¥çš„,å¯†ç æš—å·è‡ªåŠ¨å¡«å…¥)
 	   * @return
 	   */
       public static String buildJoinExchangeBC(String mm, String password, String tel) {
@@ -604,8 +604,8 @@ public final class Contents {
 		  return "http://www.mingdown.com/cell/add.aspx?vcf=" + path;
 	  }
       /**
-       * ²é¿´¼ÇÂ¼¡±°´Å¥¡£µ÷ ÓÃ http://www.mingdown.com/cell/seetitle1.aspx?cell=ÊÖ»ú&pageindex=²é¿´Ò³µÄË÷Òı&pagesize=Ã¿Ò³´óĞ¡ 
-       * (Èçwww.mingdown.com/cell/ seetitle.aspx?cell=13816284988 &pageindex=1&pagesize=10)
+       * æŸ¥çœ‹è®°å½•â€æŒ‰é’®ã€‚è°ƒ ç”¨ http://www.mingdown.com/cell/seetitle1.aspx?cell=æ‰‹æœº&pageindex=æŸ¥çœ‹é¡µçš„ç´¢å¼•&pagesize=æ¯é¡µå¤§å° 
+       * (å¦‚www.mingdown.com/cell/ seetitle.aspx?cell=13816284988 &pageindex=1&pagesize=10)
        * @return
        */
       public static String buildJoinExchangeBCHistory(String tel, int pageIndex, int pageSize) {
@@ -623,8 +623,8 @@ public final class Contents {
 	  }
       
       /**
-       * www.mingdown.com/cell/SeeAll.aspx?ID=·µ»ØµÄID , 
-       * »á»ñµÃÃûÆ¬ÁĞ±í,ÔòÖ±½Ó½øÈë¿ÉÒÔ½»»»µÄÃûÆ¬Ò³Ãæ,ÏÔÊ¾¿ÉÒÔ½»»»µÄ ÃûÆ¬ÁĞ±í,½çÃæÀàËÆÊÕÃûÆ¬½çÃæ¡£ËùÓĞÃûÆ¬¿ÉÒÔ¹ö¶¯ÍÏ ¶¯ÏÔÊ¾
+       * www.mingdown.com/cell/SeeAll.aspx?ID=è¿”å›çš„ID , 
+       * ä¼šè·å¾—åç‰‡åˆ—è¡¨,åˆ™ç›´æ¥è¿›å…¥å¯ä»¥äº¤æ¢çš„åç‰‡é¡µé¢,æ˜¾ç¤ºå¯ä»¥äº¤æ¢çš„ åç‰‡åˆ—è¡¨,ç•Œé¢ç±»ä¼¼æ”¶åç‰‡ç•Œé¢ã€‚æ‰€æœ‰åç‰‡å¯ä»¥æ»šåŠ¨æ‹– åŠ¨æ˜¾ç¤º
        */
       public static String buildExchangeBCList(String id) {
 		  StringBuilder sb = new StringBuilder("http://www.mingdown.com/cell/SeeAll.aspx?ID=");
@@ -639,8 +639,8 @@ public final class Contents {
     	  return sb.toString();
 	  }
       /**
-       * ÓÃÓÚµÇÂ½Ä£¿éÑéÖ¤
-       * http://www.mingdown.com/cell/denglu.aspx?m=ÊÖ»úºÅÂë&p=µÇÂ¼ÃÜÂë
+       * ç”¨äºç™»é™†æ¨¡å—éªŒè¯
+       * http://www.mingdown.com/cell/denglu.aspx?m=æ‰‹æœºå·ç &p=ç™»å½•å¯†ç 
        */
       public static String buildLogin(String tel, String password) {
     	  StringBuilder sb = new StringBuilder("http://www.mingdown.com/mobile/denglu.ashx?m=");
@@ -648,7 +648,7 @@ public final class Contents {
     	  return sb.toString();
       }
       /***
-       * ÕÒ»ØÃÜÂë Èçhttp://www.mingdown.com/cell/zhaohui.aspx?m=13816284988£¬ Õâ¸ö¹¦ÄÜÊÇµ÷ÓÃÁË¶ÌĞÅÆ½Ì¨£¬½«ÃÜÂë·¢ËÍµ½ÊÖ»úÉÏ¡£
+       * æ‰¾å›å¯†ç  å¦‚http://www.mingdown.com/cell/zhaohui.aspx?m=13816284988ï¼Œ è¿™ä¸ªåŠŸèƒ½æ˜¯è°ƒç”¨äº†çŸ­ä¿¡å¹³å°ï¼Œå°†å¯†ç å‘é€åˆ°æ‰‹æœºä¸Šã€‚
        * @return
        */
       public static String buildFindPassword(String tel) {
