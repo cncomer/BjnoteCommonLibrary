@@ -15,11 +15,11 @@ public class DateUtils {
 
 	private static DateUtils mInstance = new DateUtils();
 	private Context mContext;
-	/**活动日期格式yyyy-MM-dd*/
+	/**锟筋动锟斤拷锟节革拷式yyyy-MM-dd*/
 	public static  DateFormat TOPIC_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-	/**活动时间格式hh:mm*/
+	/**锟筋动时锟斤拷锟绞絟h:mm*/
 	public static  DateFormat TOPIC_TIME_FORMAT = new SimpleDateFormat("HH:mm");
-	/**交换活动创建时间格式yyyyMMdd*/
+	/**锟斤拷锟斤拷锟筋动锟斤拷锟斤拷时锟斤拷锟绞統yyyMMdd*/
 	public static  DateFormat TOPIC_CREATE_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 	public static  DateFormat TOPIC_CREATE_DATE_TIME_FORMAT = new SimpleDateFormat("yyyyMMddHHmm");
 	public static  DateFormat TOPIC_SUBJECT_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
