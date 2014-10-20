@@ -50,6 +50,7 @@ public class DialogUtils {
 		new AlertDialog.Builder(context)
 		.setMessage(message)
 		.setPositiveButton(android.R.string.ok, callback)
+		.setNegativeButton(android.R.string.cancel, callback)
 		.setOnCancelListener(callback)
 		.show();
 	}
@@ -58,6 +59,7 @@ public class DialogUtils {
 		new AlertDialog.Builder(context)
 		.setMessage(messageResId)
 		.setPositiveButton(android.R.string.ok, callback)
+		.setNegativeButton(android.R.string.cancel, callback)
 		.setOnCancelListener(callback)
 		.show();
 	}
