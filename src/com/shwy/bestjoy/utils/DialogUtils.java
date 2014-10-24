@@ -46,22 +46,21 @@ public class DialogUtils {
 	 * @param message
 	 * @param callback
 	 */
-	public static void createSimpleConfirmAlertDialog(Context context, String message, DialogCallback callback) {
-		new AlertDialog.Builder(context)
-		.setMessage(message)
-		.setPositiveButton(android.R.string.ok, callback)
-		.setNegativeButton(android.R.string.cancel, callback)
-		.setOnCancelListener(callback)
-		.show();
+	public static void createSimpleConfirmAlertDialog(Context context, String message, String positiveButton, String negativeButton, DialogCallback callback) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(context)
+		.setMessage(message);
+		if (positiveButton != null) {
+			builder.setPositiveButton(positiveButton, callback);
+		}
+		if (negativeButton != null) {
+			builder.setNegativeButton(negativeButton, callback);
+		}
+		builder.setOnCancelListener(callback);
+		builder.show();
 	}
 	
-	public static void createSimpleConfirmAlertDialog(Context context, int messageResId, DialogCallback callback) {
-		new AlertDialog.Builder(context)
-		.setMessage(messageResId)
-		.setPositiveButton(android.R.string.ok, callback)
-		.setNegativeButton(android.R.string.cancel, callback)
-		.setOnCancelListener(callback)
-		.show();
+	public static void createSimpleConfirmAlertDialog(Context context, int messageResId, int positiveButton, int negativeButton, DialogCallback callback) {
+		createSimpleConfirmAlertDialog(context, context.getString(messageResId), positiveButton == -1?null:context.getString(positiveButton), negativeButton == -1?null:context.getString(negativeButton), callback);
 	}
 
 }
