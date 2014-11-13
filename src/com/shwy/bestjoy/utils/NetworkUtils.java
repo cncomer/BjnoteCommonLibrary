@@ -35,7 +35,7 @@ public class NetworkUtils {
 		int stateCode = response.getStatusLine().getStatusCode();
 		DebugUtils.logNetworkOp(TAG, "return HttpStatus is " + stateCode);
 		if(!httpStatusOk(stateCode)) {
-			//ÕâÀï»á¶ªÊ§Êý¾Ý£¬ÎÒÃÇ·µ»ØÒ»¸öÒì³£
+			//ï¿½ï¿½ï¿½ï¿½á¶ªÊ§ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ì³£
 			throw new IOException(String.valueOf(stateCode));
 		}
 		return response.getEntity().getContent();
@@ -46,8 +46,8 @@ public class NetworkUtils {
 	}
 	/**
 	 * 
-	 * @param uri ÍøÖ·£¬Èçhttp://www.baidu.com/
-	 * @param path ÐèÒªÊ¹ÓÃURLEncoder±àÂëµÄÂ·¾¶
+	 * @param uri ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½http://www.baidu.com/
+	 * @param path ï¿½ï¿½ÒªÊ¹ï¿½ï¿½URLEncoderï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
 	 * @return
 	 * @throws ClientProtocolException
 	 * @throws IOException
@@ -79,8 +79,8 @@ public class NetworkUtils {
 	
 	/**
 	 * 
-	 * @param uri ÍøÖ·£¬Èçhttp://www.baidu.com/
-	 * @param path ÐèÒªÊ¹ÓÃURLEncoder±àÂëµÄÂ·¾¶
+	 * @param uri ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½http://www.baidu.com/
+	 * @param path ï¿½ï¿½ÒªÊ¹ï¿½ï¿½URLEncoderï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
 	 * @return
 	 * @throws ClientProtocolException
 	 * @throws IOException
@@ -89,7 +89,7 @@ public class NetworkUtils {
 //		String encodedUri = uri + URLEncoder.encode(path);
 		DebugUtils.logNetworkOp(TAG, "HttpPost uri=" + uri);
 		HttpPost httpRequest = new HttpPost(uri);
-		/**Post ÔËÐÐ´«µÝ±äÁ¿±ØÐëÓÃ NameValuePair[] Êý×é´æ´¢*/  
+		/**Post ï¿½ï¿½ï¿½Ð´ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ NameValuePair[] ï¿½ï¿½ï¿½ï¿½æ´¢*/  
         List<NameValuePair> params = new ArrayList<NameValuePair>();  
         params.add(new BasicNameValuePair(paramName, paramValue));
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));  

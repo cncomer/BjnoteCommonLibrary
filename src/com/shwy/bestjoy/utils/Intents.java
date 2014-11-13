@@ -17,6 +17,7 @@
 package com.shwy.bestjoy.utils;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -24,6 +25,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.telephony.SmsMessage;
 
@@ -59,39 +61,39 @@ public final class Intents {
 	
 	public static final String EXTRA_URI = "uri";
 	
-	//ÉÌÆ·¶îÍâÊı¾İ begin
-	/**ÉÌÆ·21Î»±àÂë*/
+	//ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ begin
+	/**ï¿½ï¿½Æ·21Î»ï¿½ï¿½ï¿½ï¿½*/
 	public static final String EXTRA_PD="PD";
-	/**ÉÌÆ··şÎñÆ÷×ÔÔöºÅ*/
+	/**ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	public static final String EXTRA_SID="SID";
-	/**ĞÍºÅË÷Òı*/
+	/**ï¿½Íºï¿½ï¿½ï¿½ï¿½ï¿½*/
 	public static final String EXTRA_KY="KY";
-	/**ÉÌÆ·±àºÅ*/
+	/**ï¿½ï¿½Æ·ï¿½ï¿½ï¿½*/
 	public static final String EXTRA_SN="SN";
-	/**ÉÌÆ·ĞÍºÅ*/
+	/**ï¿½ï¿½Æ·ï¿½Íºï¿½*/
 	public static final String EXTRA_MODEL="NO";
-	/**ÉÌÆ·Æ·ÅÆ*/
+	/**ï¿½ï¿½Æ·Æ·ï¿½ï¿½*/
 	public static final String EXTRA_BRAND="BRAND";
-	/**ÉÌÆ·ÊÇ·ñÒÑ¾­µÇ¼Ç*/
+	/**ï¿½ï¿½Æ·ï¿½Ç·ï¿½ï¿½Ñ¾ï¿½ï¿½Ç¼ï¿½*/
 	public static final String EXTRA_HAS_REGISTERED="hasRegistered";
 	public static final String EXTRA_DATE="date";
-	/**±¾µØ·¢Æ±ÎÄ¼şÂ·¾¶*/
+	/**ï¿½ï¿½ï¿½Ø·ï¿½Æ±ï¿½Ä¼ï¿½Â·ï¿½ï¿½*/
 	public static final String EXTRA_BILL="bill";
-	/**±¾µØÉÌÆ·Ô¤ÀÀÍ¼ÎÄ¼şÂ·¾¶*/
+	/**ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ·Ô¤ï¿½ï¿½Í¼ï¿½Ä¼ï¿½Â·ï¿½ï¿½*/
 	public static final String EXTRA_AVATOR="avator";
-	/**ÏúÊÛÔ±MD*/
+	/**ï¿½ï¿½ï¿½ï¿½Ô±MD*/
 	public static final String EXTRA_SMD="smd";
-	/**ÏúÊÛÔ±MM*/
+	/**ï¿½ï¿½ï¿½ï¿½Ô±MM*/
 	public static final String EXTRA_SMM="smm";
 	public static final String EXTRA_SMMV="smm";
 	public static final String EXTRA_MMV="avator";
-	/**ÉÌÆ·±£ĞŞÄê*/
+	/**ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	public static final String EXTRA_WY="wy";
 	public static final String EXTRA_GOODS_TEL="goods_tel";
 	public static final String EXTRA_GOODS_NAME="goods_name";
 	public static final String EXTRA_GOODS_ADDRESS="goods_address";
 	public static final String EXTRA_SCAN_TASK="scan_task";
-	//ÉÌÆ·¶îÍâÊı¾İ end
+	//ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ end
 	public static final String EXTRA_PROGRESS="progress";
 	public static final String EXTRA_RESULT="result";
 	public static final String EXTRA_PROGRESS_MAX="progress_max";
@@ -312,7 +314,6 @@ public final class Intents {
     
     public static final void launchIntent(Context context, Intent intent) {
     	if (intent != null) {
-    		context.startActivity(intent);
     		try {
     			context.startActivity(intent);
     		} catch (ActivityNotFoundException e) {
@@ -333,7 +334,7 @@ public final class Intents {
         context.startActivity(i);
     }
     /**
-     * ¼ì²éÊÇ·ñ°²×°ÁËGoogle Map
+     * ï¿½ï¿½ï¿½ï¿½Ç·ï¿½×°ï¿½ï¿½Google Map
      * @param context
      * @return
      */
@@ -354,7 +355,7 @@ public final class Intents {
     }
     
     /**
-     * µ÷ÓÃµØÍ¼¶¨Î»Î»ÖÃ
+     * ï¿½ï¿½ï¿½Ãµï¿½Í¼ï¿½ï¿½Î»Î»ï¿½ï¿½
      * @param context
      * @param location
      */
@@ -367,5 +368,62 @@ public final class Intents {
     	}
     	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
     	context.startActivity(intent);
+    }
+    
+    /**
+     * http://ditu.google.cn/maps?hl=zh&mrt=loc&q=@31.27986,121.49864
+     * @param context
+     * @param location
+     */
+    public static void locationGoogleMap(Context context, String location) {
+    	Intent intent = null;
+    	if (checkGoogleMap(context)) {
+    		intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + location));
+    	} else {
+    		intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://ditu.google.cn/maps?hl=zh&mrt=loc&q=" + location));
+    	}
+    	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+    	context.startActivity(intent);
+    }
+    /**
+     * å¦‚æœæ‰‹æœºç«¯å·²ç»å®‰è£…äº†ç™¾åº¦åœ°å›¾ï¼Œæˆ‘ä»¬è°ƒç”¨ç™¾åº¦åœ°å›¾ï¼Œå¦åˆ™è°ƒç”¨ç½‘é¡µç«¯ç™¾åº¦åœ°å›¾
+     * 
+     * 
+     * ç§»åŠ¨appè°ƒèµ·ç™¾åº¦åœ°å›¾ä¸¾ä¾‹ï¼Œå‚è€ƒhttp://developer.baidu.com/map/wiki/index.php?title=uri/api/android
+     * 
+     * intent = Intent.getIntent("intent://map/marker?location=40.047669,116.313082&title=æˆ‘çš„ä½ç½®&content=ç™¾åº¦å¥ç§‘å¤§å¦&src=yourCompanyName|yourAppName#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end"); 
+	   startActivity(intent); //å¯åŠ¨è°ƒç”¨ 
+     * 
+     * ç½‘é¡µç«¯å‚æ•°è¯´æ˜è¯·å‚è€ƒ http://developer.baidu.com/map/index.php?title=uri/api/web
+     * 
+     * http://api.map.baidu.com/marker?location=39.916979519873,116.41004950566&coord_type=bd09ll&title=æˆ‘çš„ä½ç½®&content=ç™¾åº¦å¥ç§‘å¤§å¦&output=html&src=appName
+     * @param context
+     * @param location lat<çº¬åº¦>,lng<ç»åº¦> 39.916979519873,116.41004950566&title=æˆ‘çš„ä½ç½®&content=ç™¾åº¦å¥ç§‘å¤§å¦&src=appName
+     */
+    public static void locationBaiduMap(Context context, String location) {
+    	Intent intent = null;
+    	if (isAppInstalled(context, "com.baidu.BaiduMap")) {
+    		try {
+				intent = Intent.parseUri("intent://map/marker?location=" + location + "#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end", Intent.URI_INTENT_SCHEME);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			} 
+    	} else {
+    		intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.map.baidu.com/marker?location=" + location + "&output=html" + "&coord_type=bd09ll"));
+    	}
+    	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+    	context.startActivity(intent);
+    }
+    
+    public static boolean isAppInstalled(Context context, String pkgName) {
+        PackageManager pm = context.getPackageManager();
+        boolean installed = false;
+        try {
+            pm.getPackageInfo(pkgName, PackageManager.GET_ACTIVITIES);
+            installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            installed = false;
+        }
+        return installed;
     }
 }

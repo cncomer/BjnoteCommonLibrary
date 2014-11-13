@@ -24,9 +24,11 @@ public class FilesUtils {
 			for(File subFile:files) {
 				deleteFile(tag, subFile);
 			}
+			boolean deleted = file.delete();
+			DebugUtils.logDeleteFiles(tag, "deleteFile " + file.getAbsolutePath() + ", deleted = " +deleted);
 		} else {
-			DebugUtils.logDeleteFiles(tag, "deleteFile " + file.getAbsolutePath());
-			file.delete();
+			boolean deleted = file.delete();
+			DebugUtils.logDeleteFiles(tag, "deleteFile " + file.getAbsolutePath() + ", deleted = " +deleted);
 		}
 	}
 	
