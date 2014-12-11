@@ -8,8 +8,9 @@ public class ComPreferencesManager {
 	
 	private static final ComPreferencesManager INSTANCE = new ComPreferencesManager();
 	private Context Context;
+	public SharedPreferences mFirstPreferManager;
 	public SharedPreferences mPreferManager;
-	
+
 	private ComPreferencesManager() {}
 	
 	public static ComPreferencesManager getInstance() {
@@ -18,6 +19,7 @@ public class ComPreferencesManager {
 	
 	public void setContext(Context context) {
 		Context = context;
+		mFirstPreferManager = context.getSharedPreferences("first_launch", Context.MODE_PRIVATE);
 		mPreferManager = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 	
@@ -28,11 +30,17 @@ public class ComPreferencesManager {
 	 * @return
 	 */
 	public boolean isFirstLaunch(String key, boolean defaultValues) {
-		return mPreferManager.getBoolean(key, defaultValues);
+		return mFirstPreferManager.getBoolean(key, defaultValues);
 	}
 	
 	public boolean setFirstLaunch(String key, boolean defaultValues) {
-		return mPreferManager.edit().putBoolean(key, defaultValues).commit();
+		return mFirstPreferManager.edit().putBoolean(key, defaultValues).commit();
+	}
+	/**
+	 * 该操作会清空所有已设置的第一次载入状态
+	 */
+	public void resetFirsetLaunch() {
+		mFirstPreferManager.edit().clear().commit();
 	}
 
 }

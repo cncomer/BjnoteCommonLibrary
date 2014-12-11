@@ -2,8 +2,8 @@ package com.shwy.bestjoy.utils;
 
 public class PageInfo implements IPageInterface{
 	public static final int DEFAULT_PAGEINDEX = 1;
-	public static final int PER_PAGE_SIZE = 10;
-	public static final int MAX_PAGE_SIZE = 25;
+	public static final int PER_PAGE_SIZE = 25;
+	public static final int MAX_PAGE_SIZE = 50;
 	public long mTotalCount;
 	public String mTag;
 	public int mPageIndex = DEFAULT_PAGEINDEX;

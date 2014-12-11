@@ -27,6 +27,7 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -41,12 +42,12 @@ public final class CameraManager {
 
   private static final String TAG = CameraManager.class.getSimpleName();
 
-  private static final int MIN_FRAME_WIDTH = 240;
-  private static final int MIN_FRAME_HEIGHT = 240;
-  private static final int MAX_FRAME_WIDTH = 480;
-  private static final int MAX_FRAME_HEIGHT = 360;
+  private static int MIN_FRAME_WIDTH = 120;
+  private static int MIN_FRAME_HEIGHT = 120;
+  private static int MAX_FRAME_WIDTH = 240;
+  private static int MAX_FRAME_HEIGHT = 240;
   /**
-   * Ö§³ÖÁªÏµÈËµÄÒ»¼üÉ¾³ýËùÐè°æ±¾ºÅ
+   * Ö§ï¿½ï¿½ï¿½ï¿½Ïµï¿½Ëµï¿½Ò»ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½
    */
   public static final int VERSION_CODES_LEVEL = 5;
   private static CameraManager cameraManager;
@@ -88,6 +89,11 @@ public final class CameraManager {
     if (cameraManager == null) {
       cameraManager = new CameraManager(context);
     }
+    DisplayMetrics dm = context.getResources().getDisplayMetrics();
+    MIN_FRAME_WIDTH *=dm.density;
+    MIN_FRAME_HEIGHT *=dm.density;
+    MAX_FRAME_WIDTH *=dm.density;
+    MAX_FRAME_HEIGHT *=dm.density;
   }
 
   /**

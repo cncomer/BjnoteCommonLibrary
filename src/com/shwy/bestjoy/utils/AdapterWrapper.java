@@ -16,6 +16,13 @@ public class AdapterWrapper<T> {
 	public T getAdapter() {
 		return mAdapter;
 	}
+	
+	public Cursor getCursor() {
+		if (mAdapter instanceof CursorAdapter) {
+			return ((CursorAdapter) mAdapter).getCursor();
+		}
+		return null;
+	}
 
 	public void changeCursor(Cursor cursor) {
 		if (mAdapter == null) {

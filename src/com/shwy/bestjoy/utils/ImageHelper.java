@@ -10,7 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -162,5 +166,18 @@ public class ImageHelper {
 			}
 		}
 		return false;
+	}
+	
+	public static Bitmap getXBitmap(Bitmap mask, Bitmap dest) {
+		Bitmap bitmap = Bitmap.createBitmap(mask.getWidth(), mask.getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		Paint paint = new Paint();
+		paint.setFilterBitmap(false);
+		paint.setAntiAlias(true);
+		canvas.drawBitmap(dest, 0, 0, paint);
+		
+		paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
+		canvas.drawBitmap(mask, 0, 0, paint);
+		return bitmap;
 	}
 }
