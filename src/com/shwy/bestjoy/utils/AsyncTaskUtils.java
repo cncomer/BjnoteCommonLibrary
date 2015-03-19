@@ -9,4 +9,10 @@ public class AsyncTaskUtils {
 			task.cancel(true);
 		}
 	}
+	
+	public static void cancelTask(AsyncTaskCompat<?,?,?> task) {
+		if (task != null && task.getStatus() != AsyncTaskCompat.Status.FINISHED) {
+			task.cancel(true);
+		}
+	}
 }

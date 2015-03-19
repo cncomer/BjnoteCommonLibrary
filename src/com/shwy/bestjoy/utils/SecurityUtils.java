@@ -1,6 +1,16 @@
 package com.shwy.bestjoy.utils;
 
+import android.text.TextUtils;
+
+import org.apache.http.HttpRequest;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,12 +21,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
-import org.apache.http.HttpRequest;
-
-import android.text.TextUtils;
-
 /**
- * ¼ÓÃÜÄ£¿é
+ * åŠ å¯†æ¨¡å—
  * @author chenkai
  *
  */
@@ -25,12 +31,12 @@ public class SecurityUtils {
 	//add by chenkai, 20131123, add Security token header
 	public static final String TOKEN_KEY = "key";
 	public static final String TOKEN_CELL = "cell";
-	private static final byte[] DESIV = {0x12, 0x34, 0x56, 0x78, (byte) 0x90, (byte) 0xAB, (byte) 0xCD, (byte) 0xEF};// ÉèÖÃÏòÁ¿£¬ÂÔÈ¥
+	private static final byte[] DESIV = {0x12, 0x34, 0x56, 0x78, (byte) 0x90, (byte) 0xAB, (byte) 0xCD, (byte) 0xEF};// è®¾ç½®å‘é‡ï¼Œç•¥å»
 	
 	public static class SecurityKeyValuesObject {
-		//ÄêÔÂÈÕ
+		//å¹´æœˆæ—¥
 		private long mDate = -1;
-		private static final long UPDATE_DURATION = 1000 * 60 * 60 * 24; //24Ğ¡Ê±
+		private static final long UPDATE_DURATION = 1000 * 60 * 60 * 24; //24å°æ—¶
 		public HashMap<String, String> mKeyValuesMap = new HashMap<String, String>();
 		public HashMap<String, String> put(String key, String value) {
 			mKeyValuesMap.put(key, value);
@@ -45,7 +51,7 @@ public class SecurityUtils {
 		
 		public void updateCellKey(String cell) {
 			if (TextUtils.isEmpty(cell)) {
-				//ÓÉÓÚÄ¿Ç°µÄÊµÏÖÊÇÃ¿´Î½øÈëÓ¦ÓÃÖ÷½çÃæ¿ì¾Í»áµ÷ÓÃÒ»´ÎÕâ¸ö·½·¨À´È·±£ÎÒÃÇµÄÊ±¼äÊÇ×îĞÂµÄ£¬ÓĞ¿ÉÄÜÓÃ»§»¹Ã»ÓĞµÇÂ¼£¬ÕâÀïµÄcell¾ÍÊÇ¿ÕµÄ
+				//ç”±äºç›®å‰çš„å®ç°æ˜¯æ¯æ¬¡è¿›å…¥åº”ç”¨ä¸»ç•Œé¢å¿«å°±ä¼šè°ƒç”¨ä¸€æ¬¡è¿™ä¸ªæ–¹æ³•æ¥ç¡®ä¿æˆ‘ä»¬çš„æ—¶é—´æ˜¯æœ€æ–°çš„ï¼Œæœ‰å¯èƒ½ç”¨æˆ·è¿˜æ²¡æœ‰ç™»å½•ï¼Œè¿™é‡Œçš„cellå°±æ˜¯ç©ºçš„
 				return;
 			}
 			long currentDate = new Date().getTime();
@@ -57,10 +63,10 @@ public class SecurityUtils {
 	}
 	
 
-	/**¶Ô³Æ¼ÓÃÜËã·¨*/
+	/**å¯¹ç§°åŠ å¯†ç®—æ³•*/
 	public static class DES {
 		/**
-		 * ×¢Òâ£ºDES¼ÓÃÜºÍ½âÃÜ¹ı³ÌÖĞ£¬ÃÜÔ¿³¤¶È¶¼±ØĞëÊÇ8µÄ±¶Êı
+		 * æ³¨æ„ï¼šDESåŠ å¯†å’Œè§£å¯†è¿‡ç¨‹ä¸­ï¼Œå¯†é’¥é•¿åº¦éƒ½å¿…é¡»æ˜¯8çš„å€æ•°
 		 * @param datasource
 		 * @param password
 		 * @return
@@ -69,16 +75,16 @@ public class SecurityUtils {
             try{
 	            SecureRandom random = new SecureRandom();
 	            DESKeySpec desKey = new DESKeySpec(password.getBytes());
-	            //´´½¨Ò»¸öÃÜ³×¹¤³§£¬È»ºóÓÃËü°ÑDESKeySpec×ª»»³É
+	            //åˆ›å»ºä¸€ä¸ªå¯†åŒ™å·¥å‚ï¼Œç„¶åç”¨å®ƒæŠŠDESKeySpecè½¬æ¢æˆ
 	            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
 	            SecretKey securekey = keyFactory.generateSecret(desKey);
-	            //Cipher¶ÔÏóÊµ¼ÊÍê³É¼ÓÃÜ²Ù×÷
+	            //Cipherå¯¹è±¡å®é™…å®ŒæˆåŠ å¯†æ“ä½œ
 	            Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-	            IvParameterSpec iv = new IvParameterSpec(DESIV);// ÉèÖÃÏòÁ¿
-	            //ÓÃÃÜ³×³õÊ¼»¯Cipher¶ÔÏó
+	            IvParameterSpec iv = new IvParameterSpec(DESIV);// è®¾ç½®å‘é‡
+	            //ç”¨å¯†åŒ™åˆå§‹åŒ–Cipherå¯¹è±¡
 	            cipher.init(Cipher.ENCRYPT_MODE, securekey, iv);
-	            //ÏÖÔÚ£¬»ñÈ¡Êı¾İ²¢¼ÓÃÜ
-	            //ÕıÊ½Ö´ĞĞ¼ÓÃÜ²Ù×÷
+	            //ç°åœ¨ï¼Œè·å–æ•°æ®å¹¶åŠ å¯†
+	            //æ­£å¼æ‰§è¡ŒåŠ å¯†æ“ä½œ
 	            byte[] encodedByte = cipher.doFinal(datasource);
 	            return Base64.encodeToString(encodedByte, Base64.DEFAULT);
 
@@ -89,42 +95,43 @@ public class SecurityUtils {
         }
         
         /**
-         * DES½âÃÜ
+         * DESè§£å¯†
          * @param src
          * @param password
          * @return
          * @throws Exception
          */
         public static String deCrypto(String src, String password) throws Exception {
-            // DESËã·¨ÒªÇóÓĞÒ»¸ö¿ÉĞÅÈÎµÄËæ»úÊıÔ´
+            // DESç®—æ³•è¦æ±‚æœ‰ä¸€ä¸ªå¯ä¿¡ä»»çš„éšæœºæ•°æº
 //            SecureRandom random = new SecureRandom();
             byte[] data = Base64.decode(src, Base64.DEFAULT);
-            // ´´½¨Ò»¸öDESKeySpec¶ÔÏó
+            // åˆ›å»ºä¸€ä¸ªDESKeySpecå¯¹è±¡
             DESKeySpec desKey = new DESKeySpec(password.getBytes());
-            // ´´½¨Ò»¸öÃÜ³×¹¤³§
+            // åˆ›å»ºä¸€ä¸ªå¯†åŒ™å·¥å‚
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-            // ½«DESKeySpec¶ÔÏó×ª»»³ÉSecretKey¶ÔÏó
+            // å°†DESKeySpecå¯¹è±¡è½¬æ¢æˆSecretKeyå¯¹è±¡
             SecretKey securekey = keyFactory.generateSecret(desKey);
-            // Cipher¶ÔÏóÊµ¼ÊÍê³É½âÃÜ²Ù×÷
+            // Cipherå¯¹è±¡å®é™…å®Œæˆè§£å¯†æ“ä½œ
             Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-            IvParameterSpec iv = new IvParameterSpec(DESIV);// ÉèÖÃÏòÁ¿
-            // ÓÃÃÜ³×³õÊ¼»¯Cipher¶ÔÏó
+            IvParameterSpec iv = new IvParameterSpec(DESIV);// è®¾ç½®å‘é‡
+            // ç”¨å¯†åŒ™åˆå§‹åŒ–Cipherå¯¹è±¡
             cipher.init(Cipher.DECRYPT_MODE, securekey, iv);
-            // ÕæÕı¿ªÊ¼½âÃÜ²Ù×÷
+            // çœŸæ­£å¼€å§‹è§£å¯†æ“ä½œ
             byte[] decodedByte = cipher.doFinal(data);
             return new String(decodedByte);
         }
-	}
+
+    }
 	
 	public static class MD5 { 
 		public final static String md5(String message) { 
 			try { 
 			   byte[] strTemp = message.getBytes(); 
-			   //Ê¹ÓÃMD5´´½¨MessageDigest¶ÔÏó 
+			   //ä½¿ç”¨MD5åˆ›å»ºMessageDigestå¯¹è±¡ 
 			   MessageDigest messageDigest = MessageDigest.getInstance("MD5"); 
 			   messageDigest.update(strTemp); 
 			   byte[] md5DecodedStr = messageDigest.digest(); 
-			   //Ö®ºóÒÔÊ®Áù½øÖÆ¸ñÊ½¸ñÊ½»¯
+			   //ä¹‹åä»¥åå…­è¿›åˆ¶æ ¼å¼æ ¼å¼åŒ–
 			   StringBuffer hexValue = new StringBuffer();  
 		        for (int i = 0; i < md5DecodedStr.length; i++){  
 		            int val = ((int) md5DecodedStr[i]) & 0xff;  
@@ -139,6 +146,42 @@ public class SecurityUtils {
 				return null;
 			} 
 		}
+
+        public static boolean verifyFileMd5(File file, String needMd5) {
+            if (TextUtils.isEmpty(needMd5)) {
+                return true;
+            }
+
+            try {
+                MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+                BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
+                byte[] buffer = new byte[1024];
+                int read = 0;
+                read = is.read(buffer);
+                while(read != -1) {
+                    messageDigest.update(buffer, 0, read);
+                    read = is.read(buffer);
+                }
+                byte[] md5DecodedStr = messageDigest.digest();
+                //ä¹‹åä»¥åå…­è¿›åˆ¶æ ¼å¼æ ¼å¼åŒ–
+                StringBuffer hexValue = new StringBuffer();
+                for (int i = 0; i < md5DecodedStr.length; i++){
+                    int val = ((int) md5DecodedStr[i]) & 0xff;
+                    if (val < 16) hexValue.append("0");
+                    hexValue.append(Integer.toHexString(val));
+                }
+                String result = hexValue.toString().toLowerCase();
+                DebugUtils.logD(TAG, "verifyFileMd5 file MD5 is " + result + ", needMd5 is " + needMd5 + ", result " + needMd5.equals(result));
+                return needMd5.equals(result);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
 	} 
 	
 	public static void genSecurityRequestToken(HttpRequest request, String key, String value) {
@@ -146,7 +189,7 @@ public class SecurityUtils {
 	}
 	
 	/**
-	 * key=md5(ÓÃ»§ÊÖ»ú(ÊÖ»úºÅÂë1Ìæ»»³Éi£¬È¥µô×îºóÒ»Î»),µ±Ç°ÈÕÆÚÈç20021212)
+	 * key=md5(ç”¨æˆ·æ‰‹æœº(æ‰‹æœºå·ç 1æ›¿æ¢æˆiï¼Œå»æ‰æœ€åä¸€ä½),å½“å‰æ—¥æœŸå¦‚20021212)
 	 * @param cell
 	 * @return
 	 */
@@ -163,4 +206,7 @@ public class SecurityUtils {
 		DebugUtils.logD(TAG, "return final encoded " + message);
 		return MD5.md5(message);
 	}
+
+
+
 }

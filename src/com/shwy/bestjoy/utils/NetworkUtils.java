@@ -1,13 +1,7 @@
 package com.shwy.bestjoy.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.shwy.bestjoy.exception.StatusException;
+import com.shwy.bestjoy.utils.SecurityUtils.SecurityKeyValuesObject;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -21,13 +15,29 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import com.shwy.bestjoy.utils.SecurityUtils.SecurityKeyValuesObject;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class NetworkUtils {
 	private static final String TAG = "NetworkUtils";
 	
 	public static InputStream openContectionLocked(String uri, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException {
 		DebugUtils.logNetworkOp(TAG, "HttpGet uri=" + uri);
+		if (uri == null) {
+			return null;
+		}
+		int index = uri.indexOf("?");
+		if (index > 0 && index < uri.length()) {
+			DebugUtils.logD(TAG, "HttpGet param=" + uri.substring(index+1));
+		}
+		 
 		HttpGet httpRequest = new HttpGet(uri);
 		addSecurityKeyValuesObject(httpRequest, securityKeyValues);
 		HttpClient httpClient = /*new DefaultHttpClient();*/AndroidHttpClient.newInstance("android");
@@ -35,8 +45,7 @@ public class NetworkUtils {
 		int stateCode = response.getStatusLine().getStatusCode();
 		DebugUtils.logNetworkOp(TAG, "return HttpStatus is " + stateCode);
 		if(!httpStatusOk(stateCode)) {
-			//����ᶪʧ��ݣ����Ƿ���һ���쳣
-			throw new IOException(String.valueOf(stateCode));
+			throw new StatusException(String.valueOf(stateCode), String.valueOf(stateCode));
 		}
 		return response.getEntity().getContent();
 	}
@@ -88,10 +97,42 @@ public class NetworkUtils {
 	public static InputStream openPostContectionLocked(String uri, String paramName, String paramValue, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException {
 //		String encodedUri = uri + URLEncoder.encode(path);
 		DebugUtils.logNetworkOp(TAG, "HttpPost uri=" + uri);
+		DebugUtils.logD(TAG, "HttpPost paramName=" + paramName + ", paramValue=" + paramValue);
 		HttpPost httpRequest = new HttpPost(uri);
 		/**Post ���д��ݱ��������� NameValuePair[] ����洢*/  
         List<NameValuePair> params = new ArrayList<NameValuePair>();  
         params.add(new BasicNameValuePair(paramName, paramValue));
+        httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));  
+        addSecurityKeyValuesObject(httpRequest, securityKeyValues);
+		HttpClient httpClient = /*new DefaultHttpClient();*/AndroidHttpClient.newInstance("android");
+		HttpResponse response = httpClient.execute(httpRequest);
+		int stateCode = response.getStatusLine().getStatusCode();
+		DebugUtils.logNetworkOp(TAG, "return HttpStatus is " + stateCode);
+		if(!httpStatusOk(stateCode)) {
+			throw new IOException(String.valueOf(stateCode));
+		}
+		return response.getEntity().getContent();
+	}
+	/**
+	 * 
+	 * @param uri
+	 * @param param  参数键值对
+	 * @param securityKeyValues
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public static InputStream openPostContectionLocked(String uri, HashMap<String, String> param, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException {
+//		String encodedUri = uri + URLEncoder.encode(path);
+		DebugUtils.logNetworkOp(TAG, "HttpPost uri=" + uri);
+		HttpPost httpRequest = new HttpPost(uri);
+		/**Post ���д��ݱ��������� NameValuePair[] ����洢*/  
+        List<NameValuePair> params = new ArrayList<NameValuePair>();  
+        Set<String>  keySet = param.keySet();
+        for(String key: keySet) {
+        	params.add(new BasicNameValuePair(key, param.get(key)));
+        }
+        DebugUtils.logD(TAG, "HttpPost param=" + params);
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));  
         addSecurityKeyValuesObject(httpRequest, securityKeyValues);
 		HttpClient httpClient = /*new DefaultHttpClient();*/AndroidHttpClient.newInstance("android");
@@ -130,7 +171,7 @@ public class NetworkUtils {
 			buffer = out.toByteArray();
 			out.close();
 			String result = new String(buffer, "UTF-8");
-			DebugUtils.logNetworkOp(TAG, "getContentFromInput return " + result);
+			DebugUtils.logD(TAG, "getContentFromInput return " + result);
 			return result;
 		} catch (IOException e) {
 			e.printStackTrace();

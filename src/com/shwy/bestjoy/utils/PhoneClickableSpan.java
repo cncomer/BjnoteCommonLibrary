@@ -9,7 +9,7 @@ import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
-import com.shwy.bestjoy.bjnotecommonlibrary.R;
+import com.shwy.bestjoy.R;
 
 public class PhoneClickableSpan extends ClickableSpan implements DialogInterface.OnClickListener{
 	 private String phoneNumber;
@@ -23,13 +23,13 @@ public class PhoneClickableSpan extends ClickableSpan implements DialogInterface
 	 @Override
 		public void updateDrawState(TextPaint ds) {
 		    ds.setColor(ds.linkColor);
-		    ds.setUnderlineText(false); //去掉下划线
+		    ds.setUnderlineText(false);
 		}
 		
 		@Override
 		public void onClick(View widget) {
 			if (phoneNumber != null && phoneNumber.length()==11) {
-				//手机号码，支持发短信和打电话
+				//锟街伙拷锟斤拷耄э拷址锟斤拷锟斤拷藕痛锟界话
 				showItemDialog();
 			} else {
 				call();

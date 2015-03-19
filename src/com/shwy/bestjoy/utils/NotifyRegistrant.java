@@ -13,7 +13,7 @@ public class NotifyRegistrant {
     
     private List<Handler> mRegistrant = null;
     
-    /** ½ÓÊÕµ½Í¨ÖªÊÂ¼ş£¬²ÎÊıÎªBundle */
+    /** æ¥æ”¶åˆ°é€šçŸ¥äº‹ä»¶ï¼Œå‚æ•°ä¸ºBundle */
     public static final int EVENT_NOTIFY_MESSAGE_RECEIVED = 0x3000;
   
     private NotifyRegistrant() {}
@@ -22,9 +22,9 @@ public class NotifyRegistrant {
         return INSTANCE;
     }
     /**
-     * ×¢²áHandler
-     * @param handler  ÊÂ¼ş´¦ÀíÆ÷
-     * @return ×¢²áÊÇ·ñ³É¹¦
+     * æ³¨å†ŒHandler
+     * @param handler  äº‹ä»¶å¤„ç†å™¨
+     * @return æ³¨å†Œæ˜¯å¦æˆåŠŸ
      */
      public boolean register(Handler handler){
          if(null == mRegistrant){
@@ -38,8 +38,8 @@ public class NotifyRegistrant {
      }
      
      /**
-      * È¥×¢²áHandler
-      * @param handler  ÊÂ¼ş´¦ÀíÆ÷
+      * å»æ³¨å†ŒHandler
+      * @param handler  äº‹ä»¶å¤„ç†å™¨
       * @return None
       */
      public void unRegister(Handler handler){
@@ -49,8 +49,8 @@ public class NotifyRegistrant {
      }
      
      /**
-      * ÏûÏ¢Í¨Öª
-      * @param bundle  ·â×°µÄÏûÏ¢Ìå
+      * æ¶ˆæ¯é€šçŸ¥
+      * @param bundle  å°è£…çš„æ¶ˆæ¯ä½“
       * @return None
       */
      public void notify(Bundle bundle){
@@ -63,8 +63,8 @@ public class NotifyRegistrant {
      }  
      
      /**
-      * ÏûÏ¢Í¨Öª
-      * @param what  ·â×°µÄÏûÏ¢ÌåÀàĞÍ
+      * æ¶ˆæ¯é€šçŸ¥
+      * @param what  å°è£…çš„æ¶ˆæ¯ä½“ç±»å‹
       * @return None
       */
      public void notify(int what){
@@ -77,8 +77,8 @@ public class NotifyRegistrant {
      }
      
      /**
-      * ÏûÏ¢Í¨Öª
-      * @param what  ·â×°µÄÏûÏ¢ÌåÀàĞÍ
+      * æ¶ˆæ¯é€šçŸ¥
+      * @param what  å°è£…çš„æ¶ˆæ¯ä½“ç±»å‹
       * @return None
       */
      public void notify(Handler handler, int what){
@@ -88,7 +88,7 @@ public class NotifyRegistrant {
      }
      
      /**
-      * ÏûÏ¢Í¨Öª
+      * æ¶ˆæ¯é€šçŸ¥
       * @param msg
       * @return None
       */
@@ -99,7 +99,7 @@ public class NotifyRegistrant {
      }
      
      /**
-      * ÏûÏ¢Í¨Öª
+      * æ¶ˆæ¯é€šçŸ¥
       * @param msg
       * @return None
       */
@@ -112,9 +112,9 @@ public class NotifyRegistrant {
      }
      
      /**
-      * ÅĞ¶Ï×¢²áÆ÷ÖĞÊÇ·ñÓĞÖØ¸´µÄÊÂ¼ş´¦ÀíÆ÷
-      * @param handler  ÊÂ¼ş´¦ÀíÆ÷
-      * @return trueÖØ¸´,false²»ÖØ¸´
+      * åˆ¤æ–­æ³¨å†Œå™¨ä¸­æ˜¯å¦æœ‰é‡å¤çš„äº‹ä»¶å¤„ç†å™¨
+      * @param handler  äº‹ä»¶å¤„ç†å™¨
+      * @return trueé‡å¤,falseä¸é‡å¤
       */
      private boolean isHasExisted(Handler handler){
          if(null == mRegistrant){

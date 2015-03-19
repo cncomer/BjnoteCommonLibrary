@@ -16,14 +16,14 @@
 
 package com.shwy.bestjoy.utils;
 
-import java.net.URLEncoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.graphics.Bitmap.CompressFormat;
 import android.provider.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
+
+import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The set of constants to use when sending Barcode Scanner an Intent which requests a barcode
@@ -347,7 +347,7 @@ public final class Contents {
 	  /**
 	   * 构建vcf文件下载地址www.mingdown.com/vcf/mm.vcf
 	   * @param mm
-	   * @deprecated 这个方法不安全，已被放弃使用了,并且内部实现也已经成了后面的方式，不要在使用该方法，请使用安全的下载方式{@link #buildSecurityDownloadUri()}
+	   * @deprecated 这个方法不安全，已被放弃使用了,并且内部实现也已经成了后面的方式，不要在使用该方法，请使用安全的下载方式{@link #buildSecurityDownloadUri(String mm)}
 	   * @return
 	   */
 	  public static String buildDownloadUri(String mm) {
@@ -398,7 +398,7 @@ public final class Contents {
 	  }
 	  /**
 	   * 构建特征短信查询URL
-	   * @param phoneNumber
+	   * @param mm
 	   * @return
 	   */
 	  public static String buildMingDownUnkownUriForSms(String mm) {

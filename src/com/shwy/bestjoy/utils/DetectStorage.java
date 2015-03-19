@@ -9,7 +9,7 @@ import android.os.StatFs;
 public class DetectStorage {
 	
 	/**
-	* ¼ì²éÄ³ÎÄ¼şËùÔÚ·ÖÇøÈİÁ¿
+	* æ£€æŸ¥æŸæ–‡ä»¶æ‰€åœ¨åˆ†åŒºå®¹é‡
 	* @return 
 	*/
 	public static PartitionCapacityStat checkPartitionCapacity(String filePath){
@@ -34,7 +34,7 @@ public class DetectStorage {
 	}
 
 	/**
-	* ¼ì²é·ÖÇøÈİÁ¿
+	* æ£€æŸ¥åˆ†åŒºå®¹é‡
 	* @return 
 	*/
 	public static PartitionCapacityStat checkPartition(String path){
@@ -52,9 +52,9 @@ public class DetectStorage {
 	}
 	
 	/**
-	 * ¼ì²éÄ³·ÖÇø¿ÉÓÃ¿Õ¼äÊÇ·ñ²»Ğ¡ÓÚÌá¹©µÄ·§Öµ
-	 * @param part ·ÖÇøĞÅÏ¢
-	 * @param threshold ·§Öµ
+	 * æ£€æŸ¥æŸåˆ†åŒºå¯ç”¨ç©ºé—´æ˜¯å¦ä¸å°äºæä¾›çš„é˜€å€¼
+	 * @param part åˆ†åŒºä¿¡æ¯
+	 * @param threshold é˜€å€¼
 	 * @return
 	 */
 	public static boolean enough(PartitionCapacityStat part, long threshold) {
@@ -63,15 +63,15 @@ public class DetectStorage {
 	
 	public static class PartitionCapacityStat {
 
-		/** blockµÄsize */
+		/** blockçš„size */
 		public int mBlockSize;           
-		/** blockµÄ¸öÊı */
+		/** blockçš„ä¸ªæ•° */
 		public int mTotalBlockCount;     
-		/** ×ÜÈİÁ¿ */
+		/** æ€»å®¹é‡ */
 		public long mTotalSize;           
-		/** ¿ÉÓÃblockµÄ¸öÊı */
+		/** å¯ç”¨blockçš„ä¸ªæ•° */
 		public int mAvailabelBlockCount;  
-		/** ¿ÉÓÃÈİÁ¿ */
+		/** å¯ç”¨å®¹é‡ */
 		public long mAvailableSize;
 		
 		PartitionCapacityStat(){
@@ -80,9 +80,9 @@ public class DetectStorage {
 	}
 	
 	public enum StorageStat {
-		UNMOUNTED,   //´æ´¢¿¨Î´¼ÓÔØ
-		NOENOUGH,    //Ã»ÓĞ×ã¹»µÄ´æ´¢¿Õ¼ä
-		AVAILABLE    //¿ÉÓÃ
+		UNMOUNTED,   //å­˜å‚¨å¡æœªåŠ è½½
+		NOENOUGH,    //æ²¡æœ‰è¶³å¤Ÿçš„å­˜å‚¨ç©ºé—´
+		AVAILABLE    //å¯ç”¨
 	}
 	
 	public StorageStat checkFsAvailable(long sizeThreshold) {

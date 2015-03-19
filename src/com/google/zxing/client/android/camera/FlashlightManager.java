@@ -39,7 +39,7 @@ public final class FlashlightManager {
   private static final String TAG = FlashlightManager.class.getSimpleName();
 
   /**
-   * iHardwareService=null±íÊ¾ÉÁ¹ØµÆ¿ÉÓÃ
+   * iHardwareService=nullè¡¨ç¤ºé—ªå…³ç¯å¯ç”¨
    */
   public static final Object iHardwareService;
   private static final Method setFlashEnabledMethod;

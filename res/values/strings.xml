@@ -19,5 +19,30 @@
      
      <string name="dialog_no_network_title">无法访问网络</string>
      <string name="dialog_no_network_message">请检查网络，确保手机可以正常上网</string>
+     
+     <string name="msg_app_releasenote">"更新说明:"</string>
+          <string name="msg_app_release_time">"更新时间:%s"</string>
+           <string name="msg_app_release_size">"软件大小:%s"</string>
+
+    <string name="msg_unsupport_operation">"该功能暂未开放"</string>
+    <string name="msg_gernal_network_error">"请检查您的网络是否通畅"</string>
+    <string name="msg_network_error_statue">"抱歉，出错了，错误代码[%s]"</string>
+    <string name="msg_sd_unavailable">SD无法访问...</string>
+    <string name="msg_camera_framework_bug">出错咯，机器人相机出现问题。您可能需要重新启动设备。</string>
+    <string name="msg_progressdialog_wait">操作处理中，请稍后....</string>
+    <string name="button_close">关闭</string>
+
+    <string name="menu_preview">预览</string>
+    <string name="menu_capture">拍摄</string>
+
+    <string name="menu_picture_gallery">上传手机中的照片</string>
+    <string name="menu_picture_camera">拍照上传</string>
+
+
+    <string name="msg_op_canceled">操作取消</string>
+    <string name="msg_op_successed">操作成功</string>
+    <string name="msg_op_failed">操作失败</string>
+
+    <string name="app_update_error_md5">下载的安装包完整性校验失败，请重新下载</string>
 
 </resources>

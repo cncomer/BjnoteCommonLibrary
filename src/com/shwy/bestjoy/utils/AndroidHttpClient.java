@@ -16,8 +16,6 @@
 
 package com.shwy.bestjoy.utils;
 
-import java.io.IOException;
-
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -41,6 +39,8 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.BasicHttpProcessor;
 import org.apache.http.protocol.HttpContext;
+
+import java.io.IOException;
 
 /**
  * <p>Subclass of the Apache {@link DefaultHttpClient} that is configured with
@@ -87,7 +87,7 @@ public final class AndroidHttpClient implements HttpClient {
     HttpConnectionParams.setStaleCheckingEnabled(params, false);
 
     // Default connection and socket timeout of 20 seconds.  Tweak to taste.
-    HttpConnectionParams.setConnectionTimeout(params, 20 * 1000);
+    HttpConnectionParams.setConnectionTimeout(params, 30 * 1000);
     HttpConnectionParams.setSoTimeout(params, 30 * 1000);
     HttpConnectionParams.setSocketBufferSize(params, 8192);
 

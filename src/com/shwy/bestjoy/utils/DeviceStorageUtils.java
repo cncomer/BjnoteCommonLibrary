@@ -1,30 +1,24 @@
 package com.shwy.bestjoy.utils;
 
-import java.io.File;
-
 import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
+
+import java.io.File;
 
 public class DeviceStorageUtils {
 	private static final String TAG = "DeviceStorageUtils";
 	private static DeviceStorageUtils INSTANCE = new DeviceStorageUtils();
 	private Context mContext;
 	private File mRootDir;
-	/**至少有10M*/
 	public static final long MIN_THRESHOLD = 1024 * 1024 * 10;
 	
 	public static class PartitionCapacityStat {
-		/**block的大小*/
 		public int mBlockSize;
-		/**block的个数*/
 		public int mTotalBlockCount;
-		/**总容量*/
 		public long mTotalSize;
-		/**可用容量*/
 		public long mAvailableSize;
-		/**可用的block个数*/
 		public int mAvailableBlockCount;
 	}
 

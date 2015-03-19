@@ -1,10 +1,10 @@
 package com.shwy.bestjoy.utils;
 
+import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.text.TextUtils;
 
 public class ServiceResultObject {
 
@@ -13,9 +13,13 @@ public class ServiceResultObject {
 	public JSONObject mJsonData;
 	public String mStrData;
 	public JSONArray mJsonArrayData;
+    public String mRawString = "";
+
+    public Object mObject;
 
 	public static ServiceResultObject parse(String content) {
 		ServiceResultObject resultObject = new ServiceResultObject();
+        resultObject.mRawString = content;
 		if (TextUtils.isEmpty(content)) {
 			return resultObject;
 		}
@@ -39,6 +43,7 @@ public class ServiceResultObject {
 
 	public static ServiceResultObject parseArray(String content) {
 		ServiceResultObject resultObject = new ServiceResultObject();
+        resultObject.mRawString = content;
 		if (TextUtils.isEmpty(content)) {
 			return resultObject;
 		}

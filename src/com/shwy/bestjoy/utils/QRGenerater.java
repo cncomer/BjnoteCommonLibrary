@@ -1,8 +1,5 @@
 package com.shwy.bestjoy.utils;
 
-import java.util.Hashtable;
-
-import android.app.PendingIntent.CanceledException;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +9,16 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import java.util.Hashtable;
+
+/**
+ * QRcode使用里德-所罗门码来进行错误修正。对于我们来说，里德-所罗门编码有两个非常重要的特性。
+ * 第一，它是一种显式系统码，也就是说，你可以在最终的编码中直接看到原有的信息。就好比我们对”hello world”进行编码，最终看到的是”hello world”以及其后面跟随的几个容错码。
+ * 第二点，里德-所罗门编码是可以被”异或”的，将两个不同里德-所罗门编码得到的结果异或运算后会得到一个新的里德-所罗门码，并且这个新码的原码即是原来两个原码的异或。
+ * 如果你想知道为什么这两个特性会成立，请看Finite Field Arithmetic and Reed-Solomon Coding.
+ */
 public class QRGenerater extends Thread {
 	private static final String TAG = "QRGenerater";
 	private static String[] contentFormats = new String[]{
@@ -28,7 +34,6 @@ public class QRGenerater extends Thread {
 	public static final int MECARD_CONTENT_FORMAT = 2;
 	public static final int GEO_CONTENT_FORMAT = 3;
 	public static final int WIFI_CONTENT_FORMAT = 4;
-	/**Ϊ�˿���չ�ԣ�������ӱ������ͣ���Ҫ�޸�MIN��MAX��ֵ����ʾ����contentFormats������ȡֵ��Χ*/
 	private static final int MIN_VALUE_FOR_CONTENT_FORMAT = 0;
 	private static final int MAX_VALUE_FOR_CONTENT_FORMAT = 4;
 	
@@ -52,7 +57,8 @@ public class QRGenerater extends Thread {
 	
 	private int mHeight=300;
 	private int mWidth=300;
-	
+    private static final int PADDING_SIZE_MIN = 20; // 最小留白长度, 单位: px
+    private int mWhitePadding=PADDING_SIZE_MIN;
 	public static interface QRGeneratorFinishListener {
 		void onQRGeneratorFinish(Bitmap bitmap);
 	}
@@ -73,6 +79,13 @@ public class QRGenerater extends Thread {
 		mHeight = height;
 		mWidth = width;
 	}
+
+    public void setDimens(int height, int width, int whitePadding) {
+        DebugUtils.logD(TAG, "setDimens height " + height + " width "  + width + ", whitePadding " + whitePadding);
+        mHeight = height;
+        mWidth = width;
+        mWhitePadding = whitePadding;
+    }
 	
 	public void setCancelStatus(boolean isCancel) {
 		this.isCancel = isCancel;
@@ -96,7 +109,9 @@ public class QRGenerater extends Thread {
 		try {
 			Hashtable<EncodeHintType,Object> hints = new Hashtable<EncodeHintType,Object>(2);
 		      hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-			byteMatrix = qrCodeWriter.encode(
+            // 设置QR二维码的纠错级别——这里选择最高H级别
+            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+            byteMatrix = qrCodeWriter.encode(
 					        mQrContent,
 							BarcodeFormat.QR_CODE, 
 							mWidth,
@@ -105,24 +120,52 @@ public class QRGenerater extends Thread {
 			int width = byteMatrix.getWidth();
 			int height = byteMatrix.getHeight();
 			int[] pixels = new int[width * height];
-		    // All are 0, or black, by default
-		    for (int y = 0; y < height; y++) {
-		      int offset = y * width;
-		      for (int x = 0; x < width; x++) {
-		    	if(isCancel)throw new CanceledException();
-		        pixels[offset + x] = byteMatrix.get(x, y) ? BLACK : WHITE;
-		      }
-		    }
+            boolean isFirstBlackPoint = false;
+            int startX = 0;
+            int startY = 0;
 
-		    mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-		    mBitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-		    
-		    if (DebugUtils.DEBUG_QRGEN) Log.v(TAG, "end thread");
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (byteMatrix.get(x, y)) {
+                        if (isFirstBlackPoint == false)
+                        {
+                            isFirstBlackPoint = true;
+                            startX = x;
+                            startY = y;
+                            Log.d("createQRCode", "x y = " + x + " " + y);
+                        }
+                        pixels[y * width + x] = BLACK;
+                    }
+                }
+            }
+
+//		    // All are 0, or black, by default
+//		    for (int y = 0; y < height; y++) {
+//		      int offset = y * width;
+//		      for (int x = 0; x < width; x++) {
+//		    	if(isCancel)throw new CanceledException();
+//		        pixels[offset + x] = byteMatrix.get(x, y) ? BLACK : WHITE;
+//		      }
+//		    }
+//
+//		    mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+//		    mBitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+            mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            mBitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+            // 剪切中间的二维码区域，减少padding区域
+            if (startX > mWhitePadding) {
+                int x1 = startX - mWhitePadding;
+                int y1 = startY - mWhitePadding;
+                if (x1 > 0 && y1 > 0) {
+                    int w1 = width - x1 * 2;
+                    int h1 = height - y1 * 2;
+                    mBitmap = Bitmap.createBitmap(mBitmap, x1, y1, w1, h1);
+                }
+            }
+
+            if (DebugUtils.DEBUG_QRGEN) Log.v(TAG, "end thread");
 		} catch (WriterException e) {
 			e.printStackTrace(); 
-			mBitmap = null;
-		} catch (CanceledException e) {
-			e.printStackTrace();
 			mBitmap = null;
 		}
 		if (mQRGeneratorFinishListener != null) mQRGeneratorFinishListener.onQRGeneratorFinish(mBitmap);

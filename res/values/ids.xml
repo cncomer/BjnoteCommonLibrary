@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="cncom__home" />
+    <item type="id" name="cncom__action_menu" />
+    <item type="id" name="cncom__title" />
+    <item type="id" name="cncom__subtitle" />
+    
+    <item type="id" name="cncom__menu_title" />
+    <item type="id" name="cncom__menu_icon" />
+    
+    <item type="id" name="cncom__actionmenu_imageButton" />
+    <item type="id" name="cncom__actionmenu_textButton" />
+    
+</resources>

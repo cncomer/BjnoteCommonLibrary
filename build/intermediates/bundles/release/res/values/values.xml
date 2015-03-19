@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/Users/bestjoy/Documents/bestjoyApp/BestjoyProject/libraries/BjnoteCommonLibrary/res/values/array.xml -->
+    <eat-comment/>
+    <string-array name="monthOfYear">
+		<item>01</item>
+		<item>02</item>
+		<item>03</item>
+		<item>04</item>
+		<item>05</item>
+		<item>06</item>
+		<item>07</item>
+		<item>08</item>
+		<item>09</item>
+		<item>10</item>
+		<item>11</item>
+		<item>12</item>
+	</string-array>
+    <string-array name="phoneClickableSpan">
+		<item>@string/call_text</item>
+		<item>@string/sms_text</item>
+	</string-array>
+    <string-array name="picture_op_items">
+        <item>@string/menu_picture_gallery</item>
+        <item>@string/menu_picture_camera</item>
+    </string-array>
+    <!-- From: file:/Users/bestjoy/Documents/bestjoyApp/BestjoyProject/libraries/BjnoteCommonLibrary/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="blk">#ff000000</color>
+    <color name="wt">#ffffffff</color>
+    <!-- From: file:/Users/bestjoy/Documents/bestjoyApp/BestjoyProject/libraries/BjnoteCommonLibrary/res/values/dimens.xml -->
+    <eat-comment/>
+    <dimen name="action_menu_minwidth">48dip</dimen>
+    <!-- From: file:/Users/bestjoy/Documents/bestjoyApp/BestjoyProject/libraries/BjnoteCommonLibrary/res/values/configs.xml -->
+    <eat-comment/>
+    <dimen name="config_prefDialogWidth">320dp</dimen>
+    <!-- From: file:/Users/bestjoy/Documents/bestjoyApp/BestjoyProject/libraries/BjnoteCommonLibrary/res/values/dimens.xml -->
+    <eat-comment/>
+    <dimen name="line_1px">1dip</dimen>
+    <!-- From: file:/Users/bestjoy/Documents/bestjoyApp/BestjoyProject/libraries/BjnoteCommonLibrary/res/values/ids.xml -->
+    <eat-comment/>
+    <item name="cncom__action_menu" type="id"/>
+    <item name="cncom__actionmenu_imageButton" type="id"/>
+    <item name="cncom__actionmenu_textButton" type="id"/>
+    <item name="cncom__home" type="id"/>
+    <item name="cncom__menu_icon" type="id"/>
+    <item name="cncom__menu_title" type="id"/>
+    <item name="cncom__subtitle" type="id"/>
+    <item name="cncom__title" type="id"/>
+    <!-- From: file:/Users/bestjoy/Documents/bestjoyApp/BestjoyProject/libraries/BjnoteCommonLibrary/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="app_name">BjnoteCommonLibrary</string>
+    <string name="app_update_error_md5">下载的安装包完整性校验失败，请重新下载</string>
+    <string name="button_close">关闭</string>
+    <string name="call_text">打电话</string>
+    <string name="dialog_no_network_message">请检查网络，确保手机可以正常上网</string>
+    <string name="dialog_no_network_title">无法访问网络</string>
+    <string name="dialog_use_mobile_checkbox">不再提醒</string>
+    <string name="dialog_use_mobile_message">当前正在使用移动数据网络，会产生数据流量费用，是否继续？</string>
+    <string name="dialog_use_mobile_title">移动网络流量提示</string>
+    <string name="friday">星期五</string>
+    <string name="menu_capture">拍摄</string>
+    <string name="menu_picture_camera">拍照上传</string>
+    <string name="menu_picture_gallery">上传手机中的照片</string>
+    <string name="menu_preview">预览</string>
+    <string name="monday">星期一</string>
+    <string name="msg_app_release_size">"软件大小:%s"</string>
+    <string name="msg_app_release_time">"更新时间:%s"</string>
+    <string name="msg_app_releasenote">"更新说明:"</string>
+    <string name="msg_camera_framework_bug">出错咯，机器人相机出现问题。您可能需要重新启动设备。</string>
+    <string name="msg_gernal_network_error">"请检查您的网络是否通畅"</string>
+    <string name="msg_intent_failed">抱歉，无法打开所需软件。 条码内容可能无效。</string>
+    <string name="msg_network_error_statue">"抱歉，出错了，错误代码[%s]"</string>
+    <string name="msg_op_canceled">操作取消</string>
+    <string name="msg_op_failed">操作失败</string>
+    <string name="msg_op_successed">操作成功</string>
+    <string name="msg_progressdialog_wait">操作处理中，请稍后....</string>
+    <string name="msg_sd_unavailable">SD无法访问...</string>
+    <string name="msg_unsupport_operation">"该功能暂未开放"</string>
+    <string name="saturday">星期六</string>
+    <string name="sms_text">发短信</string>
+    <string name="sunday">星期天</string>
+    <string name="thursday">星期四</string>
+    <string name="tuesday">星期二</string>
+    <string name="wenesday">星期三</string>
+</resources>

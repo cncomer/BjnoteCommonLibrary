@@ -1,11 +1,13 @@
 package com.shwy.bestjoy.utils;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 public class DialogUtils {
@@ -36,13 +38,31 @@ public class DialogUtils {
 
 		@Override
         public void onClick(DialogInterface dialog, int which) {
-	        
+	        switch(which) {
+	        case DialogInterface.BUTTON_POSITIVE:
+	        	onPositiveButtonClick(dialog);
+	        	break;
+	        case DialogInterface.BUTTON_NEGATIVE:
+	        	onNegativeButtonClick(dialog);
+	        	break;
+	        }
         }
+		
+		public void onPositiveButtonClick(DialogInterface dialog) {}
+		public void onNegativeButtonClick(DialogInterface dialog) {}
 		
 	}
 	
 	public static DialogCallback getDialogCallbackSimpleImpl() {
 		return new DialogCallbackSimpleImpl();
+	}
+	public static void createSimpleConfirmAlertDialog(Context context, String message) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(context)
+		.setMessage(message);
+		builder.setPositiveButton(android.R.string.ok, null);
+		Dialog dialog = builder.create();
+		dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		dialog.show();
 	}
 	/**
 	 * 创建一个简单的确认对话框
@@ -60,7 +80,9 @@ public class DialogUtils {
 			builder.setNegativeButton(negativeButton, callback);
 		}
 		builder.setOnCancelListener(callback);
-		builder.show();
+		Dialog dialog = builder.create();
+		dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		dialog.show();
 	}
 	
 	public static void createSimpleConfirmAlertDialog(Context context, int messageResId, int positiveButton, int negativeButton, DialogCallback callback) {
@@ -84,6 +106,7 @@ public class DialogUtils {
 			dialogBuilder.setNegativeButton(negativeButton, callback);
 		}
 		final AlertDialog dialog = dialogBuilder.create();
+		dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
 		inputEdit.addTextChangedListener(new TextWatcher() {
 
 			@Override

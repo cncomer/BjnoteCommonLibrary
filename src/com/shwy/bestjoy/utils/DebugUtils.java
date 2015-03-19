@@ -22,7 +22,7 @@ public class DebugUtils {
 	private static final boolean DEBUG_PROVIDER = true;
 	
 	private static final boolean DEBUG_CONTACT_DOWNLOAD = true;
-	/**ÊÇ·ñ´òÓ¡É¾³ýÎÄ¼þµÄÐÅÏ¢*/
+	/**ï¿½Ç·ï¿½ï¿½Ó¡É¾ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/
 	public static final boolean DEBUG_DELETE_FILES = true;
 	
 	public static final void logD(String TAG, String MSG) {
@@ -32,7 +32,7 @@ public class DebugUtils {
 	}
 	
 	public static final void logNetworkOp(String TAG, String MSG) {
-		if (DEBUG) {
+		if (false) {
 			Log.d(TAG, MSG);
 		}
 	}
@@ -46,6 +46,9 @@ public class DebugUtils {
 	public static final void logE(String TAG, String MSG) {
 	    Log.e(TAG, MSG);
 	}
+    public static final void logW(String TAG, String MSG) {
+        Log.w(TAG, MSG);
+    }
 	
 	public static final void logVcardParse(String TAG, String MSG) {
 		if (DEBUG_VCARD_PARSE) {

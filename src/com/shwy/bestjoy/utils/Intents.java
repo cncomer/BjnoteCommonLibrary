@@ -29,7 +29,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.telephony.SmsMessage;
 
-import com.shwy.bestjoy.bjnotecommonlibrary.R;
+import com.shwy.bestjoy.R;
 
 /**
  * This class provides the constants to use when sending an Intent to Barcode Scanner.
@@ -38,65 +38,65 @@ import com.shwy.bestjoy.bjnotecommonlibrary.R;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class Intents {
-	public static final String EXTRA_NAME="name";
-	public static final String EXTRA_TEL="tel";
-	public static final String EXTRA_BID="bid";
-	public static final String EXTRA_EMAIL="email";
-	public static final String EXTRA_ADDRESS="address";
-	public static final String EXTRA_ORG="org";
-	public static final String EXTRA_CLOUDURL="cloudurl";
-	public static final String EXTRA_TITLE="title";
-	public static final String EXTRA_NOTE="note";
-	public static final String EXTRA_TYPE="type";
-	public static final String EXTRA_PASSWORD="password";
-	public static final String EXTRA_TOPIC_ID="topic_id";
-	public static final String EXTRA_MD="md";
-	public static final String EXTRA_QMD="qmd";
-	public static final String EXTRA_ID="_id";
-	public static final String EXTRA_SHOW_DOWNLOAD="show_download";
+	public static final String EXTRA_NAME="extra_name";
+	public static final String EXTRA_TEL="extra_tel";
+	public static final String EXTRA_BID="extra_bid";
+	public static final String EXTRA_EMAIL="extra_email";
+	public static final String EXTRA_ADDRESS="extra_address";
+	public static final String EXTRA_ORG="extra_org";
+	public static final String EXTRA_CLOUDURL="extra_cloudurl";
+	public static final String EXTRA_TITLE="extra_title";
+	public static final String EXTRA_NOTE="extra_note";
+	public static final String EXTRA_TYPE="extra_type";
+	public static final String EXTRA_PASSWORD="extra_password";
+	public static final String EXTRA_TOPIC_ID="extra_topic_id";
+	public static final String EXTRA_MD="extra_md";
+	public static final String EXTRA_QMD="extra_qmd";
+	public static final String EXTRA_ID="extra_id";
+	public static final String EXTRA_SHOW_DOWNLOAD="extra_show_download";
 	
-	public static final String EXTRA_POSITION = "position";
-	public static final String EXTRA_PHOTOID = "photoid";
-	public static final String EXTRA_UPDATE = "update";
+	public static final String EXTRA_POSITION = "extra_position";
+	public static final String EXTRA_PHOTOID = "extra_photoid";
+	public static final String EXTRA_UPDATE = "extra_update";
 	
-	public static final String EXTRA_URI = "uri";
+	public static final String EXTRA_URI = "extra_uri";
 	
 	//��Ʒ������� begin
 	/**��Ʒ21λ����*/
-	public static final String EXTRA_PD="PD";
+	public static final String EXTRA_PD="extra_PD";
 	/**��Ʒ������������*/
-	public static final String EXTRA_SID="SID";
+	public static final String EXTRA_SID="extra_SID";
 	/**�ͺ�����*/
-	public static final String EXTRA_KY="KY";
+	public static final String EXTRA_KY="extra_KY";
 	/**��Ʒ���*/
-	public static final String EXTRA_SN="SN";
+	public static final String EXTRA_SN="extra_SN";
 	/**��Ʒ�ͺ�*/
-	public static final String EXTRA_MODEL="NO";
+	public static final String EXTRA_MODEL="extra_NO";
 	/**��ƷƷ��*/
-	public static final String EXTRA_BRAND="BRAND";
+	public static final String EXTRA_BRAND="extra_BRAND";
 	/**��Ʒ�Ƿ��Ѿ��Ǽ�*/
-	public static final String EXTRA_HAS_REGISTERED="hasRegistered";
-	public static final String EXTRA_DATE="date";
+	public static final String EXTRA_HAS_REGISTERED="extra_hasRegistered";
+	public static final String EXTRA_DATE="extra_date";
 	/**���ط�Ʊ�ļ�·��*/
-	public static final String EXTRA_BILL="bill";
+	public static final String EXTRA_BILL="extra_bill";
 	/**������ƷԤ��ͼ�ļ�·��*/
-	public static final String EXTRA_AVATOR="avator";
+	public static final String EXTRA_AVATOR="extra_avator";
 	/**����ԱMD*/
-	public static final String EXTRA_SMD="smd";
+	public static final String EXTRA_SMD="extra_smd";
 	/**����ԱMM*/
-	public static final String EXTRA_SMM="smm";
-	public static final String EXTRA_SMMV="smm";
-	public static final String EXTRA_MMV="avator";
+	public static final String EXTRA_SMM="extra_smm";
+	public static final String EXTRA_SMMV="extra_smm";
+	public static final String EXTRA_MMV="extra_avator";
 	/**��Ʒ������*/
-	public static final String EXTRA_WY="wy";
-	public static final String EXTRA_GOODS_TEL="goods_tel";
-	public static final String EXTRA_GOODS_NAME="goods_name";
-	public static final String EXTRA_GOODS_ADDRESS="goods_address";
-	public static final String EXTRA_SCAN_TASK="scan_task";
+	public static final String EXTRA_WY="extra_wy";
+	public static final String EXTRA_GOODS_TEL="extra_goods_tel";
+	public static final String EXTRA_GOODS_NAME="extra_goods_name";
+	public static final String EXTRA_GOODS_ADDRESS="extra_goods_address";
+	public static final String EXTRA_SCAN_TASK="extra_scan_task";
 	//��Ʒ������� end
-	public static final String EXTRA_PROGRESS="progress";
-	public static final String EXTRA_RESULT="result";
-	public static final String EXTRA_PROGRESS_MAX="progress_max";
+	public static final String EXTRA_PROGRESS="extra_progress";
+	public static final String EXTRA_RESULT="extra_result";
+	public static final String EXTRA_PROGRESS_MAX="extra_progress_max";
 	
 	public static final class MonitorService {
 		public static final String ACTION_START_MONITOR = "com.shwy.bestjoy.bjnote.client.startmonitor";
@@ -324,6 +324,14 @@ public final class Intents {
     		}
     	}
     }
+    
+    public static final void share(Context context, String title, String content) {
+    	Intent intent = new Intent();
+    	intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/*");                   
+        intent.putExtra(Intent.EXTRA_TEXT, content);
+        context.startActivity(Intent.createChooser(intent, title));
+	}
     
     public static final void install(Context context, File file) {
     	Intent i = new Intent(); 

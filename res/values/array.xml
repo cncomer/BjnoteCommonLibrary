@@ -19,4 +19,12 @@
 		<item>@string/call_text</item>
 		<item>@string/sms_text</item>
 	</string-array>
+
+
+
+    <string-array name="picture_op_items">
+        <item>@string/menu_picture_gallery</item>
+        <item>@string/menu_picture_camera</item>
+    </string-array>
+
 </resources>

@@ -1,19 +1,15 @@
 package com.shwy.bestjoy.utils;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.view.LayoutInflater;
-import android.view.View;
 
-import com.shwy.bestjoy.bjnotecommonlibrary.R;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ComConnectivityManager {
 	private static final String TAG = "ConnectivityManager";
@@ -23,7 +19,7 @@ public class ComConnectivityManager {
 	private ConnectivityManager mCm;
 	private List<ConnCallback> mConnCallbackList = new LinkedList<ConnCallback>();
 	public static interface ConnCallback {
-		//ÍøÂç¸Ä±äÁË
+		//ç½‘ç»œæ”¹å˜äº†
 		public void onConnChanged(ComConnectivityManager cm);
 	}
 	
@@ -105,27 +101,4 @@ public class ComConnectivityManager {
     		mContext.unregisterReceiver(mBroadcastReceiver);
     	}
 	}
-    /**
-     * ´´½¨Ê¹ÓÃÒÆ¶¯ÍøÂçÌáÊ¾¶Ô»°¿ò¹¹½¨Æ÷
-     * @return
-     */
-    public AlertDialogWrapper onCreateMobileConfirmDialog(Context context) {
-    	View view = LayoutInflater.from(context).inflate(R.layout.dialog_use_mobile_confirm, null);
-    	AlertDialogWrapper buildWrapper = new AlertDialogWrapper(context);
-    	buildWrapper.mBuilder.setTitle(R.string.dialog_use_mobile_title);
-    	buildWrapper.setView(view);
-    	return buildWrapper;
-    }
-    
-    /**
-     * ´´½¨Ê¹ÓÃÒÆ¶¯ÍøÂçÌáÊ¾¶Ô»°¿ò¹¹½¨Æ÷
-     * @return
-     */
-    public AlertDialog onCreateNoNetworkDialog(Context context) {
-    	return new AlertDialog.Builder(context)
-    	.setTitle(R.string.dialog_no_network_title)
-    	.setMessage(R.string.dialog_no_network_message)
-    	.setPositiveButton(android.R.string.ok, null)
-    	.create();
-    }
 }

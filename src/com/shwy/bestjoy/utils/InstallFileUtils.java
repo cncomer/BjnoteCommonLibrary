@@ -10,7 +10,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.shwy.bestjoy.utils.NetworkUtils;
-
+/**
+ * @deprecated 使用FileUtils类
+ * @author bestjoy
+ *
+ */
 public class InstallFileUtils {
 	private static final String TAG = "InstallFileUtils";
 

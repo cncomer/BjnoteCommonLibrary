@@ -17,7 +17,6 @@ public class AbsListViewOnScrollListener implements OnScrollListener {
 		
 	}
 	
-	/**当触发了刷新动作的时候给子类的回调，实现此方法来刷新数据*/
 	public void onRefresh() {
 		
 	}

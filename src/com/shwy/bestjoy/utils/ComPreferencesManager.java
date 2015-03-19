@@ -10,6 +10,11 @@ public class ComPreferencesManager {
 	private Context Context;
 	public SharedPreferences mFirstPreferManager;
 	public SharedPreferences mPreferManager;
+	
+	public static final String KEY_LATEST_VERSION = "preferences_latest_version";
+	public static final String KEY_LATEST_VERSION_CODE_NAME = "preferences_latest_version_code_name";
+	public static final String KEY_LATEST_VERSION_INSTALL = "preferences_latest_version_install";
+	public static final String KEY_LATEST_VERSION_LEVEL = "preferences_latest_version_level";
 
 	private ComPreferencesManager() {}
 	
