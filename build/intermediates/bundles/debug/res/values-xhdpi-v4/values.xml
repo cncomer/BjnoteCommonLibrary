@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- From: file:/Users/bestjoy/Documents/bestjoyApp/BestjoyProject/libraries/BjnoteCommonLibrary/res/values-xhdpi/dimens.xml -->
-    <eat-comment/>
-    <dimen name="action_menu_minwidth">48dip</dimen>
-    <dimen name="line_1px">0.5dip</dimen>
-</resources>

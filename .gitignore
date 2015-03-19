@@ -3,4 +3,5 @@ bin/
 gen/
 .DS_Store
 project.properties
-
+build
+doc
