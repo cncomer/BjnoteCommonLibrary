@@ -109,7 +109,7 @@ public class NetworkUtils {
 		int stateCode = response.getStatusLine().getStatusCode();
 		DebugUtils.logNetworkOp(TAG, "return HttpStatus is " + stateCode);
 		if(!httpStatusOk(stateCode)) {
-			throw new IOException(String.valueOf(stateCode));
+			throw new StatusException(String.valueOf(stateCode), String.valueOf(stateCode));
 		}
 		return response.getEntity().getContent();
 	}
@@ -140,7 +140,7 @@ public class NetworkUtils {
 		int stateCode = response.getStatusLine().getStatusCode();
 		DebugUtils.logNetworkOp(TAG, "return HttpStatus is " + stateCode);
 		if(!httpStatusOk(stateCode)) {
-			throw new IOException(String.valueOf(stateCode));
+			throw new StatusException(String.valueOf(stateCode), String.valueOf(stateCode));
 		}
 		return response.getEntity().getContent();
 	}

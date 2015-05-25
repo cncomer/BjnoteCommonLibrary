@@ -16,8 +16,6 @@
 
 package com.google.zxing.client.android.camera;
 
-import java.util.regex.Pattern;
-
 import android.content.Context;
 import android.graphics.Point;
 import android.hardware.Camera;
@@ -25,6 +23,8 @@ import android.os.Build;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+
+import java.util.regex.Pattern;
 
 final class CameraConfigurationManager {
 
@@ -43,6 +43,10 @@ final class CameraConfigurationManager {
 
   CameraConfigurationManager(Context context) {
     this.context = context;
+    WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    Display display = manager.getDefaultDisplay();
+    screenResolution = new Point(display.getWidth(), display.getHeight());
+    Log.d(TAG, "Screen resolution: " + screenResolution);
   }
 
   /**
@@ -53,10 +57,7 @@ final class CameraConfigurationManager {
     previewFormat = parameters.getPreviewFormat();
     previewFormatString = parameters.get("preview-format");
     Log.d(TAG, "Default preview format: " + previewFormat + '/' + previewFormatString);
-    WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-    Display display = manager.getDefaultDisplay();
-    screenResolution = new Point(display.getWidth(), display.getHeight());
-    Log.d(TAG, "Screen resolution: " + screenResolution);
+
     cameraResolution = getCameraResolution(parameters, screenResolution);
     Log.d(TAG, "Camera resolution: " + screenResolution);
   }

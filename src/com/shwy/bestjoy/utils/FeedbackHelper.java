@@ -1,15 +1,15 @@
 package com.shwy.bestjoy.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
+import android.content.Context;
+import android.os.AsyncTask;
+
+import com.shwy.bestjoy.ComApplication;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
-import android.content.Context;
-import android.os.AsyncTask;
-
-import com.shwy.bestjoy.utils.SecurityUtils.SecurityKeyValuesObject;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class FeedbackHelper {
 	private Context mContext;
@@ -47,16 +47,8 @@ public class FeedbackHelper {
 			ServiceResultObject serviceResultObject = new ServiceResultObject();
 			try {
 				serviceResultObject = _abstractFeedbackObject.parse(_abstractFeedbackObject.openConnection());
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-				serviceResultObject.mStatusMessage = e.getMessage();
-			} catch (IOException e) {
-				e.printStackTrace();
-				serviceResultObject.mStatusMessage = e.getMessage();
-			} catch(JSONException e) {
-				serviceResultObject.mStatusMessage = e.getMessage();
 			} catch(Exception e) {
-				serviceResultObject.mStatusMessage = e.getMessage();
+				serviceResultObject.mStatusMessage = ComApplication.getInstance().getGeneralErrorMessage(e);
 			} finally {
 				NetworkUtils.closeInputStream(is);
 			}
@@ -94,7 +86,9 @@ public class FeedbackHelper {
         public ServiceResultObject parse(InputStream is) {
         	return ServiceResultObject.parse(NetworkUtils.getContentFromInput(is));
         }
-		
+		public Object parseGernal(InputStream is) {
+			return null;
+		}
 	}
 	
 }

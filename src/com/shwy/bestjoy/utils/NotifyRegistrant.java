@@ -1,11 +1,10 @@
 package com.shwy.bestjoy.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotifyRegistrant {
 
@@ -50,19 +49,19 @@ public class NotifyRegistrant {
      
      /**
       * 消息通知
-      * @param bundle  封装的消息体
+      * @param object  封装的消息体
       * @return None
       */
-     public void notify(Bundle bundle){
+     public void notify(Object object){
          if(null == mRegistrant){
              return;
          }
          for(Handler h : mRegistrant){
-            h.sendMessage(h.obtainMessage(EVENT_NOTIFY_MESSAGE_RECEIVED, bundle));
+            h.sendMessage(h.obtainMessage(EVENT_NOTIFY_MESSAGE_RECEIVED, object));
          }
-     }  
-     
-     /**
+     }
+
+    /**
       * 消息通知
       * @param what  封装的消息体类型
       * @return None

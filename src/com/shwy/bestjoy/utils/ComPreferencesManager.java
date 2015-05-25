@@ -41,6 +41,10 @@ public class ComPreferencesManager {
 	public boolean setFirstLaunch(String key, boolean defaultValues) {
 		return mFirstPreferManager.edit().putBoolean(key, defaultValues).commit();
 	}
+
+	public boolean removeFirstLaunch(String key) {
+		return mFirstPreferManager.edit().remove(key).commit();
+	}
 	/**
 	 * 该操作会清空所有已设置的第一次载入状态
 	 */

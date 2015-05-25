@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -315,6 +316,9 @@ public final class Intents {
     public static final void launchIntent(Context context, Intent intent) {
     	if (intent != null) {
     		try {
+				if (!(context instanceof Activity)) {
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				}
     			context.startActivity(intent);
     		} catch (ActivityNotFoundException e) {
     			AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -332,13 +336,19 @@ public final class Intents {
         intent.putExtra(Intent.EXTRA_TEXT, content);
         context.startActivity(Intent.createChooser(intent, title));
 	}
+
+	public static final void sendSms(Context context, String targetPhone, String content) {
+		Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + targetPhone));
+		intent.putExtra("sms_body", content);
+		context.startActivity(intent);
+	}
     
     public static final void install(Context context, File file) {
     	Intent i = new Intent(); 
         i.setAction(Intent.ACTION_VIEW);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.setDataAndType(Uri.fromFile(file),
-                "application/vnd.android.package-archive");    
+				"application/vnd.android.package-archive");
         context.startActivity(i);
     }
     /**
@@ -409,19 +419,34 @@ public final class Intents {
      * @param location lat<纬度>,lng<经度> 39.916979519873,116.41004950566&title=我的位置&content=百度奎科大厦&src=appName
      */
     public static void locationBaiduMap(Context context, String location) {
-    	Intent intent = null;
-    	if (isAppInstalled(context, "com.baidu.BaiduMap")) {
-    		try {
+		Intent intent = null;
+		if (isAppInstalled(context, "com.baidu.BaiduMap")) {
+			try {
 				intent = Intent.parseUri("intent://map/marker?location=" + location + "#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end", Intent.URI_INTENT_SCHEME);
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
-			} 
-    	} else {
-    		intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.map.baidu.com/marker?location=" + location + "&output=html" + "&coord_type=bd09ll"));
-    	}
-    	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-    	context.startActivity(intent);
-    }
+			}
+		} else {
+			intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.map.baidu.com/marker?location=" + location + "&output=html" + "&coord_type=bd09ll"));
+		}
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+		context.startActivity(intent);
+	}
+
+	public static void locationBaiduMapForAdressName(Context context, String addressName) {
+		Intent intent = null;
+		if (isAppInstalled(context, "com.baidu.BaiduMap")) {
+			try {
+				intent = Intent.parseUri("intent://map/geocoder?address=" + addressName + "#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end", Intent.URI_INTENT_SCHEME);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		} else {
+			intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.map.baidu.com/geocoder?address=" + addressName+"&output=html"));
+		}
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+		context.startActivity(intent);
+	}
     
     public static boolean isAppInstalled(Context context, String pkgName) {
         PackageManager pm = context.getPackageManager();

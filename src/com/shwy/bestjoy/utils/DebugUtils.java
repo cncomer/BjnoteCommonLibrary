@@ -2,6 +2,9 @@ package com.shwy.bestjoy.utils;
 
 import android.util.Log;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+
 public class DebugUtils {
 
 	public static final boolean DEBUG_LIFE = false;
@@ -27,68 +30,72 @@ public class DebugUtils {
 	
 	public static final void logD(String TAG, String MSG) {
 		if (DEBUG) {
-			Log.d(TAG, MSG);
+			Log.d(TAG, ""+MSG);
 		}
 	}
 	
 	public static final void logNetworkOp(String TAG, String MSG) {
 		if (false) {
-			Log.d(TAG, MSG);
+			Log.d(TAG, ""+MSG);
 		}
 	}
 	
 	public static final void logLife(String TAG, String MSG) {
 		if (DEBUG_LIFE) {
-			Log.w(TAG, MSG);
+			Log.w(TAG, ""+MSG);
 		}
 	}
 	
 	public static final void logE(String TAG, String MSG) {
-	    Log.e(TAG, MSG);
+	    Log.e(TAG, ""+MSG);
 	}
     public static final void logW(String TAG, String MSG) {
-        Log.w(TAG, MSG);
+        Log.w(TAG, ""+MSG);
     }
 	
 	public static final void logVcardParse(String TAG, String MSG) {
 		if (DEBUG_VCARD_PARSE) {
-			Log.w(TAG, MSG);
+			Log.w(TAG, ""+MSG);
 		}
 	}
 	
 	public static final void logExchangeBCParse(String TAG, String MSG) {
 		if (true) {
-			Log.w(TAG, MSG);
+			Log.w(TAG, ""+MSG);
 		}
 	}
 	
 	public static final void logExchangeBC(String TAG, String MSG) {
 		if (false) {
-			Log.w(TAG, MSG);
+			Log.w(TAG, ""+MSG);
 		}
 	}
 	
 	public static final void logSms(String TAG, String MSG) {
 		if (DEBUG_SMS) {
-			Log.w(TAG, MSG);
+			Log.w(TAG, ""+MSG);
 		}
 	}
 	
 	public static final void logDeleteFiles(String TAG, String MSG) {
 		if (DEBUG_DELETE_FILES) {
-			Log.d(TAG, MSG);
+			Log.d(TAG, ""+MSG);
 		}
 	}
 	
 	public static final void logPhotoUtils(String tag, String msg) {
-		if (DEBUG_PHOTOMANAGER) Log.w(tag, msg);
+		if (DEBUG_PHOTOMANAGER) Log.w(tag, ""+msg);
 	}
 	
 	public static final void logProvider(String tag, String msg) {
-		if (DEBUG_PROVIDER) Log.w(tag, msg);
+		if (DEBUG_PROVIDER) Log.w(tag, ""+msg);
 	}
 	
 	public static final void logContactAsyncDownload(String tag, String msg) {
-		if (DEBUG_CONTACT_DOWNLOAD) Log.w(tag, msg);
+		if (DEBUG_CONTACT_DOWNLOAD) Log.w(tag, ""+msg);
+	}
+
+	public static void main(String[] args) {
+		logD("hello", null);
 	}
 }

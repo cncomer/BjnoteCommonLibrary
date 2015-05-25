@@ -17,19 +17,29 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.shwy.bestjoy.exception.StatusException;
 import com.shwy.bestjoy.utils.AlertDialogWrapper;
 import com.shwy.bestjoy.utils.ComConnectivityManager;
 import com.shwy.bestjoy.utils.ComPreferencesManager;
 import com.shwy.bestjoy.utils.DebugUtils;
 import com.shwy.bestjoy.utils.DevicesUtils;
+import com.shwy.bestjoy.utils.ExceptionCode;
 import com.shwy.bestjoy.utils.FilesUtils;
 import com.shwy.bestjoy.utils.SecurityUtils;
 import com.shwy.bestjoy.utils.SecurityUtils.SecurityKeyValuesObject;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.HttpHostConnectException;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class ComApplication extends Application{
 
@@ -43,10 +53,16 @@ public class ComApplication extends Application{
 
     public Context mContext;
 
+    private static ComApplication mInstance;
+
+    private Toast mLongToast;
+    private Toast mShortToast;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
         Log.d(TAG, "onCreate()");
+        mInstance = this;
         mContext = this;
 		mHandler = new Handler();
 		mImMgr = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -59,7 +75,14 @@ public class ComApplication extends Application{
 		DevicesUtils.getInstance().setContext(this);
 		ComPreferencesManager.getInstance().setContext(this);
 
+
+        mLongToast = Toast.makeText(mContext, "Test", Toast.LENGTH_LONG);
+        mShortToast = Toast.makeText(mContext, "Test", Toast.LENGTH_SHORT);
 	}
+
+    public static ComApplication getInstance() {
+        return mInstance;
+    }
 	
 	public Handler getGlobalHandler() {
 		return mHandler;
@@ -75,11 +98,11 @@ public class ComApplication extends Application{
 	public void showMessageAsync(final int resId) {
 		mHandler.post(new Runnable() {
 
-			@Override
-			public void run() {
-				Toast.makeText(mContext, resId, Toast.LENGTH_LONG).show();
-			}
-		});
+            @Override
+            public void run() {
+                showMessage(resId, Toast.LENGTH_LONG);
+            }
+        });
 	}
 	
 	public void showMessageAsync(final String msg) {
@@ -87,8 +110,8 @@ public class ComApplication extends Application{
 
 			@Override
 			public void run() {
-				Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
-			}
+                showMessage(msg, Toast.LENGTH_LONG);
+            }
 		});
 	}
 	
@@ -97,7 +120,7 @@ public class ComApplication extends Application{
 
 			@Override
 			public void run() {
-				Toast.makeText(mContext, resId, resId).show();
+                showMessage(resId, length);
 			}
 		});
 	}
@@ -107,35 +130,59 @@ public class ComApplication extends Application{
 
 			@Override
 			public void run() {
-				Toast.makeText(mContext, msg, length).show();
+                showMessage(msg, length);
 			}
 		});
 	}
 	
-	public void showShortMessageAsync(final int msgId, final int toastId) {
+	public void showShortMessageAsync(final int msgId, final int length) {
 		mHandler.post(new Runnable() {
 
 			@Override
 			public void run() {
-				Toast.makeText(mContext, msgId, toastId).show();
+                showMessage(msgId, length);
 			}
 		});
 	}
 	
 	public void showMessage(int resId) {
-		Toast.makeText(mContext, resId, Toast.LENGTH_LONG).show();
+        showMessage(resId, Toast.LENGTH_LONG);
 	}
 	
 	public void showMessage(String msg) {
-		Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+        showMessage(msg, Toast.LENGTH_LONG);
 	}
 	public void showMessage(String msg, int length) {
-		Toast.makeText(mContext, msg, length).show();
+        if (length == Toast.LENGTH_SHORT) {
+            mShortToast.setText(msg);
+            mShortToast.show();
+        } else {
+            mLongToast.setText(msg);
+            mLongToast.show();
+        }
 	}
 	
 	public void showMessage(int resId, int length) {
-		Toast.makeText(mContext, resId, length).show();
+        if (length == Toast.LENGTH_SHORT) {
+            mShortToast.setText(resId);
+            mShortToast.show();
+        } else {
+            mLongToast.setText(resId);
+            mLongToast.show();
+        }
 	}
+
+    /**
+     * 取消 Toast
+     */
+    public void cancelToast() {
+        if (mShortToast != null) {
+            mShortToast.cancel();
+        }
+        if (mLongToast != null) {
+            mLongToast.cancel();
+        }
+    }
 	
 	public void showShortMessage(int resId) {
 		showMessage(resId, Toast.LENGTH_SHORT);
@@ -166,6 +213,10 @@ public class ComApplication extends Application{
     public String getNetworkError(String statusCode) {
         return this.getString(R.string.msg_network_error_statue, statusCode);
     }
+    public String getNetworkException(int code) {
+        return this.getString(R.string.format_network_exception, String.valueOf(code));
+    }
+
 	public void showUnsupportMessage() {
     	showMessage(R.string.msg_unsupport_operation);
     }
@@ -341,7 +392,7 @@ public class ComApplication extends Application{
 
     /**
      * 获取files下的缓存文件，优先缓存在sd卡中
-     * SD存在，调用{@link #getExternalStorageFile}，否则调用{@link #getCachedFile}
+     * SD存在，调用{@link #getExternalStorageFile}，否则调用{@link #getAppFile}
      * @param dirName  目录名，可以为null
      * @param fileName 文件名，可以为null
      * @return
@@ -520,6 +571,52 @@ public class ComApplication extends Application{
             e.printStackTrace();
         }
         return src;
+    }
+
+
+    /**
+     * 返回常用的错误信息
+     * @param e
+     * @return
+     */
+    public String getGeneralErrorMessage(Exception e) {
+        e.printStackTrace();
+        String errorMessage = "";
+        if (e instanceof StatusException) {
+            errorMessage = ComApplication.getInstance().getNetworkError(((StatusException) e).getStatusCode());
+        } else if (e instanceof FileNotFoundException) {
+            errorMessage = e.getMessage();
+        } else if (e instanceof ClientProtocolException) {
+            errorMessage = ComApplication.getInstance().getNetworkException(ExceptionCode.ClientProtocolExceptionCode);
+        } else if (e instanceof ConnectTimeoutException) {
+            errorMessage = ComApplication.getInstance().getNetworkException(ExceptionCode.ConnectTimeoutExceptionCode);
+        } else if (e instanceof UnknownHostException) {
+            errorMessage = ComApplication.getInstance().getNetworkException(ExceptionCode.UnknownHostExceptionCode);
+        } else if (e instanceof HttpHostConnectException) {
+            errorMessage = ComApplication.getInstance().getNetworkException(ExceptionCode.HttpHostConnectExceptionCode);
+        } else if (e instanceof SocketException) {
+            errorMessage = ComApplication.getInstance().getNetworkException(ExceptionCode.SocketExceptionCode);
+        } else if (e instanceof IOException) {
+            errorMessage = e.getMessage();
+        } else if (e instanceof JSONException) {
+            errorMessage = ComApplication.getInstance().getNetworkError(String.valueOf(ExceptionCode.JSONExceptionCode));
+        } else {
+            errorMessage = e.getMessage();
+        }
+        return errorMessage;
+    }
+
+
+    private static final long KM = 1000;
+    public static String computeDistanceToString(double distance) {
+        StringBuilder sb = new StringBuilder();
+        if (distance < KM) {
+            sb.append(String.format("%.2f", distance)).append('m');
+        } else {
+            double len = 1.0f * distance / KM;
+            sb.append(String.format("%.2f", len)).append("km");
+        }
+        return sb.toString();
     }
                   
 }

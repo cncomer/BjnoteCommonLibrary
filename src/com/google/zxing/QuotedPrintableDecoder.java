@@ -45,12 +45,20 @@ public class QuotedPrintableDecoder {
 	 * @param pSrc
 	 */
 	static public String DecodeQuoted(String pSrc) {
-		pSrc = pSrc.replace("=\r\n", "");
+		pSrc = pSrc.replace("=\n", "");
 		int i = 0;
 		StringBuffer sb = new StringBuffer();
 		while (i < pSrc.length()) {
 			char ch = pSrc.charAt(i);
 			if (ch == '=') {// 是编码字节
+//				if (i+1 < pSrc.length()) {
+//					char lfcr = pSrc.charAt(i+1);
+//					if (lfcr == '\n') {
+//						i++;
+//						continue;
+//					}
+//				}
+
 				int toChar = Integer.parseInt(pSrc.substring(i+1 , i + 3), 16);
 				sb.append((char) toChar);
 				i += 3;

@@ -26,6 +26,8 @@
 
     <string name="msg_unsupport_operation">"该功能暂未开放"</string>
     <string name="msg_gernal_network_error">"请检查您的网络是否通畅"</string>
+    <string name="format_network_exception">"请检查您的网络是否通畅[%s]"</string>
+    <string name="msg_network_error_client_protocol_exception">"请检查您的网络是否通畅"</string>
     <string name="msg_network_error_statue">"抱歉，出错了，错误代码[%s]"</string>
     <string name="msg_sd_unavailable">SD无法访问...</string>
     <string name="msg_camera_framework_bug">出错咯，机器人相机出现问题。您可能需要重新启动设备。</string>

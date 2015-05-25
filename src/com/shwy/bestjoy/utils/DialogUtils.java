@@ -1,5 +1,6 @@
 package com.shwy.bestjoy.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -61,7 +62,11 @@ public class DialogUtils {
 		.setMessage(message);
 		builder.setPositiveButton(android.R.string.ok, null);
 		Dialog dialog = builder.create();
-		dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		if (context instanceof Activity) {
+
+		} else {
+			dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		}
 		dialog.show();
 	}
 	/**
@@ -81,7 +86,38 @@ public class DialogUtils {
 		}
 		builder.setOnCancelListener(callback);
 		Dialog dialog = builder.create();
-		dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		if (context instanceof Activity) {
+
+		} else {
+			dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		}
+
+		dialog.show();
+	}
+	/**
+	 * 创建一个简单的确认对话框
+	 * @param context
+	 * @param message
+	 * @param callback
+	 */
+	public static void createSimpleConfirmAlertDialog(Context context, String title, String message, String positiveButton, String negativeButton, DialogCallback callback) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(context)
+				.setTitle(title)
+				.setMessage(message);
+		if (positiveButton != null) {
+			builder.setPositiveButton(positiveButton, callback);
+		}
+		if (negativeButton != null) {
+			builder.setNegativeButton(negativeButton, callback);
+		}
+		builder.setOnCancelListener(callback);
+		Dialog dialog = builder.create();
+		if (context instanceof Activity) {
+
+		} else {
+			dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		}
+
 		dialog.show();
 	}
 	
@@ -106,7 +142,11 @@ public class DialogUtils {
 			dialogBuilder.setNegativeButton(negativeButton, callback);
 		}
 		final AlertDialog dialog = dialogBuilder.create();
-		dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		if (context instanceof Activity) {
+
+		} else {
+			dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+		}
 		inputEdit.addTextChangedListener(new TextWatcher() {
 
 			@Override
