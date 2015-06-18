@@ -34,4 +34,19 @@ public class DateUtils {
 	public void setContext(Context context) {
 		mContext = context;
 	}
+
+
+
+	public static String toRelativeTimeSpanString(long created) {
+		long now = System.currentTimeMillis();
+		long difference = now - created;
+		CharSequence text = (difference >= 0 && difference <= android.text.format.DateUtils.MINUTE_IN_MILLIS) ?
+				"刚刚" :
+				android.text.format.DateUtils.getRelativeTimeSpanString(
+						created,
+						now,
+						android.text.format.DateUtils.MINUTE_IN_MILLIS,
+						android.text.format.DateUtils.FORMAT_ABBREV_RELATIVE);
+		return text.toString();
+	}
 }

@@ -23,11 +23,12 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 public class BitmapUtils {
-	
+	private static final String TAG = "BitmapUtils";
 	private Context mContext;
-	private static final long MAX_BILL_BITMAP_SIZE = 1024 * 100; //100k
+	private static final long MAX_BILL_BITMAP_SIZE = 1920 * 1440; //100k
 	
 	private static int mScreenWidth, mScreenHeight;
 
@@ -94,6 +95,64 @@ public class BitmapUtils {
 			return BitmapFactory.decodeFile(bitmapFile.getAbsolutePath(), opt);
 		}
 		
+	}
+
+	public static Bitmap getSuitedBitmap(Resources resources, int id, int width, int height) {
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		try {
+			options.inJustDecodeBounds = true;
+			Bitmap tmp = BitmapFactory.decodeResource(resources, id, options);
+			if (tmp != null) {
+				tmp.recycle();
+				tmp = null;
+			}
+
+			Log.d(TAG, "extractThumbNail: round=" + width + "x" + height);
+			final double beY = options.outHeight * 1.0 / height;
+			final double beX = options.outWidth * 1.0 / width;
+			Log.d(TAG, "extractThumbNail: extract beX = " + beX + ", beY = " + beY);
+			options.inSampleSize = (int) (beY < beX ? beX : beY);
+			if (options.inSampleSize <= 1) {
+				options.inSampleSize = 1;
+			}
+
+			// NOTE: out of memory error
+			while (options.outHeight * options.outWidth / options.inSampleSize > MAX_BILL_BITMAP_SIZE) {
+				options.inSampleSize++;
+			}
+
+			int newHeight = height;
+			int newWidth = width;
+			if (beY < beX) {
+				newHeight = (int) (newWidth * 1.0 * options.outHeight / options.outWidth);
+			} else {
+				newWidth = (int) (newHeight * 1.0 * options.outWidth / options.outHeight);
+			}
+
+			options.inJustDecodeBounds = false;
+
+			Log.i(TAG, "bitmap required size=" + newWidth + "x" + newHeight + ", orig=" + options.outWidth + "x" + options.outHeight + ", sample=" + options.inSampleSize);
+			Bitmap bm = BitmapFactory.decodeResource(resources, id, options);
+			if (bm == null) {
+				Log.e(TAG, "bitmap decode failed");
+				return null;
+			}
+
+			Log.i(TAG, "bitmap decoded size=" + bm.getWidth() + "x" + bm.getHeight());
+			final Bitmap scale = Bitmap.createScaledBitmap(bm, newWidth, newHeight, true);
+			if (scale != null) {
+				bm.recycle();
+				bm = scale;
+			}
+
+			return bm;
+
+		} catch (final OutOfMemoryError e) {
+			Log.e(TAG, "decode bitmap failed: " + e.getMessage());
+			options = null;
+		}
+
+		return null;
 	}
 	
 	public static Bitmap scaleBitmapFile(Bitmap src, int width, int height) {

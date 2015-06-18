@@ -60,6 +60,13 @@ public class ComApplication extends Application{
 
 	@Override
 	public void onCreate() {
+        // workaround for https://code.google.com/p/android/issues/detail?id=20915
+        try {
+            Class.forName("com.shwy.bestjoy.utils.AsyncTaskCompat");
+            Class.forName("android.os.AsyncTask");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 		super.onCreate();
         Log.d(TAG, "onCreate()");
         mInstance = this;
@@ -456,7 +463,7 @@ public class ComApplication extends Application{
 	    }catch(Exception e){
 	      e.printStackTrace();
 	    }
-	    return null;
+	    return "Can't get DeviceInfo";
 	}
 
     /**

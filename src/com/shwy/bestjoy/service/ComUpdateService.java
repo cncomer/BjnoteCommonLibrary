@@ -1,16 +1,5 @@
 package com.shwy.bestjoy.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Date;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-
 import android.app.PendingIntent.CanceledException;
 import android.app.Service;
 import android.content.Context;
@@ -32,6 +21,17 @@ import com.shwy.bestjoy.utils.Intents;
 import com.shwy.bestjoy.utils.NetworkUtils;
 import com.shwy.bestjoy.utils.SecurityUtils.SecurityKeyValuesObject;
 import com.shwy.bestjoy.utils.ServiceAppInfo;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
 
 /**
  * 
@@ -119,9 +119,9 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 		//正常Wifi情况下，我们每一天都会检查一次是否有更新
 		if (ComConnectivityManager.getInstance().isWifiConnected()) {
 			if (Intent.ACTION_USER_PRESENT.equals(action)) {
-				needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_WEEK;
+				needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_HOUR;
 			} else {
-				needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_WEEK;
+				needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_DAY;
 			}
 		} else if (ComConnectivityManager.getInstance().isMobileConnected()) {
 			needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_WEEK;
@@ -136,6 +136,10 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 		}
 		return needCheckUpdate;
 	}
+
+	protected ServiceAppInfo getServiceAppInfo(String token) {
+		return new ServiceAppInfo(this, token);
+	}
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -147,8 +151,8 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 		
 		mIsServiceRuinning = true;
 		
-		mServiceAppInfo = new ServiceAppInfo(this, getPackageName());
-		mDatabaseServiceAppInfo = new ServiceAppInfo(this, getPackageName() + ".db");
+		mServiceAppInfo = getServiceAppInfo(getPackageName());
+		mDatabaseServiceAppInfo = getServiceAppInfo(getPackageName() + ".db");
 		
 		mHandler = new Handler() {
 			@Override
@@ -193,22 +197,21 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 		if (intent != null) {
 			if (ComConnectivityManager.getInstance().isConnected()) {
 				String action = intent.getAction();
-				onServiceIntent(action);
+				onServiceIntent(action, intent);
 			} else {
 				sendBroadcast(mNoNetworkIntent);
 			}
 			
 		}
 	}
-	
 	protected boolean onServiceIntent(String action) {
 		if (ACTION_UPDATE_CHECK.equals(action)
 				|| Intent.ACTION_BOOT_COMPLETED.equals(action)
 				|| Intent.ACTION_USER_PRESENT.equals(action)
 				|| ACTION_UPDATE_CHECK_FORCE.equals(action)) {
-			
+
 			boolean needCheckUpdate = needUpdateCheck(action);
-			
+
 			if (!DEBUG && !needCheckUpdate) {
 				DebugUtils.logD(TAG, "need not updating check, time is not enough long");
 				return false;
@@ -236,6 +239,10 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 			}
 		}
 		return false;
+	}
+	protected boolean onServiceIntent(String action, Intent intent) {
+		boolean handled = onServiceIntent(action);
+		return handled;
 	}
 
 
@@ -289,8 +296,8 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
                     int currentVersion = getDeviceDatabaseVersion();
                     DebugUtils.logD(TAG, "DB updateCheckTime = " + DateUtils.TOPIC_SUBJECT_DATE_TIME_FORMAT.format(new Date(mDatabaseServiceAppInfo.mCheckTime)));
                     DebugUtils.logD(TAG, "DB currentVersionCode = " + currentVersion);
-                    DebugUtils.logD(TAG, "DB newVersionCode = " + mDatabaseServiceAppInfo.mVersionCode);
-                    needUpdate = mDatabaseServiceAppInfo.mVersionCode > currentVersion;
+                    DebugUtils.logD(TAG, "DB newVersionCode = " + newServiceAppInfo.mVersionCode);
+                    needUpdate = newServiceAppInfo.mVersionCode > currentVersion;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
