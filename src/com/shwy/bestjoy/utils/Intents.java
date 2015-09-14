@@ -459,4 +459,14 @@ public final class Intents {
         }
         return installed;
     }
+
+
+	public static final void viewImage(Context context, File file) {
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setDataAndType(Uri.fromFile(file), "image/*");
+		if (!(context instanceof Activity)) {
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		}
+		context.startActivity(intent);
+	}
 }

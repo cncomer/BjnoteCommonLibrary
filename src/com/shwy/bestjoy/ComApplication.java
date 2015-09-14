@@ -7,6 +7,7 @@ import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
@@ -39,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 public class ComApplication extends Application{
@@ -100,66 +102,91 @@ public class ComApplication extends Application{
 		super.onTerminate();
 		ComConnectivityManager.getInstance().endConnectivityMonitor();
 	}
-	
-	
+
+    /**
+     * @deprecated  instead use {@link #showMessage(int)}
+     * @param resId
+     */
 	public void showMessageAsync(final int resId) {
-		mHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                showMessage(resId, Toast.LENGTH_LONG);
-            }
-        });
+        showMessage(resId, Toast.LENGTH_LONG);
 	}
-	
+    /**
+     * @deprecated  instead use {@link #showMessage(String)}
+     * @param msg
+     */
 	public void showMessageAsync(final String msg) {
-		mHandler.post(new Runnable() {
-
-			@Override
-			public void run() {
-                showMessage(msg, Toast.LENGTH_LONG);
-            }
-		});
+        showMessage(msg, Toast.LENGTH_LONG);
 	}
-	
+    /**
+     * @deprecated  instead use {@link #showMessage(int, int)}
+     * @param resId
+     * @param length
+     */
 	public void showMessageAsync(final int resId, final int length) {
-		mHandler.post(new Runnable() {
-
-			@Override
-			public void run() {
-                showMessage(resId, length);
-			}
-		});
+        showMessage(resId, length);
 	}
-	
+    /**
+     * @deprecated  instead use {@link #showMessage(String, int)}
+     * @param msg
+     * @param length
+     */
 	public void showMessageAsync(final String msg, final int length) {
-		mHandler.post(new Runnable() {
-
-			@Override
-			public void run() {
-                showMessage(msg, length);
-			}
-		});
+        showMessage(msg, length);
 	}
-	
+    /**
+     * @deprecated  instead use {@link #showMessage(int, int)}
+     * @param msgId
+     * @param length
+     */
 	public void showShortMessageAsync(final int msgId, final int length) {
-		mHandler.post(new Runnable() {
-
-			@Override
-			public void run() {
-                showMessage(msgId, length);
-			}
-		});
+        showMessage(msgId, length);
 	}
 	
 	public void showMessage(int resId) {
         showMessage(resId, Toast.LENGTH_LONG);
-	}
+
+    }
 	
 	public void showMessage(String msg) {
         showMessage(msg, Toast.LENGTH_LONG);
+
 	}
-	public void showMessage(String msg, int length) {
+	public void showMessage(final String msg, final int length) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    showMessageInternal(msg, length, false);
+                }
+            });
+        } else {
+            showMessageInternal(msg, length, true);
+        }
+	}
+
+    public void showMessage(final int resId, final int length) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    showMessageInternal(resId, length, false);
+                }
+            });
+        } else {
+            showMessageInternal(resId, length, true);
+        }
+    }
+    public void showShortMessage(int resId) {
+        showMessage(resId, Toast.LENGTH_SHORT);
+    }
+    public void showShortMessage(String message) {
+        showMessage(message, Toast.LENGTH_SHORT);
+    }
+
+    private void showMessageInternal(String msg, int length, boolean uiThread) {
+        DebugUtils.logD(TAG, "showMessageInternal from uiThread? " + uiThread);
         if (length == Toast.LENGTH_SHORT) {
             mShortToast.setText(msg);
             mShortToast.show();
@@ -167,9 +194,9 @@ public class ComApplication extends Application{
             mLongToast.setText(msg);
             mLongToast.show();
         }
-	}
-	
-	public void showMessage(int resId, int length) {
+    }
+    private void showMessageInternal(int resId, int length, boolean uiThread) {
+        DebugUtils.logD(TAG, "showMessageInternal from uiThread? " + uiThread);
         if (length == Toast.LENGTH_SHORT) {
             mShortToast.setText(resId);
             mShortToast.show();
@@ -177,7 +204,7 @@ public class ComApplication extends Application{
             mLongToast.setText(resId);
             mLongToast.show();
         }
-	}
+    }
 
     /**
      * 取消 Toast
@@ -190,14 +217,7 @@ public class ComApplication extends Application{
             mLongToast.cancel();
         }
     }
-	
-	public void showShortMessage(int resId) {
-		showMessage(resId, Toast.LENGTH_SHORT);
-	}
-	public void showShortMessage(String message) {
-		showMessage(message, Toast.LENGTH_SHORT);
-	}
-	
+
 	public void postAsync(Runnable runnable){
 		mHandler.post(runnable);
 	}
@@ -511,7 +531,7 @@ public class ComApplication extends Application{
      * 创建使用移动网络提示对话框构建器
      * @return
      */
-    public AlertDialog onCreateNoNetworkDialog(Context context) {
+    public AlertDialog createNoNetworkDialog(Context context) {
         return new AlertDialog.Builder(context)
                 .setTitle(R.string.dialog_no_network_title)
                 .setMessage(R.string.dialog_no_network_message)
@@ -603,6 +623,8 @@ public class ComApplication extends Application{
             errorMessage = ComApplication.getInstance().getNetworkException(ExceptionCode.HttpHostConnectExceptionCode);
         } else if (e instanceof SocketException) {
             errorMessage = ComApplication.getInstance().getNetworkException(ExceptionCode.SocketExceptionCode);
+        } else if (e instanceof SocketTimeoutException) {
+            errorMessage = ComApplication.getInstance().getNetworkException(ExceptionCode.SocketTimeoutExceptionCode);
         } else if (e instanceof IOException) {
             errorMessage = e.getMessage();
         } else if (e instanceof JSONException) {
@@ -624,6 +646,17 @@ public class ComApplication extends Application{
             sb.append(String.format("%.2f", len)).append("km");
         }
         return sb.toString();
+    }
+
+    public static String getFileNameFromUrl(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return null;
+        }
+        int index = url.lastIndexOf("/");
+        if (index > 0) {
+            return url.substring(index+1);
+        }
+        return null;
     }
                   
 }

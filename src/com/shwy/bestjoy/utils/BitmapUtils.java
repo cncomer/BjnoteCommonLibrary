@@ -1,13 +1,6 @@
 package com.shwy.bestjoy.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,10 +13,16 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
+
+import junit.framework.Assert;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class BitmapUtils {
 	private static final String TAG = "BitmapUtils";
@@ -47,30 +46,7 @@ public class BitmapUtils {
 		mScreenHeight = dm.heightPixels;
 		mScreenWidth = dm.widthPixels;
 	}
-	
-	/**
-	 * ��������Intent
-	 * @param uri
-	 * @return
-	 */
-	public static Intent createCaptureIntent(Uri uri) {
-		Intent capture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		capture.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-		return capture;
-	}
-	/**
-	 * ��������ͼ��Intent
-	 * @param uri
-	 * @return
-	 */
-	public static Intent createGalleryIntent() {
-		Intent intent = new Intent();
-    	// ��Pictures����TypeΪimage/*
-    	intent.setType("image/*");
-    	intent.setAction(Intent.ACTION_GET_CONTENT);
-    	return intent;
-	}
-	
+
 	public static Bitmap scaleBitmapFile(File bitmapFile, int width, int height) {
 		BitmapFactory.Options opt = new BitmapFactory.Options();
 		if (bitmapFile.length() > MAX_BILL_BITMAP_SIZE) {
@@ -308,5 +284,158 @@ public class BitmapUtils {
 		Matrix matrix = new Matrix();
 		matrix.postScale(sx, sx);
 		return Bitmap.createBitmap(src, 0, 0, srcWidth, srcHeight, matrix, true);
+	}
+
+
+
+	private static final int MAX_DECODE_PICTURE_SIZE = 1920 * 1440;
+	public static Bitmap extractThumbNail(final String path, final int height, final int width, final boolean crop) {
+		Assert.assertTrue(path != null && !path.equals("") && height > 0 && width > 0);
+
+		BitmapFactory.Options options = new BitmapFactory.Options();
+
+		try {
+			options.inJustDecodeBounds = true;
+			Bitmap tmp = BitmapFactory.decodeFile(path, options);
+			if (tmp != null) {
+				tmp.recycle();
+				tmp = null;
+			}
+
+			Log.d(TAG, "extractThumbNail: round=" + width + "x" + height + ", crop=" + crop);
+			final double beY = options.outHeight * 1.0 / height;
+			final double beX = options.outWidth * 1.0 / width;
+			Log.d(TAG, "extractThumbNail: extract beX = " + beX + ", beY = " + beY);
+			options.inSampleSize = (int) (crop ? (beY > beX ? beX : beY) : (beY < beX ? beX : beY));
+			if (options.inSampleSize <= 1) {
+				options.inSampleSize = 1;
+			}
+
+			// NOTE: out of memory error
+			while (options.outHeight * options.outWidth / options.inSampleSize > MAX_DECODE_PICTURE_SIZE) {
+				options.inSampleSize++;
+			}
+
+			int newHeight = height;
+			int newWidth = width;
+			if (crop) {
+				if (beY > beX) {
+					newHeight = (int) (newWidth * 1.0 * options.outHeight / options.outWidth);
+				} else {
+					newWidth = (int) (newHeight * 1.0 * options.outWidth / options.outHeight);
+				}
+			} else {
+				if (beY < beX) {
+					newHeight = (int) (newWidth * 1.0 * options.outHeight / options.outWidth);
+				} else {
+					newWidth = (int) (newHeight * 1.0 * options.outWidth / options.outHeight);
+				}
+			}
+
+			options.inJustDecodeBounds = false;
+
+			Log.i(TAG, "bitmap required size=" + newWidth + "x" + newHeight + ", orig=" + options.outWidth + "x" + options.outHeight + ", sample=" + options.inSampleSize);
+			Bitmap bm = BitmapFactory.decodeFile(path, options);
+			if (bm == null) {
+				Log.e(TAG, "bitmap decode failed");
+				return null;
+			}
+
+			Log.i(TAG, "bitmap decoded size=" + bm.getWidth() + "x" + bm.getHeight());
+			final Bitmap scale = Bitmap.createScaledBitmap(bm, newWidth, newHeight, true);
+			if (scale != null) {
+				bm.recycle();
+				bm = scale;
+			}
+
+			if (crop) {
+				final Bitmap cropped = Bitmap.createBitmap(bm, (bm.getWidth() - width) >> 1, (bm.getHeight() - height) >> 1, width, height);
+				if (cropped == null) {
+					return bm;
+				}
+
+				bm.recycle();
+				bm = cropped;
+				Log.i(TAG, "bitmap croped size=" + bm.getWidth() + "x" + bm.getHeight());
+			}
+			return bm;
+
+		} catch (final OutOfMemoryError e) {
+			Log.e(TAG, "decode bitmap failed: " + e.getMessage());
+			options = null;
+		}
+
+		return null;
+	}
+
+
+	public static Bitmap decodeResourceInSampleSize(Resources resources, int drawableId) {
+
+		BitmapFactory.Options options = new BitmapFactory.Options();
+
+		try {
+			options.inJustDecodeBounds = true;
+			Bitmap tmp = BitmapFactory.decodeResource(resources, drawableId, options);
+			if (tmp != null) {
+				tmp.recycle();
+				tmp = null;
+			}
+
+			options.inSampleSize = 1;
+			// NOTE: out of memory error
+			while (options.outHeight * options.outWidth / options.inSampleSize > MAX_DECODE_PICTURE_SIZE) {
+				options.inSampleSize++;
+			}
+
+			options.inJustDecodeBounds = false;
+
+			Bitmap bm = BitmapFactory.decodeResource(resources, drawableId, options);
+			if (bm == null) {
+				Log.e(TAG, "bitmap decode failed");
+				return null;
+			}
+			return bm;
+
+		} catch (final OutOfMemoryError e) {
+			Log.e(TAG, "decode bitmap failed: " + e.getMessage());
+			options = null;
+		}
+
+		return null;
+	}
+
+	public static Bitmap decodeResourceInSampleSize(File file) {
+
+		BitmapFactory.Options options = new BitmapFactory.Options();
+
+		try {
+			options.inJustDecodeBounds = true;
+			Bitmap tmp = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+			if (tmp != null) {
+				tmp.recycle();
+				tmp = null;
+			}
+
+			options.inSampleSize = 1;
+			// NOTE: out of memory error
+			while (options.outHeight * options.outWidth / options.inSampleSize > MAX_DECODE_PICTURE_SIZE) {
+				options.inSampleSize++;
+			}
+
+			options.inJustDecodeBounds = false;
+
+			Bitmap bm = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+			if (bm == null) {
+				Log.e(TAG, "bitmap decode failed");
+				return null;
+			}
+			return bm;
+
+		} catch (final OutOfMemoryError e) {
+			Log.e(TAG, "decode bitmap failed: " + e.getMessage());
+			options = null;
+		}
+
+		return null;
 	}
 }

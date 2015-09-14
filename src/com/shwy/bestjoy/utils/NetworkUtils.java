@@ -28,8 +28,8 @@ import java.util.Set;
 public class NetworkUtils {
 	private static final String TAG = "NetworkUtils";
 	
-	public static InputStream openContectionLocked(String uri, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException {
-		DebugUtils.logNetworkOp(TAG, "HttpGet uri=" + uri);
+	public static InputStream openContectionLocked(String uri, SecurityKeyValuesObject securityKeyValues) throws IOException {
+//		DebugUtils.logNetworkOp(TAG, "HttpGet uri=" + uri);
 		if (uri == null) {
 			return null;
 		}
@@ -87,20 +87,18 @@ public class NetworkUtils {
 	}
 	
 	/**
-	 * 
-	 * @param uri ��ַ����http://www.baidu.com/
-	 * @param path ��Ҫʹ��URLEncoder�����·��
+	 *
 	 * @return
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
 	public static InputStream openPostContectionLocked(String uri, String paramName, String paramValue, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException {
 //		String encodedUri = uri + URLEncoder.encode(path);
-		DebugUtils.logNetworkOp(TAG, "HttpPost uri=" + uri);
+//		DebugUtils.logNetworkOp(TAG, "HttpPost uri=" + uri);
 		DebugUtils.logD(TAG, "HttpPost paramName=" + paramName + ", paramValue=" + paramValue);
 		HttpPost httpRequest = new HttpPost(uri);
-		/**Post ���д��ݱ��������� NameValuePair[] ����洢*/  
-        List<NameValuePair> params = new ArrayList<NameValuePair>();  
+		/**Post ���д��ݱ��������� NameValuePair[] ����洢*/
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair(paramName, paramValue));
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));  
         addSecurityKeyValuesObject(httpRequest, securityKeyValues);
@@ -124,10 +122,10 @@ public class NetworkUtils {
 	 */
 	public static InputStream openPostContectionLocked(String uri, HashMap<String, String> param, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException {
 //		String encodedUri = uri + URLEncoder.encode(path);
-		DebugUtils.logNetworkOp(TAG, "HttpPost uri=" + uri);
+//		DebugUtils.logNetworkOp(TAG, "HttpPost uri=" + uri);
 		HttpPost httpRequest = new HttpPost(uri);
-		/**Post ���д��ݱ��������� NameValuePair[] ����洢*/  
-        List<NameValuePair> params = new ArrayList<NameValuePair>();  
+		/**Post ���д��ݱ��������� NameValuePair[] ����洢*/
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
         Set<String>  keySet = param.keySet();
         for(String key: keySet) {
         	params.add(new BasicNameValuePair(key, param.get(key)));
@@ -146,7 +144,7 @@ public class NetworkUtils {
 	}
 	
 	public static HttpResponse openContectionLockedV2(String uri, SecurityKeyValuesObject securityKeyValues) throws ClientProtocolException, IOException{
-		DebugUtils.logNetworkOp(TAG, "HttpGet uri=" + uri);
+//		DebugUtils.logNetworkOp(TAG, "HttpGet uri=" + uri);
 		HttpGet httpRequest = new HttpGet(uri);
 		addSecurityKeyValuesObject(httpRequest, securityKeyValues);
 		HttpClient httpClient = /*new DefaultHttpClient();*/AndroidHttpClient.newInstance("android");

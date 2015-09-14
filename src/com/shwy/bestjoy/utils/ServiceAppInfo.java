@@ -123,14 +123,14 @@ public class ServiceAppInfo implements Parcelable, IServiceAppInfo{
 	public void read() {
 		
 		mCheckTime = mPreferences.getLong(KEY_SERVICE_APP_INFO_CHECK_TIME, -1l);
+		mApkUrl = mPreferences.getString(KEY_SERVICE_APP_INFO_APK_URL, "");
 		if (mCheckTime == -1l) {
 			DebugUtils.logD("AppInfo", "read mCheckTime from preferences " + mCheckTime);
 		}
 		mVersionCode = mPreferences.getInt(KEY_SERVICE_APP_INFO_VERSION_CODE, -1);
 		mVersionName = mPreferences.getString(KEY_SERVICE_APP_INFO_VERSION_NAME, "");
 		mReleaseNote = mPreferences.getString(KEY_SERVICE_APP_INFO_RELEASENOTE, "");
-		mApkUrl = mPreferences.getString(KEY_SERVICE_APP_INFO_APK_URL, "");
-		
+
 		mSizeStr = mPreferences.getString(KEY_SERVICE_APP_INFO_APK_SIZE, "");
 		mReleaseDate = mPreferences.getString(KEY_SERVICE_APP_INFO_RELEASEDATE, "");
 		mImportance = mPreferences.getInt(KEY_SERVICE_APP_INFO_IMPORTANCE, IMPORTANCE_OPTIONAL);

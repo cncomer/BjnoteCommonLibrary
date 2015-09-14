@@ -376,11 +376,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
         		 DebugUtils.logD(TAG, "sendBroadcast for downloadTask is finished");
         		 sendBroadcast(mDownloadEndIntent);
              } 
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (CanceledException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			NetworkUtils.closeInputStream(is);

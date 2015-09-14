@@ -10,7 +10,7 @@
      <string name="friday">星期五</string>
      <string name="saturday">星期六</string>
      <string name="sunday">星期天</string>
-     
+    <string name="tip_no_existed_photo_in_service">抱歉，服务器上是没有找到对应的图片</string>
       <string name="msg_intent_failed">抱歉，无法打开所需软件。 条码内容可能无效。</string>
       
        <string name="dialog_use_mobile_title">移动网络流量提示</string>

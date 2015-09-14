@@ -9,7 +9,9 @@ public class ExceptionCode {
     public static final int ConnectTimeoutExceptionCode = 1002;
     public static final int UnknownHostExceptionCode = 1003;
     public static final int HttpHostConnectExceptionCode = 1004;
+    public static final int SocketTimeoutExceptionCode = 1005;
 
     public static final int JSONExceptionCode = 2002;
+
 
 }
