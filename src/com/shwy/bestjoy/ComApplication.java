@@ -1,5 +1,6 @@
 package com.shwy.bestjoy;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
@@ -39,6 +40,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -458,6 +460,12 @@ public class ComApplication extends Application{
     	}
     }
 
+    public void hideInputMethod(Activity activity) {
+        if (mImMgr != null) {
+            mImMgr.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
 	public static String getDeviceInfo(Context context) {
 	    try{
 	        JSONObject json = new JSONObject();
@@ -657,6 +665,20 @@ public class ComApplication extends Application{
             return url.substring(index+1);
         }
         return null;
+    }
+
+
+    public static String getSystemProperty(String key, String defaultValue) {
+        String value = defaultValue;
+        try {
+            Class<?> clazz= Class.forName("android.os.SystemProperties");
+            Method get = clazz.getMethod("get", String.class, String.class);
+            value = (String)(get.invoke(clazz, key, ""));
+        } catch (Exception e) {
+            Log.d("getSystemProperty", "key = " + key + ", error = " + e.getMessage());
+        }
+        Log.d("getSystemProperty",  key + " = " + value);
+        return value;
     }
                   
 }

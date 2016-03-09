@@ -125,14 +125,16 @@ public class NetworkUtils {
 //		DebugUtils.logNetworkOp(TAG, "HttpPost uri=" + uri);
 		HttpPost httpRequest = new HttpPost(uri);
 		/**Post ���д��ݱ��������� NameValuePair[] ����洢*/
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        Set<String>  keySet = param.keySet();
-        for(String key: keySet) {
-        	params.add(new BasicNameValuePair(key, param.get(key)));
-        }
-        DebugUtils.logD(TAG, "HttpPost param=" + params);
-        httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));  
-        addSecurityKeyValuesObject(httpRequest, securityKeyValues);
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		Set<String>  keySet = param.keySet();
+		for(String key: keySet) {
+			params.add(new BasicNameValuePair(key, param.get(key)));
+		}
+		DebugUtils.logD(TAG, "HttpPost param=" + params);
+		httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+		httpRequest.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+
+		addSecurityKeyValuesObject(httpRequest, securityKeyValues);
 		HttpClient httpClient = /*new DefaultHttpClient();*/AndroidHttpClient.newInstance("android");
 		HttpResponse response = httpClient.execute(httpRequest);
 		int stateCode = response.getStatusLine().getStatusCode();

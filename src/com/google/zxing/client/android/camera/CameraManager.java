@@ -16,11 +16,8 @@
 
 package com.google.zxing.client.android.camera;
 
-import java.io.IOException;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
@@ -30,6 +27,8 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
+
+import java.io.IOException;
 
 /**
  * This object wraps the Camera service object and expects to be the only one talking to it. The
@@ -46,9 +45,7 @@ public final class CameraManager {
   private static int MIN_FRAME_HEIGHT = 120;
   private static int MAX_FRAME_WIDTH = 240;
   private static int MAX_FRAME_HEIGHT = 240;
-  /**
-   * ֧����ϵ�˵�һ��ɾ������汾��
-   */
+
   public static final int VERSION_CODES_LEVEL = 5;
   private static CameraManager cameraManager;
 
@@ -193,7 +190,8 @@ public final class CameraManager {
    * @param message The what field of the message to be sent.
    */
   public void requestPreviewFrame(Handler handler, int message) {
-    if (camera != null && previewing) {
+    Camera theCamera = camera;
+    if (theCamera != null && previewing) {
       previewCallback.setHandler(handler, message);
       if (useOneShotPreviewCallback) {
         camera.setOneShotPreviewCallback(previewCallback);
@@ -225,9 +223,13 @@ public final class CameraManager {
    * @return The rectangle to draw on screen in window coordinates.
    */
   public Rect getFramingRect() {
-    Point screenResolution = configManager.getScreenResolution();
     if (framingRect == null) {
       if (camera == null) {
+        return null;
+      }
+      Point screenResolution = configManager.getScreenResolution();
+      if (screenResolution == null) {
+        // Called early, before init even finished
         return null;
       }
       int width = screenResolution.x * 3 / 4;
@@ -256,9 +258,17 @@ public final class CameraManager {
    */
   public Rect getFramingRectInPreview() {
     if (framingRectInPreview == null) {
-      Rect rect = new Rect(getFramingRect());
+      Rect framingRect = getFramingRect();
+      if (framingRect == null) {
+        return null;
+      }
+      Rect rect = new Rect(framingRect);
       Point cameraResolution = configManager.getCameraResolution();
       Point screenResolution = configManager.getScreenResolution();
+      if (cameraResolution == null || screenResolution == null) {
+        // Called early, before init even finished
+        return null;
+      }
       rect.left = rect.left * cameraResolution.x / screenResolution.x;
       rect.right = rect.right * cameraResolution.x / screenResolution.x;
       rect.top = rect.top * cameraResolution.y / screenResolution.y;
@@ -299,28 +309,36 @@ public final class CameraManager {
    * @return A PlanarYUVLuminanceSource instance.
    */
   public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height) {
+//    Rect rect = getFramingRectInPreview();
+//    int previewFormat = configManager.getPreviewFormat();
+//    String previewFormatString = configManager.getPreviewFormatString();
+//    switch (previewFormat) {
+//      // This is the standard Android format which all devices are REQUIRED to support.
+//      // In theory, it's the only one we should ever care about.
+//      case PixelFormat.YCbCr_420_SP:
+//      // This format has never been seen in the wild, but is compatible as we only care
+//      // about the Y channel, so allow it.
+//      case PixelFormat.YCbCr_422_SP:
+//        return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
+//            rect.width(), rect.height());
+//      default:
+//        // The Samsung Moment incorrectly uses this variant instead of the 'sp' version.
+//        // Fortunately, it too has all the Y data up front, so we can read it.
+//        if ("yuv420p".equals(previewFormatString)) {
+//          return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
+//            rect.width(), rect.height());
+//        }
+//    }
+//    throw new IllegalArgumentException("Unsupported picture format: " +
+//        previewFormat + '/' + previewFormatString);
+
     Rect rect = getFramingRectInPreview();
-    int previewFormat = configManager.getPreviewFormat();
-    String previewFormatString = configManager.getPreviewFormatString();
-    switch (previewFormat) {
-      // This is the standard Android format which all devices are REQUIRED to support.
-      // In theory, it's the only one we should ever care about.
-      case PixelFormat.YCbCr_420_SP:
-      // This format has never been seen in the wild, but is compatible as we only care
-      // about the Y channel, so allow it.
-      case PixelFormat.YCbCr_422_SP:
-        return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
-            rect.width(), rect.height());
-      default:
-        // The Samsung Moment incorrectly uses this variant instead of the 'sp' version.
-        // Fortunately, it too has all the Y data up front, so we can read it.
-        if ("yuv420p".equals(previewFormatString)) {
-          return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
-            rect.width(), rect.height());
-        }
+    if (rect == null) {
+      return null;
     }
-    throw new IllegalArgumentException("Unsupported picture format: " +
-        previewFormat + '/' + previewFormatString);
+    // Go ahead and assume it's YUV rather than die.
+    return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
+            rect.width(), rect.height());
   }
 
 }

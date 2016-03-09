@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -34,11 +35,12 @@ public class DrawableTextView extends TextView {
         mDrawableWidth = typedArray.getDimensionPixelSize(R.styleable.DrawableTextView_drawableWidth, 0);
 
         typedArray.recycle();
+        mDrawables = this.getCompoundDrawables();
         reinitCompoundDrawables();
     }
 
     private void reinitCompoundDrawables() {
-        mDrawables = this.getCompoundDrawables();
+
         if (mDrawableHeight > 0 && mDrawableWidth >0) {
             Rect bound = new Rect(0,0,mDrawableWidth,mDrawableHeight);
            for(int index=0;index<4;index++) {
@@ -47,7 +49,22 @@ public class DrawableTextView extends TextView {
                }
            }
         }
-        setCompoundDrawables(mDrawables[0],mDrawables[1],mDrawables[2],mDrawables[3]);
+        super.setCompoundDrawables(mDrawables[0],mDrawables[1],mDrawables[2],mDrawables[3]);
+    }
+
+
+    @Override
+    public void setCompoundDrawables(@Nullable Drawable left, @Nullable Drawable top,
+                                     @Nullable Drawable right, @Nullable Drawable bottom) {
+        if (mDrawables == null) {
+            mDrawables = new Drawable[4];
+        }
+        mDrawables[0] = left;
+        mDrawables[1] = top;
+        mDrawables[2] = right;
+        mDrawables[3] = bottom;
+
+        reinitCompoundDrawables();
     }
 
 

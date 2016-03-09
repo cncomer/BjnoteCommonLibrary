@@ -298,6 +298,11 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
                     DebugUtils.logD(TAG, "DB currentVersionCode = " + currentVersion);
                     DebugUtils.logD(TAG, "DB newVersionCode = " + newServiceAppInfo.mVersionCode);
                     needUpdate = newServiceAppInfo.mVersionCode > currentVersion;
+
+					mDatabaseServiceAppInfo.copyFromServiceAppInfo(newServiceAppInfo);
+					if (needUpdate) {
+						DebugUtils.logD(TAG, "DB mServiceAppInfo = " + mDatabaseServiceAppInfo.toString());
+					}
                 }
             } catch (IOException e) {
                 e.printStackTrace();

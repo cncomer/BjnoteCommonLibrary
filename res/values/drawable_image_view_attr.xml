@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DrawableImageView">
+        <attr name="srcDrawableHeight" format="dimension"/>
+        <attr name="srcDrawableWidth" format="dimension"/>
+    </declare-styleable>
+</resources>

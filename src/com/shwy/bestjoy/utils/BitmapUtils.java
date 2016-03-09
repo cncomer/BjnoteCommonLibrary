@@ -1,6 +1,7 @@
 package com.shwy.bestjoy.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,16 +14,28 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.ImageView;
+
+import com.shwy.bestjoy.ComApplication;
 
 import junit.framework.Assert;
 
+import net.bither.util.NativeUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 public class BitmapUtils {
 	private static final String TAG = "BitmapUtils";
@@ -47,28 +60,39 @@ public class BitmapUtils {
 		mScreenWidth = dm.widthPixels;
 	}
 
+	public static Intent createCaptureIntent(Uri uri) {
+		Intent capture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		capture.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+		return capture;
+	}
+	public static Intent createGalleryIntent() {
+		Intent intent = new Intent();
+		intent.setType("image/*");
+		intent.setAction(Intent.ACTION_GET_CONTENT);
+		return intent;
+	}
+
 	public static Bitmap scaleBitmapFile(File bitmapFile, int width, int height) {
 		BitmapFactory.Options opt = new BitmapFactory.Options();
 		if (bitmapFile.length() > MAX_BILL_BITMAP_SIZE) {
 			opt.inJustDecodeBounds = true;
 			BitmapFactory.decodeFile(bitmapFile.getAbsolutePath(), opt);
-			int srcWidth = opt.outWidth;
-			int srcHeight = opt.outHeight;
-			float scaleWidth = 1.0f;
-            float scaleHeight =1.0f;
-			
-			if(srcWidth > width || srcHeight > height) {
-				scaleWidth = 1.0f * srcWidth / width;
-				scaleHeight = 1.0f * srcHeight / height;
-			}
+//			int srcWidth = opt.outWidth;
+//			int srcHeight = opt.outHeight;
+//			float scaleWidth = 1.0f;
+//            float scaleHeight =1.0f;
+//
+//			if(srcWidth > width || srcHeight > height) {
+//				scaleWidth = 1.0f * srcWidth / width;
+//				scaleHeight = 1.0f * srcHeight / height;
+//			}
+			opt.inSampleSize = calculateInSampleSize(opt, width, height);
 			opt.inJustDecodeBounds = false;
-			opt.inSampleSize = (int) Math.max(scaleWidth, scaleHeight);
 			Bitmap scaleBitmap = BitmapFactory.decodeFile(bitmapFile.getAbsolutePath(), opt);
-			Matrix matrix = new Matrix();
-			matrix.setScale(scaleWidth, scaleHeight);
-			return Bitmap.createBitmap(scaleBitmap, 0, 0, srcWidth, srcHeight, matrix, false);
+			return ComThumbnailUtils.extractThumbnail(scaleBitmap, width, height, ComThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 		} else {
-			return BitmapFactory.decodeFile(bitmapFile.getAbsolutePath(), opt);
+			Bitmap scaleBitmap = BitmapFactory.decodeFile(bitmapFile.getAbsolutePath(), opt);
+			return ComThumbnailUtils.extractThumbnail(scaleBitmap, width, height, ComThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 		}
 		
 	}
@@ -131,26 +155,8 @@ public class BitmapUtils {
 		return null;
 	}
 	
-	public static Bitmap scaleBitmapFile(Bitmap src, int width, int height) {
-		if (src != null) {
-			BitmapFactory.Options opt = new BitmapFactory.Options();
-			int srcWidth = src.getWidth();
-			int srcHeight = src.getHeight();
-			float scale = 1.0f;
-			
-			if(srcWidth > width || srcHeight > height) {
-				float scaleWidth = 1.0f * width / srcWidth;
-				float scaleHeight = 1.0f * height / srcHeight;
-				scale = Math.min(scaleWidth, scaleHeight);
-			}
-			opt.inJustDecodeBounds = false;
-			Matrix matrix = new Matrix();
-			matrix.setScale(scale, scale);
-			Bitmap bitmap = Bitmap.createBitmap(src, 0, 0, srcWidth, srcHeight, matrix, false);
-			src.recycle();
-			return bitmap;
-		}
-		return null;
+	public static Bitmap scaleBitmap(Bitmap source, int width, int height) {
+		return ComThumbnailUtils.extractThumbnail(source, width, height);
 		
 	}
 	
@@ -159,11 +165,27 @@ public class BitmapUtils {
 	    final int width = options.outWidth;
 	    int inSampleSize = 1;
 
-	    if (height > reqHeight || width > reqWidth) {
-	             final int heightRatio = Math.round((float) height/ (float) reqHeight);
-	             final int widthRatio = Math.round((float) width / (float) reqWidth);
-	             inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-	    }
+//	    if (height > reqHeight || width > reqWidth) {
+//			if (width > height) {
+//				inSampleSize = Math.round((float)height / (float)reqHeight);
+//			} else {
+//				inSampleSize = Math.round((float)width / (float)reqWidth);
+//			}
+//	    }
+		Log.d(TAG, "extractThumbNail: round=" + width + "x" + height);
+		final double beY = options.outHeight * 1.0 / height;
+		final double beX = options.outWidth * 1.0 / width;
+		Log.d(TAG, "extractThumbNail: extract beX = " + beX + ", beY = " + beY);
+		inSampleSize = (int) (beY < beX ? beX : beY);
+		if (inSampleSize <= 1) {
+			inSampleSize = 1;
+		}
+		int newHeight = height;
+		int newWidth = width;
+		// NOTE: out of memory error
+		while (options.outHeight * options.outWidth / inSampleSize > MAX_DECODE_PICTURE_SIZE) {
+			inSampleSize++;
+		}
 	    return inSampleSize;
 	}
 	
@@ -174,11 +196,9 @@ public class BitmapUtils {
 
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-	    // Decode bitmap with inSampleSize set
-	    options.inJustDecodeBounds = false;
-
+		options.inJustDecodeBounds = false;
 	    return BitmapFactory.decodeFile(filePath, options);
+
 	}
 	
 	
@@ -189,31 +209,83 @@ public class BitmapUtils {
 		bitmap.recycle();
 		return newBitmap;
 	}
-	
-	public static String bitmapToString(Bitmap bitmap, int quality) {
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
-	        byte[] b = baos.toByteArray();
-	        return Base64.encodeToString(b, Base64.DEFAULT);
+
+//	/**
+//	 * @deprecated 请使用bitmapToString(File file)
+//	 * @param bitmap
+//	 * @param quality
+//	 * @return
+//	 */
+//	public static String bitmapToString(Bitmap bitmap, int quality) {
+//	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//	        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+//	        byte[] b = baos.toByteArray();
+//	        return Base64.encodeToString(b, Base64.DEFAULT);
+//	}
+	public static String bitmapToString(File file) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		FileInputStream is = null;
+		byte[] buffer = new byte[4096];
+		int size;
+		try {
+			is = new FileInputStream(file);
+			size = is.read(buffer);
+			while (size >= 0) {
+				baos.write(buffer, 0, size);
+				size = is.read(buffer);
+			}
+			baos.flush();
+			byte[] b = baos.toByteArray();
+			baos.close();
+			return Base64.encodeToString(b, Base64.DEFAULT);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			NetworkUtils.closeInputStream(is);
+		}
+		return null;
 	}
-	
+
 	public static boolean bitmapToFile(Bitmap bitmap, File toSave, int quality) {
 		if (bitmap != null) {
-			FileOutputStream out = null;
-			try {
-				out = new FileOutputStream(toSave);
-				return bitmap.compress(Bitmap.CompressFormat.JPEG, quality, out);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+			//如果是64位，jpegbither库现在还不支持，我们使用自带的压缩
+			if (ComApplication.getSystemProperty("ro.product.cpu.abi", "").contains("arm64-v8a")
+					|| ComApplication.getSystemProperty("ro.product.cpu.abilist64", "").length() > 0
+					|| ComApplication.getSystemProperty("ro.product.cpu.abilist", "").contains("arm64-v8a")) {
+				FileOutputStream out = null;
+				try {
+					out = new FileOutputStream(toSave);
+					return bitmap.compress(Bitmap.CompressFormat.JPEG, quality, out);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} finally {
+					NetworkUtils.closeOutStream(out);
 				}
+			} else {
+				return NativeUtil.compressBitmap(bitmap, quality, bitmap.getWidth(), bitmap.getHeight(), toSave.getAbsolutePath(), true);
 			}
+
+		}
+		return false;
+	}
+
+	/**
+	 *
+	 * @param bitmap
+	 * @param toSave
+	 * @param quality  质量
+	 * @param reqWidth 指定保存文件的图片宽度
+	 * @param reqHeight 指定保存文件的图片高度
+	 * @return
+	 */
+	public static boolean bitmapToFile(Bitmap bitmap, File toSave, int quality, int reqWidth, int reqHeight) {
+		if (bitmap != null) {
+			Bitmap bp = ComThumbnailUtils.extractThumbnail(bitmap, reqWidth, reqHeight);
+			return bitmapToFile(bp, toSave, quality);
 		}
 		return false;
 	}
@@ -222,9 +294,10 @@ public class BitmapUtils {
 		Bitmap bitmap = Bitmap.createBitmap(mask.getWidth(), mask.getHeight(), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 		Paint paint = new Paint();
-		paint.setFilterBitmap(false);
+		paint.setFilterBitmap(true);
 		paint.setAntiAlias(true);
-		canvas.drawBitmap(dest, 0, 0, paint);
+		Rect dist = new Rect(0,0,mask.getWidth(),mask.getHeight());
+		canvas.drawBitmap(dest, null, dist, paint);
 		
 		paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
 		canvas.drawBitmap(mask, 0, 0, paint);
@@ -423,7 +496,6 @@ public class BitmapUtils {
 			}
 
 			options.inJustDecodeBounds = false;
-
 			Bitmap bm = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
 			if (bm == null) {
 				Log.e(TAG, "bitmap decode failed");
@@ -437,5 +509,70 @@ public class BitmapUtils {
 		}
 
 		return null;
+	}
+
+
+	public static void recycleImageViewSrcBitmap(ImageView imageView) {
+		Drawable drawable = imageView.getDrawable();
+		imageView.setImageDrawable(null);
+		if (drawable instanceof BitmapDrawable) {
+			recycleBitmap(((BitmapDrawable) drawable).getBitmap());
+		}
+	}
+
+	/**
+	 * On Android 2.3.3 (API level 10) and lower, using recycle() is recommended.
+	 * If you're displaying large amounts of bitmap data in your app,
+	 * you're likely to run into OutOfMemoryError errors.
+	 * The recycle() method allows an app to reclaim memory as soon as possible.
+	 * @param bitmap
+	 */
+	public static void recycleBitmap(Bitmap bitmap) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			if (bitmap != null && !bitmap.isRecycled()) {
+				bitmap.recycle();
+			}
+		}
+	}
+
+
+	/**
+	 * A helper function to return the byte usage per pixel of a bitmap based on its configuration.
+	 */
+	public static int getBytesPerPixel(Bitmap.Config config) {
+		if (config == Bitmap.Config.ARGB_8888) {
+			return 4;
+		} else if (config == Bitmap.Config.RGB_565) {
+			return 2;
+		} else if (config == Bitmap.Config.ARGB_4444) {
+			return 2;
+		} else if (config == Bitmap.Config.ALPHA_8) {
+			return 1;
+		}
+		return 1;
+	}
+
+	/**
+	 * this method determines whether a candidate bitmap satisfies the size criteria to be used for inBitmap
+	 * @param candidate
+	 * @param targetOptions
+	 * @return
+	 */
+	public static boolean canUseForInBitmap(Bitmap candidate, BitmapFactory.Options targetOptions) {
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			// From Android 4.4 (KitKat) onward we can re-use if the byte size of
+			// the new bitmap is smaller than the reusable bitmap candidate
+			// allocation byte count.
+			int width = targetOptions.outWidth / targetOptions.inSampleSize;
+			int height = targetOptions.outHeight / targetOptions.inSampleSize;
+			int byteCount = width * height * getBytesPerPixel(candidate.getConfig());
+			return byteCount <= candidate.getAllocationByteCount();
+		}
+
+		// On earlier versions, the dimensions must match exactly and the inSampleSize must be 1
+		return candidate.getWidth() == targetOptions.outWidth
+				&& candidate.getHeight() == targetOptions.outHeight
+				&& targetOptions.inSampleSize == 1;
 	}
 }

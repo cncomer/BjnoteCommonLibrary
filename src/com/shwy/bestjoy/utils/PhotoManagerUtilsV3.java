@@ -612,8 +612,10 @@ public class PhotoManagerUtilsV3 {
 			super.onPostExecute(bitmap);
 			if (bitmap != null) {
 				 if (imageViewReference != null) {
+					 DebugUtils.logPhotoUtils(TAG, "onPostExecute imageViewReference !=null, photoId " + mPhotoId);
 					ImageView imageView = imageViewReference.get();
 					AvatorAsyncTask avatarAsyncTask = getAvatorAsyncTask(imageView);
+					 DebugUtils.logPhotoUtils(TAG, "onPostExecute imageView=" + imageView+",avatarAsyncTask="+avatarAsyncTask+", photoId " + mPhotoId);
 					if (this == avatarAsyncTask && imageView != null) {
 						if (_loadCallback != null) {
 							DebugUtils.logPhotoUtils(TAG, "onLoadSuccessed for photoId " + mPhotoId);

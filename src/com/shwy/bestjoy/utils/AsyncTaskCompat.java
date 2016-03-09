@@ -17,6 +17,10 @@ package com.shwy.bestjoy.utils;
  */
 
 
+import android.os.Handler;
+import android.os.Message;
+import android.os.Process;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -31,12 +35,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.shwy.bestjoy.utils.ArrayDequeCompat;
-
-import android.os.Handler;
-import android.os.Message;
-import android.os.Process;
 /**
  * <p>ComAsyncTask enables proper and easy use of the UI thread. This class allows to
  * perform background operations and publish results on the UI thread without
@@ -268,7 +266,7 @@ public abstract class AsyncTaskCompat<Params, Progress, Result> {
          */
         RUNNING,
         /**
-         * Indicates that {@link ComAsyncTask#onPostExecute} has finished.
+         * Indicates that {@link AsyncTaskCompat#onPostExecute} has finished.
          */
         FINISHED,
     }

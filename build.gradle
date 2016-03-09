@@ -2,12 +2,12 @@ apply plugin: 'com.android.library'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-
+    compile 'com.android.support:support-v4:22.2.0'
 }
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    buildToolsVersion '23.0.2'
 
     lintOptions {
         // Or, if you prefer, you can continue to check for errors in release builds,
@@ -23,6 +23,7 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
         }
 
         // Move the tests to tests/java, tests/res, etc...

@@ -15,4 +15,19 @@ public class AsyncTaskUtils {
 			task.cancel(true);
 		}
 	}
+
+
+
+	public static AsyncTaskCompat commitTask(Runnable runnable) {
+		AsyncTaskCompat asyncTaskCompat = new AsyncTaskCompat(){
+
+			@Override
+			protected Object doInBackground(Object[] params) {
+				return null;
+			}
+		};
+
+		return asyncTaskCompat;
+
+	}
 }
