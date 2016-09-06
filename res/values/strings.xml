@@ -11,7 +11,9 @@
      <string name="saturday">星期六</string>
      <string name="sunday">星期天</string>
     <string name="tip_no_existed_photo_in_service">抱歉，服务器上是没有找到对应的图片</string>
-      <string name="msg_intent_failed">抱歉，无法打开所需软件。 条码内容可能无效。</string>
+    <string name="tip_cant_create_cache_photo_file">无法创建缓存的图片文件</string>
+    <string name="tip_cancel_by_user">用户取消</string>
+      <string name="s_msg_intent_failed">抱歉，手机内没有找到可用的应用程序。</string>
       
        <string name="dialog_use_mobile_title">移动网络流量提示</string>
      <string name="dialog_use_mobile_message">当前正在使用移动数据网络，会产生数据流量费用，是否继续？</string>
@@ -46,5 +48,16 @@
     <string name="msg_op_failed">操作失败</string>
 
     <string name="app_update_error_md5">下载的安装包完整性校验失败，请重新下载</string>
+
+
+    <string name="unit_year">年</string>
+    <string name="unit_day">天</string>
+    <string name="unit_minute">分钟</string>
+    <string name="unit_hour">小时</string>
+    <string name="unit_second">秒</string>
+
+    <string name="spinner_item_empty_value">""</string>
+    <string name="spinner_item_default_value">"请选择"</string>
+
 
 </resources>

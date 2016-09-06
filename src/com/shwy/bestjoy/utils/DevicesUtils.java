@@ -1,6 +1,7 @@
 package com.shwy.bestjoy.utils;
 
 import android.content.Context;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 
 public class DevicesUtils {
@@ -27,5 +28,9 @@ public class DevicesUtils {
 	public String getIMSI() {
 		TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
 		return tm.getSubscriberId();
+	}
+
+	public String getDeviceModelName() {
+		return Build.MODEL;
 	}
 }

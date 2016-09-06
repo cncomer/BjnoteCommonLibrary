@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="checkedTextColor" format="reference|color" />
+    <attr name="checkedBackground" format="reference|color" />
+    <attr name="uncheckedTextColor" format="reference|color" />
+    <attr name="uncheckedBackground" format="reference|color" />
+
+    <declare-styleable name="CheckedTagTextView">
+        <attr name="checkedTextColor"/>
+        <attr name="checkedBackground"/>
+        <attr name="uncheckedTextColor"/>
+        <attr name="uncheckedBackground"/>
+    </declare-styleable>
+</resources>

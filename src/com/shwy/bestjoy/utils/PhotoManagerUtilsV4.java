@@ -357,6 +357,9 @@ public class PhotoManagerUtilsV4 {
         int read = 0;
         FileOutputStream fos = null;
         try {
+            if (!bitmapFileToCache.getParentFile().exists()) {
+                bitmapFileToCache.getParentFile().mkdirs();
+            }
             fos = new FileOutputStream(bitmapFileToCache);
             read = is.read(buffer);
             while(read != -1) {
@@ -455,12 +458,15 @@ public class PhotoManagerUtilsV4 {
     public void loadPhotoAsync(String token, ImageView imageView, String photoId, byte[] photo, Bitmap defaultBitmap, LoadCallback loadCallback) {
         if (cancelPotentialDownload(photoId, imageView)) {
             Bitmap avatar = getBitmapFromCache(photoId);
+            if (!getFileToSave(photoId).exists()) {
+                removeBitmapFromCache(photoId);
+                avatar = null;
+            }
             if (avatar != null && imageView != null) {
                 DebugUtils.logD(TAG, "loadPhotoAsync load Bitmap from cache#photoid=" + photoId);
+                imageView.setImageBitmap(avatar);
                 if (loadCallback != null) {
                     loadCallback.onLoadSuccessed(photoId, imageView, avatar);
-                } else {
-                    imageView.setImageBitmap(avatar);
                 }
             } else {
                 internalLoadPhotoAsync(token, imageView, photoId, defaultBitmap, photo, loadCallback);
@@ -478,10 +484,10 @@ public class PhotoManagerUtilsV4 {
             Bitmap avatar = getBitmapFromCache(photoId);
             if (avatar != null && imageView != null) {
                 DebugUtils.logD(TAG, "loadPhotoAsync load Bitmap from cache#photoid=" + photoId);
+                imageView.setImageBitmap(avatar);
+
                 if (loadCallback != null) {
                     loadCallback.onLoadSuccessed(photoId, imageView, avatar);
-                } else {
-                    imageView.setImageBitmap(avatar);
                 }
             } else {
                 internalLoadLocalPhotoAsync(token, imageView, photoId, defaultBitmap, photo, loadCallback);
@@ -525,7 +531,10 @@ public class PhotoManagerUtilsV4 {
      * 如果存在映射，说明对于某一个PhotoId已经有下载任务在进行了，我们等待他完成就可以了
      */
     private static HashSet<String> mDownloadingMap = new HashSet<String>();
-    abstract class  AvatorAsyncTask extends AsyncTaskCompat<Void, Void, Bitmap> {
+
+    private static Object mBlockDownloadLock = new Object();
+    private static boolean mIsBlockDownload = false;
+    abstract class  AvatorAsyncTask extends AsyncTaskCompat<Void, Void, ServiceResultObject> {
         protected String aToken;
         protected String mPhotoId;
         protected WeakReference<ImageView> imageViewReference;
@@ -580,7 +589,9 @@ public class PhotoManagerUtilsV4 {
         }
 
         @Override
-        protected Bitmap doInBackground(Void... arg0) {
+        protected ServiceResultObject doInBackground(Void... arg0) {
+            ServiceResultObject serviceResultObject = new ServiceResultObject();
+            serviceResultObject.mStatusCode = 1;
             try {
                 synchronized(mDownloadingMap) {
                     while (!isCancelled() && mDownloadingMap.contains(mPhotoId)) {
@@ -590,23 +601,27 @@ public class PhotoManagerUtilsV4 {
                     DebugUtils.logD(TAG, "current task add into DownloadingMap for photoID=" + mPhotoId);
                     mDownloadingMap.add(mPhotoId);
                 }
+
             } catch (InterruptedException e) {
                 DebugUtils.logD(TAG, "current task is Interrupted for photoID=" + mPhotoId);
                 e.printStackTrace();
-                notifyCancelStatus(e.getMessage());
-                return null;
+                serviceResultObject.mStatusCode = -1;
+                serviceResultObject.mStatusMessage = ComApplication.getInstance().getGeneralErrorMessage(e);
             }
             if (isCancelled()) {
                 DebugUtils.logD(TAG, "current task is canceled with the photoID=" + mPhotoId);
-                return null;
+                return serviceResultObject;
             }
-            return null;
+            return serviceResultObject;
         }
         @Override
         protected void onCancelled() {
             super.onCancelled();
             removeTask(aToken, this);
-            notifyCancelStatus("task canceled for photoID="+ mPhotoId);
+            ServiceResultObject serviceResultObject = new ServiceResultObject();
+            serviceResultObject.mStatusCode = 0;
+            serviceResultObject.mStatusMessage = ComApplication.getInstance().getString(R.string.tip_cancel_by_user);
+            notifyCancelStatus(serviceResultObject.mStatusMessage);
             synchronized(mDownloadingMap) {
                 if (mDownloadingMap.contains(mPhotoId)) {
                     boolean removed = mDownloadingMap.remove(mPhotoId);
@@ -617,16 +632,22 @@ public class PhotoManagerUtilsV4 {
         }
 
         @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            if (bitmap != null) {
+        protected void onPostExecute(ServiceResultObject serviceResultObject) {
+            super.onPostExecute(serviceResultObject);
+            Bitmap bitmap = null;
+            if (serviceResultObject.isOpSuccessfully() &&
+                    serviceResultObject.mObject != null
+                    && serviceResultObject.mObject instanceof Bitmap) {
+                bitmap = (Bitmap) serviceResultObject.mObject;
                 if (imageViewReference != null) {
                     ImageView imageView = imageViewReference.get();
                     AvatorAsyncTask avatarAsyncTask = getAvatorAsyncTask(imageView);
                     if (this == avatarAsyncTask && imageView != null) {
+
                         if (_loadCallback != null) {
                             DebugUtils.logPhotoUtils(TAG, "onLoadSuccessed for photoId " + mPhotoId);
                             bitmap = _loadCallback.addToCache(bitmap);
+                            imageView.setImageBitmap(bitmap);
                             _loadCallback.onLoadSuccessed(mPhotoId, imageView, bitmap);
                         } else {
                             DebugUtils.logPhotoUtils(TAG, "setImageBitmap for photoId " + mPhotoId);
@@ -636,6 +657,8 @@ public class PhotoManagerUtilsV4 {
 
                 }
 
+            } else {
+                notifyErrorStatus(serviceResultObject.mStatusMessage);
             }
             addBitmapToCache(mPhotoId, bitmap);
             removeTask(aToken, this);
@@ -682,15 +705,19 @@ public class PhotoManagerUtilsV4 {
         }
 
         @Override
-        protected Bitmap doInBackground(Void... params) {
-            super.doInBackground(params);
+        protected ServiceResultObject doInBackground(Void... params) {
+            ServiceResultObject serviceResultObject = super.doInBackground(params);
+            if (!serviceResultObject.isOpSuccessfully()) {
+                return serviceResultObject;
+            }
             InputStream is = null;
             Bitmap bitmap = null;
             File cachedBitmapFile = getFileToSave();
             if (cachedBitmapFile == null) {
                 DebugUtils.logE(TAG, "error, LoadPhotoAsyncTask call getFileToSave() which returns null for mPhotoId=" + mPhotoId);
-                notifyErrorStatus("Can't access cachedBitmapFile for photoid=" + mPhotoId);
-                return null;
+                serviceResultObject.mStatusCode = 0;
+                serviceResultObject.mStatusMessage = ComApplication.getInstance().getString(R.string.tip_cant_create_cache_photo_file);
+                return serviceResultObject;
             }
             DebugUtils.logPhotoUtils(TAG, "step 2 try to get avator from cached file " + cachedBitmapFile.getAbsolutePath());
             bitmap  = decodeFromCachedBitmapFile(cachedBitmapFile);
@@ -703,17 +730,37 @@ public class PhotoManagerUtilsV4 {
                     bitmap.recycle();
                     DebugUtils.logPhotoUtils(TAG, "bitmap.recycle() in bg1 for id " + mPhotoId);
                 }
-                return null;
+                serviceResultObject.mStatusCode = 0;
+                serviceResultObject.mStatusMessage = ComApplication.getInstance().getString(R.string.tip_cancel_by_user);
+                return serviceResultObject;
             }
             if (bitmap == null) {
+                synchronized(mBlockDownloadLock) {
+                    while(mIsBlockDownload) {
+                        DebugUtils.logD(TAG, "BlockFeature>>current task is blocked downloading for photoID=" + mPhotoId);
+                        try {
+                            mBlockDownloadLock.wait();
+                            DebugUtils.logD(TAG, "BlockFeature>>current blocked downloading task was notified to continue downloading for photoID=" + mPhotoId);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                if(isCancelled()) {
+                    DebugUtils.logD(TAG, "BlockFeature>>current task was canceled for photoID=" + mPhotoId);
+                    serviceResultObject.mStatusCode = 0;
+                    serviceResultObject.mStatusMessage = ComApplication.getInstance().getString(R.string.tip_cancel_by_user);
+                    return serviceResultObject;
+                }
                 String url = getServiceUrl();
                 try {
                     DebugUtils.logPhotoUtils(TAG, "step 4 download bitmap");
                     HttpResponse respose = NetworkUtils.openContectionLockedV2(url, ComApplication.getInstance().getSecurityKeyValuesObject());
                     if (respose.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
                         DebugUtils.logPhotoUtils(TAG, "download bitmap failed, can't find image on server-side for photoid " + mPhotoId);
-                        notifyErrorStatus(ComApplication.getInstance().getString(R.string.tip_no_existed_photo_in_service));
-                        return null;
+                        serviceResultObject.mStatusCode = 0;
+                        serviceResultObject.mStatusMessage = ComApplication.getInstance().getString(R.string.tip_no_existed_photo_in_service);
+                        return serviceResultObject;
                     }
                     is = respose.getEntity().getContent();
                     if (is != null) {
@@ -724,9 +771,10 @@ public class PhotoManagerUtilsV4 {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    notifyErrorStatus(ComApplication.getInstance().getGeneralErrorMessage(e));
+                    serviceResultObject.mStatusCode = 0;
+                    serviceResultObject.mStatusMessage = ComApplication.getInstance().getGeneralErrorMessage(e);
                 } finally {
-                    DebugUtils.logPhotoUtils(TAG, "finally() for path="+url + ", is=" + is + ", bitmap="+bitmap);
+                    DebugUtils.logPhotoUtils(TAG, "finally() for url="+url + ", is=" + is + ", bitmap="+bitmap);
                     NetworkUtils.closeInputStream(is);
                 }
             }
@@ -737,7 +785,8 @@ public class PhotoManagerUtilsV4 {
                     DebugUtils.logPhotoUtils(TAG, "bitmap.recycle() in bg2 for id " + mPhotoId);
                 }
             }
-            return bitmap;
+            serviceResultObject.mObject = bitmap;
+            return serviceResultObject;
         }
 
     }
@@ -758,12 +807,15 @@ public class PhotoManagerUtilsV4 {
 
 
         @Override
-        protected Bitmap doInBackground(Void... params) {
+        protected ServiceResultObject doInBackground(Void... params) {
+            ServiceResultObject serviceResultObject = new ServiceResultObject();
+            serviceResultObject.mStatusCode = 1;
             Bitmap bitmap = null;
             File cachedBitmapFile = getFileToSave();
             if (cachedBitmapFile == null) {
                 DebugUtils.logE(TAG, "error, LoadLocalPhotoAsyncTask call getFileToSave() which returns null for " + mPhotoId);
-                return null;
+                serviceResultObject.mStatusCode = 0;
+                serviceResultObject.mStatusMessage = ComApplication.getInstance().getString(R.string.tip_cant_create_cache_photo_file);
             }
             DebugUtils.logPhotoUtils(TAG, "step 2 try to get avator from cached file " + cachedBitmapFile.getAbsolutePath());
             bitmap  = decodeFromCachedBitmapFile(cachedBitmapFile);
@@ -778,9 +830,11 @@ public class PhotoManagerUtilsV4 {
                     bitmap.recycle();
                     DebugUtils.logPhotoUtils(TAG, "bitmap.recycle() in bg1 for id " + mPhotoId);
                 }
-                return null;
+                serviceResultObject.mStatusCode = 0;
+                serviceResultObject.mStatusMessage = ComApplication.getInstance().getString(R.string.tip_cancel_by_user);
             }
-            return bitmap;
+            serviceResultObject.mObject = bitmap;
+            return serviceResultObject;
         }
 
     }
@@ -790,5 +844,14 @@ public class PhotoManagerUtilsV4 {
         StringBuilder sb = new StringBuilder(filePath);
         sb.append("|").append(url);
         return sb.toString();
+    }
+
+    public static void setBlockDownload(boolean block) {
+        synchronized(mBlockDownloadLock) {
+            mIsBlockDownload = block;
+            if (!mIsBlockDownload) {
+                mBlockDownloadLock.notifyAll();
+            }
+        }
     }
 }

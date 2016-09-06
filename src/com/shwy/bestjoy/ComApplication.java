@@ -1,15 +1,18 @@
 package com.shwy.bestjoy;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
-import android.net.wifi.WifiManager;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.telephony.TelephonyManager;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -19,13 +22,13 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.shwy.bestjoy.exception.ExceptionCode;
 import com.shwy.bestjoy.exception.StatusException;
 import com.shwy.bestjoy.utils.AlertDialogWrapper;
 import com.shwy.bestjoy.utils.ComConnectivityManager;
 import com.shwy.bestjoy.utils.ComPreferencesManager;
 import com.shwy.bestjoy.utils.DebugUtils;
 import com.shwy.bestjoy.utils.DevicesUtils;
-import com.shwy.bestjoy.utils.ExceptionCode;
 import com.shwy.bestjoy.utils.FilesUtils;
 import com.shwy.bestjoy.utils.SecurityUtils;
 import com.shwy.bestjoy.utils.SecurityUtils.SecurityKeyValuesObject;
@@ -34,11 +37,13 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.SocketException;
@@ -61,6 +66,7 @@ public class ComApplication extends Application{
 
     private Toast mLongToast;
     private Toast mShortToast;
+    private AssetManager mAssetManager;
 
 	@Override
 	public void onCreate() {
@@ -76,12 +82,16 @@ public class ComApplication extends Application{
         mInstance = this;
         mContext = this;
 		mHandler = new Handler();
+
+        mAssetManager = this.getAssets();
 		mImMgr = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
 
 		//用于屏幕适配
 		mDisplayMetrics = this.getResources().getDisplayMetrics();
 		Log.d(TAG, mDisplayMetrics.toString());
-		Log.d(TAG, getDeviceInfo(this));
+        if (isInDebug()) {
+            Log.d(TAG, getDeviceInfo(this));
+        }
 		//注册会用到IMEI号
 		DevicesUtils.getInstance().setContext(this);
 		ComPreferencesManager.getInstance().setContext(this);
@@ -230,7 +240,6 @@ public class ComApplication extends Application{
 	public void removeRunnable(Runnable runnable) {
 		mHandler.removeCallbacks(runnable);
 	}
-
     /***
      * 显示通常的网络连接错误
      * @return
@@ -285,11 +294,11 @@ public class ComApplication extends Application{
     public File getAppFile(String dirName, String fileName) {
         File root = getFilesDir();
         checkDirAndMkdirs(root);
-        if (dirName != null) {
+        if (!TextUtils.isEmpty(dirName)) {
             root = new File(root, dirName);
             checkDirAndMkdirs(root);
         }
-        if (fileName != null) {
+        if (!TextUtils.isEmpty(fileName)) {
             root = new File(root, fileName);
         }
         return root;
@@ -305,12 +314,12 @@ public class ComApplication extends Application{
         File cache = getAppFile(FilesUtils.DIR_ACCOUNTS_ROOT, FilesUtils.DIR_ACCOUNTS_CACHE);
         checkDirAndMkdirs(cache);
 
-        if (dirName != null) {
+        if (!TextUtils.isEmpty(dirName)) {
             cache =  new File(cache, dirName);
             checkDirAndMkdirs(cache);
         }
 
-        if (fileName != null) {
+        if (!TextUtils.isEmpty(fileName)) {
             cache =  new File(cache, fileName);
         }
         return cache;
@@ -325,12 +334,12 @@ public class ComApplication extends Application{
         File cache = getCacheDir();
         checkDirAndMkdirs(cache);
 
-        if (dirName != null) {
+        if (!TextUtils.isEmpty(dirName)) {
             cache =  new File(cache, dirName);
             checkDirAndMkdirs(cache);
         }
 
-        if (fileName != null) {
+        if (!TextUtils.isEmpty(fileName)) {
             cache =  new File(cache, fileName);
         }
         return cache;
@@ -368,13 +377,13 @@ public class ComApplication extends Application{
     	File root =  getExternalStorageRoot("cache");
         checkDirAndMkdirs(root);
 
-        if (dirName != null) {
+        if (!TextUtils.isEmpty(dirName)) {
             //需要创建目录
             root = new File(root, dirName);
             checkDirAndMkdirs(root);
         }
 
-        if (fileName != null) {
+        if (!TextUtils.isEmpty(fileName)) {
             root = new File(root, fileName);
         }
     	return root;
@@ -392,13 +401,13 @@ public class ComApplication extends Application{
         File root =  getExternalStorageRoot("files");
         checkDirAndMkdirs(root);
 
-        if (dirName != null) {
+        if (!TextUtils.isEmpty(dirName)) {
             //需要创建目录
             root = new File(root, dirName);
             checkDirAndMkdirs(root);
         }
 
-        if (fileName != null) {
+        if (!TextUtils.isEmpty(fileName)) {
             root = new File(root, fileName);
         }
         return root;
@@ -466,33 +475,111 @@ public class ComApplication extends Application{
         }
     }
 
-	public static String getDeviceInfo(Context context) {
-	    try{
-	        JSONObject json = new JSONObject();
-	        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-	  
-	        String device_id = tm.getDeviceId();
-	      
-	        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-	          
-	        String mac = wifi.getConnectionInfo().getMacAddress();
-	        json.put("mac", mac);
-	      
-	       if(TextUtils.isEmpty(device_id) ){
-	            device_id = mac;
-	       }
-	      
-	      if( TextUtils.isEmpty(device_id) ){
-	           device_id = android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-	      }
-	      
-	      json.put("device_id", device_id);
-	      return json.toString();
-	    }catch(Exception e){
-	      e.printStackTrace();
-	    }
-	    return "Can't get DeviceInfo";
-	}
+//	public static String getDeviceInfo(Context context) {
+//	    try{
+//	        JSONObject json = new JSONObject();
+//	        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+//
+//	        String device_id = tm.getDeviceId();
+//
+//	        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+//
+//	        String mac = wifi.getConnectionInfo().getMacAddress();
+//	        json.put("mac", mac);
+//
+//	       if(TextUtils.isEmpty(device_id) ){
+//	            device_id = mac;
+//	       }
+//
+//	      if( TextUtils.isEmpty(device_id) ){
+//	           device_id = android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+//	      }
+//
+//	      json.put("device_id", device_id);
+//	      return json.toString();
+//	    }catch(Exception e){
+//	      e.printStackTrace();
+//	    }
+//	    return "Can't get DeviceInfo";
+//	}
+
+    public static boolean checkPermission(Context context, String permission) {
+        boolean result = false;
+        if (Build.VERSION.SDK_INT >= 23) {
+            try {
+                Class<?> clazz = Class.forName("android.content.Context");
+                Method method = clazz.getMethod("checkSelfPermission", String.class);
+                int rest = (Integer) method.invoke(context, permission);
+                if (rest == PackageManager.PERMISSION_GRANTED) {
+                    result = true;
+                } else {
+                    result = false;
+                }
+            } catch (Exception e) {
+                result = false;
+            }
+        } else {
+            PackageManager pm = context.getPackageManager();
+            if (pm.checkPermission(permission, context.getPackageName()) == PackageManager.PERMISSION_GRANTED) {
+                result = true;
+            }
+        }
+        return result;
+    }
+    public static String getDeviceInfo(Context context) {
+        try {
+            org.json.JSONObject json = new org.json.JSONObject();
+            android.telephony.TelephonyManager tm = (android.telephony.TelephonyManager) context
+                    .getSystemService(Context.TELEPHONY_SERVICE);
+            String device_id = null;
+            if (checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+                device_id = tm.getDeviceId();
+            }
+            String mac = null;
+            FileReader fstream = null;
+            try {
+                fstream = new FileReader("/sys/class/net/wlan0/address");
+            } catch (FileNotFoundException e) {
+                fstream = new FileReader("/sys/class/net/eth0/address");
+            }
+            BufferedReader in = null;
+            if (fstream != null) {
+                try {
+                    in = new BufferedReader(fstream, 1024);
+                    mac = in.readLine();
+                } catch (IOException e) {
+                } finally {
+                    if (fstream != null) {
+                        try {
+                            fstream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            json.put("mac", mac);
+            if (TextUtils.isEmpty(device_id)) {
+                device_id = mac;
+            }
+            if (TextUtils.isEmpty(device_id)) {
+                device_id = android.provider.Settings.Secure.getString(context.getContentResolver(),
+                        android.provider.Settings.Secure.ANDROID_ID);
+            }
+            json.put("device_id", device_id);
+            return json.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "{}";
+    }
 
     /**
      * 拷贝内容到剪贴簿
@@ -568,7 +655,7 @@ public class ComApplication extends Application{
                 }
                 password = sb.toString();
             }
-            DebugUtils.logD(TAG, "desEnCrypto src=" + src + ",password=" + password);
+//            DebugUtils.logD(TAG, "desEnCrypto src=" + src + ",password=" + password);
             return SecurityUtils.DES.enCrypto(src.getBytes("utf-8"), password);
 
         } catch (UnsupportedEncodingException e) {
@@ -597,7 +684,7 @@ public class ComApplication extends Application{
                 }
                 password = sb.toString();
             }
-            DebugUtils.logD(TAG, "desDeCrypto src=" + src + ",password=" + password);
+//            DebugUtils.logD(TAG, "desDeCrypto src=" + src + ",password=" + password);
             return SecurityUtils.DES.deCrypto(src, password);
 
         } catch (UnsupportedEncodingException e) {
@@ -679,6 +766,14 @@ public class ComApplication extends Application{
         }
         Log.d("getSystemProperty",  key + " = " + value);
         return value;
+    }
+
+    public InputStream openAssert(String name) throws IOException {
+        return mAssetManager.open(name);
+    }
+
+    public boolean isInDebug() {
+        return (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
                   
 }

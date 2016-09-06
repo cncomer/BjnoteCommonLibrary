@@ -49,6 +49,8 @@ public final class Intents {
 	public static final String EXTRA_TITLE="extra_title";
 	public static final String EXTRA_NOTE="extra_note";
 	public static final String EXTRA_TYPE="extra_type";
+	public static final String EXTRA_SOURCE="extra_source";
+	public static final String EXTRA_TARGET="extra_target";
 	public static final String EXTRA_PASSWORD="extra_password";
 	public static final String EXTRA_TOPIC_ID="extra_topic_id";
 	public static final String EXTRA_MD="extra_md";
@@ -59,8 +61,13 @@ public final class Intents {
 	public static final String EXTRA_POSITION = "extra_position";
 	public static final String EXTRA_PHOTOID = "extra_photoid";
 	public static final String EXTRA_UPDATE = "extra_update";
-	
+	/**查询参数*/
+	public static final String EXTRA_QUERY="extra_query";
+	public static final String EXTRA_ONLY_QUERY_VALUE="extra_only_query_value";
+	public static final String EXTRA_JSON_QUERY="extra_json_query";
 	public static final String EXTRA_URI = "extra_uri";
+
+	public static final String EXTRA_DATA_TYPE="extra_data_type";
 	
 	//��Ʒ������� begin
 	/**��Ʒ21λ����*/
@@ -98,6 +105,9 @@ public final class Intents {
 	public static final String EXTRA_PROGRESS="extra_progress";
 	public static final String EXTRA_RESULT="extra_result";
 	public static final String EXTRA_PROGRESS_MAX="extra_progress_max";
+
+	/**主题*/
+	public static final String EXTRA_THEME = "extra_theme";
 	
 	public static final class MonitorService {
 		public static final String ACTION_START_MONITOR = "com.shwy.bestjoy.bjnote.client.startmonitor";
@@ -322,7 +332,7 @@ public final class Intents {
     			context.startActivity(intent);
     		} catch (ActivityNotFoundException e) {
     			AlertDialog.Builder builder = new AlertDialog.Builder(context);
-    			builder.setMessage(R.string.msg_intent_failed);
+    			builder.setMessage(R.string.s_msg_intent_failed);
     			builder.setPositiveButton(android.R.string.ok, null);
     			builder.show();
     		}
@@ -443,6 +453,32 @@ public final class Intents {
 			}
 		} else {
 			intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.map.baidu.com/geocoder?address=" + addressName+"&output=html"));
+		}
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+		context.startActivity(intent);
+	}
+
+	/**
+	 * 导航
+	 * //移动APP调起Android百度地图方式举例
+	 intent = Intent.getIntent("intent://map/direction?origin=latlng:34.264642646862,108.95108518068|name:我家&destination=大雁塔&mode=driving&region=西安&src=yourCompanyName|yourAppName#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end");
+
+	 http://api.map.baidu.com/direction?origin=latlng:34.264642646862,108.95108518068|name:我家&destination=大雁塔&mode=driving&region=西安&output=html&src=yourCompanyName|yourAppName
+	 * @param context
+	 * @param origin 起点名称或经纬度，或者可同时提供名称和经纬度，此时经纬度优先级高，将作为导航依据，名称只负责展示。
+	 * @param mode  导航模式，固定为transit、driving、walking，分别表示公交、驾车和步行
+     */
+	public static void directionBaiduMap(Context context, String origin, String destination, String mode, String src) {
+		Intent intent = null;
+		String para = "origin=" + origin + "&destination=" + destination + "&mode=" + mode + "&src=" + src;
+		if (isAppInstalled(context, "com.baidu.BaiduMap")) {
+			try {
+				intent = Intent.parseUri("intent://map/direction?" + para + "#Intent;scheme=bdapp;package=com.baidu.BaiduMap;end", Intent.URI_INTENT_SCHEME);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		} else {
+			intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://api.map.baidu.com/direction?" + para + "&output=html"));
 		}
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 		context.startActivity(intent);

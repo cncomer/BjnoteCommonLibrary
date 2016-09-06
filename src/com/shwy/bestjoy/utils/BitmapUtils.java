@@ -40,8 +40,7 @@ import java.io.UnsupportedEncodingException;
 public class BitmapUtils {
 	private static final String TAG = "BitmapUtils";
 	private Context mContext;
-	private static final long MAX_BILL_BITMAP_SIZE = 1920 * 1440; //100k
-	
+
 	private static int mScreenWidth, mScreenHeight;
 
 	private static BitmapUtils mInstance = new BitmapUtils();
@@ -74,7 +73,7 @@ public class BitmapUtils {
 
 	public static Bitmap scaleBitmapFile(File bitmapFile, int width, int height) {
 		BitmapFactory.Options opt = new BitmapFactory.Options();
-		if (bitmapFile.length() > MAX_BILL_BITMAP_SIZE) {
+		if (bitmapFile.length() > MAX_DECODE_PICTURE_SIZE) {
 			opt.inJustDecodeBounds = true;
 			BitmapFactory.decodeFile(bitmapFile.getAbsolutePath(), opt);
 //			int srcWidth = opt.outWidth;
@@ -117,7 +116,7 @@ public class BitmapUtils {
 			}
 
 			// NOTE: out of memory error
-			while (options.outHeight * options.outWidth / options.inSampleSize > MAX_BILL_BITMAP_SIZE) {
+			while (options.outHeight * options.outWidth / options.inSampleSize > MAX_DECODE_PICTURE_SIZE) {
 				options.inSampleSize++;
 			}
 
@@ -361,7 +360,7 @@ public class BitmapUtils {
 
 
 
-	private static final int MAX_DECODE_PICTURE_SIZE = 1920 * 1440;
+	private static final int MAX_DECODE_PICTURE_SIZE = 1920 * 1440; // 100k
 	public static Bitmap extractThumbNail(final String path, final int height, final int width, final boolean crop) {
 		Assert.assertTrue(path != null && !path.equals("") && height > 0 && width > 0);
 

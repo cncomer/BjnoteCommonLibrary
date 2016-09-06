@@ -1,7 +1,6 @@
 package com.shwy.bestjoy.utils;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.shwy.bestjoy.ComApplication;
 
@@ -29,7 +28,7 @@ public class FeedbackHelper {
 		new FeedbackAsyncTask(feddbackObject).execute();
 	}
 	
-	private class FeedbackAsyncTask extends AsyncTask<Void, Void, ServiceResultObject> {
+	private class FeedbackAsyncTask extends AsyncTaskCompat<Void, Void, ServiceResultObject> {
 		private AbstractFeedbackObject _abstractFeedbackObject;
 		private FeedbackAsyncTask(AbstractFeedbackObject abstractFeedbackObject) {
 			_abstractFeedbackObject = abstractFeedbackObject;

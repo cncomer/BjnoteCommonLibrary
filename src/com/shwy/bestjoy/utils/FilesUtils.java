@@ -2,6 +2,7 @@ package com.shwy.bestjoy.utils;
 
 import android.content.Context;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -86,7 +87,13 @@ public class FilesUtils {
 		  DebugUtils.logD(TAG, "saveFile to " + out.getAbsolutePath() + " success? " + success);
 		 return success;
 	  }
-	
+
+
+	public static boolean saveStringToFile(String content, File out) {
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(content.getBytes());
+		return saveFile(byteArrayInputStream, out);
+	}
+
 	public static boolean installDatabaseFiles(Context context, String fileName, String ext, String extReplace) {
 		 File file = context.getDatabasePath(fileName + extReplace);
 		 boolean success = true;
@@ -167,4 +174,7 @@ public class FilesUtils {
     public static final String SUFFIX_JSON = ".json";
     /**xml文件*/
     public static final String SUFFIX_XML = ".xml";
+
+	/**config目录*/
+	public static final String DIR_CONFIG = "config";
 }

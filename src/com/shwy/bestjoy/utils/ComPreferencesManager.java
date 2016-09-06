@@ -27,6 +27,10 @@ public class ComPreferencesManager {
 		mFirstPreferManager = context.getSharedPreferences("first_launch", Context.MODE_PRIVATE);
 		mPreferManager = PreferenceManager.getDefaultSharedPreferences(context);
 	}
+
+	public SharedPreferences createSharedPreferences(String fileName) {
+		return Context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+	}
 	
 	/***
 	 * 是否第一次载入
