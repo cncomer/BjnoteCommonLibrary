@@ -13,14 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 建议使用单例模式
  * Created by bestjoy on 16/6/27.
  */
 public class SpinnerBinderUtils {
     private Context mContext;
     private int mResource, mDropDownResource;
 
-    private String defaultValue = "";
-    private String defaultEmptyValue = "";
+    public String defaultValue = "";
+    public String defaultEmptyValue = "";
     public SpinnerBinderUtils(Context context){
         mContext = context;
         mResource = android.R.layout.simple_spinner_item;
@@ -30,8 +31,37 @@ public class SpinnerBinderUtils {
         defaultEmptyValue = context.getString(R.string.spinner_item_empty_value);
     }
 
+    public SpinnerBinderUtils() {
+
+    }
+
+    private static final SpinnerBinderUtils INSTANCE = new SpinnerBinderUtils();
+    public void setContext(Context context) {
+        mContext = context;
+        setResouceLayout(android.R.layout.simple_spinner_item);
+        setDropDownResourceLayout(android.R.layout.simple_spinner_dropdown_item);
+        defaultValue = context.getString(R.string.spinner_item_default_value);
+        defaultEmptyValue = context.getString(R.string.spinner_item_empty_value);
+    }
+
+    public static SpinnerBinderUtils getInstance() {
+        return INSTANCE;
+    }
+
+    public void setResouceLayout(int resouceLayoutId) {
+        mResource = resouceLayoutId;
+    }
+
+    public void setDropDownResourceLayout(int dropDownResourceId) {
+        mDropDownResource = dropDownResourceId;
+    }
+
     public boolean checkEmptyValue(String value) {
         return defaultEmptyValue.equals(value) || defaultValue.equals(value);
+    }
+
+    public boolean check(PolicyObject policyObject) {
+        return policyObject != null && !checkEmptyValue(policyObject.mCode);
     }
 
     public void setLayoutResource(int resource, int dropDownResource) {
@@ -39,7 +69,7 @@ public class SpinnerBinderUtils {
         mDropDownResource = dropDownResource;
     }
 
-    public String getSpinnerCodeName(Spinner spinner) {
+    public static String getSpinnerCodeName(Spinner spinner) {
         PolicyObject select = getSpinnerPolicyObject(spinner);
         return select!=null?select.mCodeName:null;
     }
@@ -49,7 +79,7 @@ public class SpinnerBinderUtils {
      * @param spinner
      * @return
      */
-    public PolicyObject getSpinnerPolicyObject(Spinner spinner) {
+    public static PolicyObject getSpinnerPolicyObject(Spinner spinner) {
         return getSpinnerPolicyObject(spinner, spinner.getSelectedItemPosition());
     }
     /**
@@ -58,7 +88,7 @@ public class SpinnerBinderUtils {
      * @param position
      * @return
      */
-    public PolicyObject getSpinnerPolicyObject(Spinner spinner, int position) {
+    public static PolicyObject getSpinnerPolicyObject(Spinner spinner, int position) {
         SpinnerAdapter spinnerAdapter = getSpinnerAdapter(spinner);
         if (spinnerAdapter != null) {
             return spinnerAdapter.getPolicyObject(position);
@@ -77,14 +107,26 @@ public class SpinnerBinderUtils {
             spinner.setAdapter(spinnerAdapter);
         }
 
-        int index =  spinnerAdapter.findCodePosition(currentCode);
+        int index = spinnerAdapter.findCodePosition(currentCode);
         if (index > -1) {
             spinner.setSelection(index);
+        } else {
+            spinner.setSelection(0);
         }
     }
 
+    public static void setSelection(Spinner spinner, String code) {
+        SpinnerAdapter spinnerAdapter = getSpinnerAdapter(spinner);
+        if (spinnerAdapter != null) {
+            int index =  spinnerAdapter.findCodePosition(code);
+            if (index > -1) {
+                spinner.setSelection(index);
+            }
+        }
 
-    public SpinnerAdapter getSpinnerAdapter(Spinner spinner) {
+    }
+
+    public static SpinnerAdapter getSpinnerAdapter(Spinner spinner) {
         if (spinner.getAdapter() != null && spinner.getAdapter() instanceof SpinnerAdapter) {
             SpinnerAdapter spinnerAdapter = (SpinnerAdapter) spinner.getAdapter();
             return spinnerAdapter;
@@ -138,8 +180,12 @@ public class SpinnerBinderUtils {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view =  super.getView(position, convertView, parent);
-            view.setTag(getPolicyObject(position));
+            bindView(position, view);
             return view;
+        }
+
+        public void bindView(int position, View convertView) {
+            convertView.setTag(getPolicyObject(position));
         }
 
         @Override
@@ -189,6 +235,8 @@ public class SpinnerBinderUtils {
         public String mUpCode = "";
         public String mFilterCode = "";
         public long mId = -1;
+        public String mData1, mData2, mData3, mData4, mData5;
+        public Object mExtraObject;
 
         public static PolicyObject newPolicyObject(String upcode, String code, String codeName) {
             PolicyObject policyObject = new PolicyObject();
@@ -202,6 +250,11 @@ public class SpinnerBinderUtils {
         @Override
         public String toString() {
             return mCodeName;
+        }
+
+
+        public String toFrendlyString() {
+            return mUpCode+"-" + mCode + "-" + mCodeName;
         }
 
     }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WheelObjectPicker">
+        <!-- 指示器视图-->
+        <attr name="wheelIndicatorView" format="reference"/>
+        <!-- 可见的Item个数-->
+        <attr name="wheelVisibleItemCount" format="reference|integer"/>
+    </declare-styleable>
+</resources>

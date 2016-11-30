@@ -775,5 +775,51 @@ public class ComApplication extends Application{
     public boolean isInDebug() {
         return (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
-                  
+
+
+    /**
+     * 请输入+value
+     * @param value
+     * @return
+     */
+    public String getEmptyValueInputTip(String value) {
+        return getString(R.string.input_type_please_input) + value;
+    }
+
+
+    /**
+     * 提示请输入+value
+     * @param needValueResId
+     * @return
+     */
+    public void showInputTip(int needValueResId) {
+        showInputTip(getString(needValueResId));
+    }
+    /**
+     * 提示请输入+value
+     * @param needValue
+     * @return
+     */
+    public void showInputTip(String needValue) {
+        showMessage(getString(R.string.input_type_please_input) + needValue);
+    }
+
+    /**
+     * 提示请选择+value
+     * @param needValueResId
+     * @return
+     */
+    public void showChooseTip(int needValueResId) {
+        showChooseTip(getString(needValueResId));
+    }
+
+    /**
+     * 提示请选择+value
+     * @param needValue
+     * @return
+     */
+    public void showChooseTip(String needValue) {
+        showMessage(getString(R.string.input_type_please_input) + needValue);
+    }
+
 }

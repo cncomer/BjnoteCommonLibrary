@@ -10,7 +10,9 @@ public class DevicesUtils {
 	private static DevicesUtils INSTANCE = new DevicesUtils();
 	private Context mContext;
 
-	private DevicesUtils(){};
+	private DevicesUtils(){}
+
+	public static final String DEVICE_TYPE = "Android";
 	
 	public static DevicesUtils getInstance() {
 		return INSTANCE;

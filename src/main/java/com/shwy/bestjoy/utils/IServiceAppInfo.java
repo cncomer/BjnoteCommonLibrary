@@ -36,7 +36,7 @@ public interface IServiceAppInfo {
     public static final String KEY_SERVICE_APP_INFO_MD5 = "service_app_info_md5";
     public static final String KEY_MD5 = "md5";
 
-	public static final int IMPORTANCE_MUST = 0;
-	public static final int IMPORTANCE_OPTIONAL = 1;
+	public static final int IMPORTANCE_MUST = 1;
+	public static final int IMPORTANCE_OPTIONAL = 0;
 
 }

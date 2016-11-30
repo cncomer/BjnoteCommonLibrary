@@ -121,10 +121,10 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 			if (Intent.ACTION_USER_PRESENT.equals(action)) {
 				needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_HOUR;
 			} else {
-				needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_DAY;
+				needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_HOUR;//UPDATE_DURATION_PER_DAY;
 			}
 		} else if (ComConnectivityManager.getInstance().isMobileConnected()) {
-			needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_WEEK;
+			needCheckUpdate = currentTime - lastUpdateCheckTime > UPDATE_DURATION_PER_DAY;//UPDATE_DURATION_PER_WEEK;
 		} else {
 			DebugUtils.logD(TAG, "connectivity is not connected.");
 			return false;
@@ -270,6 +270,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
                 mServiceAppInfo.copyFromServiceAppInfo(newServiceAppInfo);
                 mServiceAppInfo.save();
                if (needUpdate) {
+				   mServiceAppInfo.saveToSystem(mServiceAppInfo.mVersionCode, mServiceAppInfo.mVersionName, mServiceAppInfo.mImportance);
                    DebugUtils.logD(TAG, "APK save mServiceAppInfo = " + mServiceAppInfo.toString());
                }
             }

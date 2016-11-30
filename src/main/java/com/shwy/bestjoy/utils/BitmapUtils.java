@@ -221,6 +221,11 @@ public class BitmapUtils {
 //	        byte[] b = baos.toByteArray();
 //	        return Base64.encodeToString(b, Base64.DEFAULT);
 //	}
+	/**
+	 * bitmap file转换成base64字符串
+	 * @param 图片文件
+	 * @return
+	 */
 	public static String bitmapToString(File file) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		FileInputStream is = null;
@@ -246,6 +251,24 @@ public class BitmapUtils {
 		} finally {
 			NetworkUtils.closeInputStream(is);
 		}
+		return null;
+	}
+
+	/**
+	 * bitmap转换成base64字符串
+	 * @param bitmap
+	 * @return
+     */
+	public static String bitmapConvertToBase64String(Bitmap bitmap, int quality) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+			byte[] b = baos.toByteArray();
+			NetworkUtils.closeOutStream(baos);
+			return Base64.encodeToString(b, Base64.DEFAULT);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	NetworkUtils.closeOutStream(baos);
 		return null;
 	}
 

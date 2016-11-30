@@ -4,8 +4,8 @@ package com.shwy.bestjoy.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.provider.Settings;
+import android.text.TextUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,9 +22,10 @@ import java.io.File;
  * @author chenkai
  *
  */
-public class ServiceAppInfo implements Parcelable, IServiceAppInfo{
+public class ServiceAppInfo implements IServiceAppInfo{
 	 /**最近一次执行过自动检测的时间*/
 
+	 private static final String TAG = "ServiceAppInfo";
     
 	public static final String DEFAULT_UPDATE_FILE_URL="http://www.mingdown.com/mobile/getVersion.ashx?app=";
 	
@@ -47,6 +48,7 @@ public class ServiceAppInfo implements Parcelable, IServiceAppInfo{
     public String mMD5 = "";
 
 	private String mUpdateServiceUrl;
+	protected String content="";
     
 	public ServiceAppInfo(Context context, String token) {
 		mToken = token;
@@ -71,6 +73,7 @@ public class ServiceAppInfo implements Parcelable, IServiceAppInfo{
 		try {
 			JSONObject json = new JSONObject(content);
 			serviceAppInfo = new ServiceAppInfo(context, token);
+			serviceAppInfo.content = content;
 			serviceAppInfo.mVersionCode = json.getInt(KEY_VERSION_CODE);
 			serviceAppInfo.mReleaseDate = json.getString(KEY_DATE);
 			serviceAppInfo.mImportance = json.getInt(KEY_IMPORTANCE);
@@ -119,6 +122,44 @@ public class ServiceAppInfo implements Parcelable, IServiceAppInfo{
 		.commit();
 		updateLatestCheckTime(mCheckTime);
 	}
+
+	public void saveToSystem(int newestCode, String newestCodeName, int importance) {
+		String newestCodeKey = mToken+"_" + KEY_SERVICE_APP_INFO_VERSION_CODE;
+		boolean op = Settings.System.putInt(mContext.getContentResolver(), newestCodeKey, newestCode);
+		DebugUtils.logD(TAG, "saveToSystem newestCodeKey=" + newestCodeKey + ", newestCode=" + newestCode + ",op=" + op);
+
+		String newestCodeNameKey = mToken+"_" + KEY_SERVICE_APP_INFO_VERSION_NAME;
+		op = Settings.System.putString(mContext.getContentResolver(), newestCodeNameKey, newestCodeName);
+		DebugUtils.logD(TAG, "saveToSystem newestCodeNameKey=" + newestCodeNameKey + ", newestCodeName=" + newestCodeName + ",op=" + op);
+
+		if (importance == 1) {
+			String importanceKey = mToken+"_" + KEY_SERVICE_APP_INFO_IMPORTANCE;
+			op = Settings.System.putInt(mContext.getContentResolver(), importanceKey, importance);
+			DebugUtils.logD(TAG, "saveToSystem importanceKey=" + importanceKey + ", importance=" + importance + ",op=" + op);
+		}
+	}
+
+	public int getSystemIntValue(String key, int callbackValue) {
+		String realKey = mToken+"_" + key;
+		int value = callbackValue;
+		try {
+			value = Settings.System.getInt(mContext.getContentResolver(), realKey);
+		} catch (Settings.SettingNotFoundException e) {
+			e.printStackTrace();
+			value = callbackValue;
+		}
+		DebugUtils.logD(TAG, "getSystemIntValue key=" + key + ", realKey=" + realKey + ", value=" + value+", callbackValue=" + callbackValue);
+		return value;
+	}
+	public String getSystemStringValue(String key, String callbackValue) {
+		String realKey = mToken+"_" + key;
+		String value = Settings.System.getString(mContext.getContentResolver(), realKey);
+		if (TextUtils.isEmpty(value)) {
+			value = callbackValue;
+		}
+		DebugUtils.logD(TAG, "getSystemStringValue key=" + key + ", realKey=" + realKey + ", value=" + value+", callbackValue=" + callbackValue);
+		return value;
+	}
 	
 	public void read() {
 		
@@ -151,26 +192,6 @@ public class ServiceAppInfo implements Parcelable, IServiceAppInfo{
 		return mPreferences.edit().putLong(ServiceAppInfo.KEY_SERVICE_APP_INFO_CHECK_TIME, time).commit();
 	}
 
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeInt(mVersionCode);
-		dest.writeString(mReleaseDate);
-		dest.writeInt(mImportance);
-		dest.writeString(mSizeStr);
-		dest.writeString(mApkUrl);
-		dest.writeString(mReleaseNote);
-		dest.writeString(mVersionName);
-		dest.writeString(mToken);
-
-        dest.writeString(mMD5);
-	}
-	
     public File buildLocalDownloadAppFile() {
     	StringBuilder sb = new StringBuilder("apk_");
     	sb.append(String.valueOf(mVersionCode))

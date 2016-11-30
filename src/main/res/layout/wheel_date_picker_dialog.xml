@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="#ffffffff"
+    android:gravity="center">
+
+    <com.shwy.bestjoy.widget.WheelNumberPicker
+        android:id="@+id/year"
+        android:layout_width="70dip"
+        android:layout_height="150dip" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/datepicker_unit_year"
+        android:textColor="#ff000000"
+        android:layout_marginLeft="4dip"/>
+
+    <com.shwy.bestjoy.widget.WheelNumberPicker
+        android:id="@+id/month"
+        android:layout_width="40dip"
+        android:layout_height="150dip"
+        android:layout_marginLeft="10dip"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/datepicker_unit_month"
+        android:textColor="#ff000000"
+        android:layout_marginLeft="4dip"/>
+
+    <com.shwy.bestjoy.widget.WheelNumberPicker
+        android:id="@+id/day"
+        android:layout_width="40dip"
+        android:layout_height="150dip"
+        android:layout_marginLeft="10dip"/>
+    <TextView android:id="@+id/unit_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/datepicker_unit_day"
+        android:textColor="#ff000000"
+        android:layout_marginLeft="4dip"/>
+</LinearLayout>

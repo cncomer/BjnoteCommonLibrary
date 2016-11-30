@@ -34,6 +34,8 @@ public class CommonExternalizeableObject implements Externalizable {
     /**原始内容*/
     public String srcContent = "";
 
+//    public static List<CommonExternalizeableObject> initCommonExternalizeableObject = new LinkedList<>();
+
 
     public static final String VERSION = "CommonExternalizeableObject_v2";
 
@@ -44,6 +46,31 @@ public class CommonExternalizeableObject implements Externalizable {
     public CommonExternalizeableObject(String filePath) {
         cacheFile = new File(filePath);
     }
+
+//    public void registerInstance() {
+//        synchronized (initCommonExternalizeableObject) {
+//            if (!initCommonExternalizeableObject.contains(this)) {
+//                initCommonExternalizeableObject.add(this);
+//            }
+//        }
+//    }
+//
+//    public void unregisterInstance() {
+//        synchronized (initCommonExternalizeableObject) {
+//            if (initCommonExternalizeableObject.contains(this)) {
+//                initCommonExternalizeableObject.remove(this);
+//            }
+//        }
+//    }
+//
+//    public static void clearAllInstance() {
+//        synchronized (initCommonExternalizeableObject) {
+//            for(CommonExternalizeableObject commonExternalizeableObject : initCommonExternalizeableObject) {
+//                commonExternalizeableObject.clear();
+//            }
+//            initCommonExternalizeableObject.clear();
+//        }
+//    }
 
 
     public void clear() {
@@ -147,7 +174,7 @@ public class CommonExternalizeableObject implements Externalizable {
         }
     }
 
-    protected void initContentValues() {
+    public void initContentValues() {
         isCachedData = true;
     }
 

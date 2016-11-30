@@ -59,5 +59,13 @@
     <string name="spinner_item_empty_value">""</string>
     <string name="spinner_item_default_value">"请选择"</string>
 
+    <string name="input_type_please_input">请输入</string>
+    <string name="input_type_please_choose">请选择</string>
 
+
+
+    <string name="datepicker_unit_year">年</string>
+    <string name="datepicker_unit_month">月</string>
+    <string name="datepicker_unit_day">日</string>
+    <string name="datepicker_dialog_title">选择日期</string>
 </resources>

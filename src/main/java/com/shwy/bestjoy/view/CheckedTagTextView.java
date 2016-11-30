@@ -16,6 +16,24 @@ public class CheckedTagTextView extends TextView{
 
     private int checkedTextColor, uncheckedTextColor;
     private Drawable checkedBackground, uncheckedBackground;
+    /**
+     * Interface definition for a callback to be invoked when the checked state
+     * of a compound button changed.
+     */
+    public static interface OnTagCheckedChangeListener {
+        /**
+         * Called when the checked state of a compound button has changed.
+         *
+         * @param checkedTagTextView The compound button view whose state has changed.
+         * @param isChecked  The new checked state of buttonView.
+         */
+        void onTagCheckedChanged(CheckedTagTextView checkedTagTextView, boolean isChecked);
+    }
+    private OnTagCheckedChangeListener checkedChangeListener;
+
+    public void setTagCheckedChangeListener(OnTagCheckedChangeListener onCheckedChangeListener) {
+        checkedChangeListener = onCheckedChangeListener;
+    }
 
     public CheckedTagTextView(Context context) {
         this(context, null);
@@ -28,7 +46,7 @@ public class CheckedTagTextView extends TextView{
         uncheckedTextColor = typedArray.getColor(R.styleable.CheckedTagTextView_uncheckedTextColor, getCurrentTextColor());
 
         checkedBackground = typedArray.getDrawable(R.styleable.CheckedTagTextView_checkedBackground);
-        uncheckedBackground = typedArray.getDrawable(R.styleable.CheckedTagTextView_checkedBackground);
+        uncheckedBackground = typedArray.getDrawable(R.styleable.CheckedTagTextView_uncheckedBackground);
 
         if (checkedBackground == null) {
             checkedBackground = getBackground();
@@ -61,15 +79,29 @@ public class CheckedTagTextView extends TextView{
     }
 
     public void toogle() {
-        checked = !checked;
-        update();
-
+        setChecked(!checked);
     }
 
     @Override
     public boolean performClick() {
         toogle();
         return super.performClick();
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+        update();
+        if (checkedChangeListener != null) {
+            checkedChangeListener.onTagCheckedChanged(this, checked);
+        }
+    }
+
+    /**
+     * 清空选中状态
+     */
+    public void clearChecked() {
+        checked = false;
+        update();
     }
 
     public boolean isChecked() {
