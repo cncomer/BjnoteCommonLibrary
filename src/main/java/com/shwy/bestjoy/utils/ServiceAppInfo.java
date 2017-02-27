@@ -123,6 +123,12 @@ public class ServiceAppInfo implements IServiceAppInfo{
 		updateLatestCheckTime(mCheckTime);
 	}
 
+	/**
+	 * 保存
+	 * @param newestCode
+	 * @param newestCodeName
+	 * @param importance -1表示重置为0
+     */
 	public void saveToSystem(int newestCode, String newestCodeName, int importance) {
 		String newestCodeKey = mToken+"_" + KEY_SERVICE_APP_INFO_VERSION_CODE;
 		boolean op = Settings.System.putInt(mContext.getContentResolver(), newestCodeKey, newestCode);
@@ -134,6 +140,11 @@ public class ServiceAppInfo implements IServiceAppInfo{
 
 		if (importance == 1) {
 			String importanceKey = mToken+"_" + KEY_SERVICE_APP_INFO_IMPORTANCE;
+			op = Settings.System.putInt(mContext.getContentResolver(), importanceKey, importance);
+			DebugUtils.logD(TAG, "saveToSystem importanceKey=" + importanceKey + ", importance=" + importance + ",op=" + op);
+		} else if (importance == -1) {
+			String importanceKey = mToken+"_" + KEY_SERVICE_APP_INFO_IMPORTANCE;
+			importance = 0;
 			op = Settings.System.putInt(mContext.getContentResolver(), importanceKey, importance);
 			DebugUtils.logD(TAG, "saveToSystem importanceKey=" + importanceKey + ", importance=" + importance + ",op=" + op);
 		}

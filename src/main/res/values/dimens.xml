@@ -3,4 +3,9 @@
     <dimen name="action_menu_minwidth">48dip</dimen>
 
     <dimen name="line_1px">1dip</dimen>
+
+    <dimen name="default_button_height">20dip</dimen>
+    <dimen name="default_button_width">60dip</dimen>
+    <dimen name="default_button_corner_radius">5dip</dimen>
+    <dimen name="default_button_padding">@dimen/line_1px</dimen>
 </resources>

@@ -2,6 +2,7 @@ package com.shwy.bestjoy;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
@@ -49,10 +50,13 @@ import java.lang.reflect.Method;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComApplication extends Application{
 
 
+    private String processName = "";
 	private static final String TAG ="ComApplication";
 	/**对于不同的保修卡，我们只要确保该变量为正确的应用包名即可*/
     public Handler mHandler;
@@ -464,14 +468,22 @@ public class ComApplication extends Application{
     //add by chenkai, for Usage, 2013-06-05 end
     
     public void hideInputMethod(IBinder token) {
-    	if (mImMgr != null) {
-    		mImMgr.hideSoftInputFromWindow(token, 0);
-    	}
+        if (mImMgr != null) {
+            mImMgr.hideSoftInputFromWindow(token, 0);
+        }
+    }
+
+    public void showInputMethod(View view) {
+        if (mImMgr != null) {
+            mImMgr.showSoftInput(view, 0);
+        }
     }
 
     public void hideInputMethod(Activity activity) {
         if (mImMgr != null) {
-            mImMgr.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            if (activity.getCurrentFocus() != null) {
+                mImMgr.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
         }
     }
 
@@ -655,7 +667,7 @@ public class ComApplication extends Application{
                 }
                 password = sb.toString();
             }
-//            DebugUtils.logD(TAG, "desEnCrypto src=" + src + ",password=" + password);
+            DebugUtils.logD(TAG, "desEnCrypto src=" + src);
             return SecurityUtils.DES.enCrypto(src.getBytes("utf-8"), password);
 
         } catch (UnsupportedEncodingException e) {
@@ -820,6 +832,50 @@ public class ComApplication extends Application{
      */
     public void showChooseTip(String needValue) {
         showMessage(getString(R.string.input_type_please_input) + needValue);
+    }
+
+
+
+    /**
+     * 判断某个服务是否正在运行的方法
+     * @param context
+     * @param serviceName 是包名+服务的类名（例如：com.xxx.xxx.xxxService）
+     * @return true代表正在运行，false代表服务没有正在运行
+     */
+    public static boolean isServiceWork(Context context, String serviceName) {
+        boolean isWork = false;
+        ActivityManager myAM = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> myList = myAM.getRunningServices(80);
+        if (myList.size() <= 0) {
+            return false;
+        }
+        for (int i = 0; i < myList.size(); i++) {
+            String mName = myList.get(i).service.getClassName().toString();
+            if (mName.equals(serviceName)) {
+                isWork = true;
+                break;
+            }
+        }
+        return isWork;
+    }
+
+
+    public String getCurProcessName() {
+        if (!TextUtils.isEmpty(processName)) {
+            return processName;
+        }
+        int pid = android.os.Process.myPid();
+        ActivityManager mActivityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> sysProcessList = mActivityManager.getRunningAppProcesses();
+        List<ActivityManager.RunningAppProcessInfo> appProcessList = new ArrayList<>(sysProcessList.size());
+        appProcessList.addAll(sysProcessList);
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcessList) {
+            if (appProcess.pid == pid) {
+                processName = appProcess.processName;
+                return processName;
+            }
+        }
+        return null;
     }
 
 }

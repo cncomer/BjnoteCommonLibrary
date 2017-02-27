@@ -235,7 +235,7 @@ public class SpinnerBinderUtils {
         public String mUpCode = "";
         public String mFilterCode = "";
         public long mId = -1;
-        public String mData1, mData2, mData3, mData4, mData5;
+        public String mData1, mData2, mData3, mData4, mData5, mData6, mData7, mData8;
         public Object mExtraObject;
 
         public static PolicyObject newPolicyObject(String upcode, String code, String codeName) {

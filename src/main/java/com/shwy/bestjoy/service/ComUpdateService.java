@@ -129,11 +129,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 			DebugUtils.logD(TAG, "connectivity is not connected.");
 			return false;
 		}
-		
-		if (ACTION_UPDATE_CHECK_FORCE.equals(action)) {
-			DebugUtils.logD(TAG, "force updating....");
-			needCheckUpdate = true;
-		}
+
 		return needCheckUpdate;
 	}
 
@@ -193,7 +189,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		Log.v(TAG, "onStart from intent " + intent);
+		DebugUtils.logD(TAG, "onStart from intent " + intent);
 		if (intent != null) {
 			if (ComConnectivityManager.getInstance().isConnected()) {
 				String action = intent.getAction();
@@ -210,7 +206,14 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 				|| Intent.ACTION_USER_PRESENT.equals(action)
 				|| ACTION_UPDATE_CHECK_FORCE.equals(action)) {
 
-			boolean needCheckUpdate = needUpdateCheck(action);
+			boolean needCheckUpdate = false;
+			if (ACTION_UPDATE_CHECK_FORCE.equals(action)) {
+				DebugUtils.logD(TAG, "force updating....");
+				needCheckUpdate = true;
+			} else {
+				needCheckUpdate = needUpdateCheck(action);
+			}
+
 
 			if (!DEBUG && !needCheckUpdate) {
 				DebugUtils.logD(TAG, "need not updating check, time is not enough long");

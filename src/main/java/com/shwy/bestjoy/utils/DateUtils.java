@@ -27,6 +27,8 @@ public class DateUtils {
 	/**yyyy/MM/dd HH:mm*/
 	public static  DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 	public static  DateFormat DATE_FULL_TIME_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	/**MM:dd HH:mm*/
+	public static  DateFormat HOUR_MINUTE_TIME_FORMAT = new SimpleDateFormat("HH:mm");
 	private String day1, day2, day3, day4, day5, day6, day7;
 	private String[] mMonthOfYear;
 	
