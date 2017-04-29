@@ -161,7 +161,7 @@ public class FilesUtils {
     public static final String DIR_ACCOUNTS_CACHE = "cache";
 
     /**accounts/files目录*/
-    public static final String DIR_ACCOUNTS_FILE = "files";
+    public static final String DIR_ACCOUNTS_FILE = "accountfiles";
     
     /**cache目录*/
     public static final String DIR_CACHE = "cache";

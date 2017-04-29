@@ -2,4 +2,47 @@
 <resources>
     <color name="wt">#ffffffff</color>
     <color name="blk">#ff000000</color>
+    <color name="colorPrimary">#fffdd000</color>
+    <color name="colorPrimaryDark">#fffdd000</color>
+    <color name="colorPrimaryPress">#FFF7DF6F</color>
+
+    <color name="textColorPrimary">#ff5a5a5a</color>
+    <color name="defaultBtnTextColor">@color/wt</color>
+
+    <color name="defaultButtonColor">@color/colorPrimary</color>
+    <color name="defaultButtonPressedColor">@color/colorPrimaryPress</color>
+    <color name="defaultButtonDisabledColor">#737476</color>
+
+    <color name="defaultBlackButtonColor">#ff1c1c1c</color>
+    <color name="defaultBlackButtonPressedColor">#ff717171</color>
+    <color name="defaultBlackButtonDisabledColor">@color/defaultButtonDisabledColor</color>
+
+    <color name="defaultBlueButtonColor">#ff217ddd</color>
+    <color name="defaultBlueButtonPressedColor">#FF0d6ab8</color>
+    <color name="defaultBlueButtonDisabledColor">@color/defaultButtonDisabledColor</color>
+
+
+    <color name="defaultOrangeButtonColor">#ffff662c</color>
+    <color name="defaultOrangeButtonPressedColor">#FFF78960</color>
+    <color name="defaultOrangeButtonDisabledColor">@color/defaultButtonDisabledColor</color>
+
+    <color name="defaultGreenButtonColor">#FF166C51</color>
+    <color name="defaultGreenButtonPressedColor">#ff19c58f</color>
+    <color name="defaultGreenButtonDisabledColor">#ffbecfca</color>
+
+    <color name="defaultPinkButtonColor">#fff23a3a</color>
+    <color name="defaultPinkButtonPressedColor">#ffff5a5a</color>
+    <color name="defaultPinkButtonDisabledColor">@color/defaultButtonDisabledColor</color>
+
+    <color name="defaultRedButtonColor">#ffa60c0c</color>
+    <color name="defaultRedButtonPressedColor">#ffce3535</color>
+    <color name="defaultRedButtonDisabledColor">@color/defaultButtonDisabledColor</color>
+
+    <color name="defaultWhiteButtonColor">#ffF4F4F4</color>
+    <color name="defaultWhiteButtonPressedColor">#aaa7a7</color>
+    <color name="defaultWhiteButtonDisabledColor">@color/defaultButtonDisabledColor</color>
+
+
+    <color name="image_placeholder">#fff1f1f1</color>
+    <color name="divider_color">#fff1f1f1</color>
 </resources>

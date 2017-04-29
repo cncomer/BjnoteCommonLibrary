@@ -1,11 +1,14 @@
 package com.shwy.bestjoy.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.shwy.bestjoy.R;
 
@@ -184,6 +187,13 @@ public class SpinnerBinderUtils {
             return view;
         }
 
+        @Override
+        public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            View view = super.getDropDownView(position, convertView, parent);
+            bindView(position, view);
+            return view;
+        }
+
         public void bindView(int position, View convertView) {
             convertView.setTag(getPolicyObject(position));
         }
@@ -235,7 +245,7 @@ public class SpinnerBinderUtils {
         public String mUpCode = "";
         public String mFilterCode = "";
         public long mId = -1;
-        public String mData1, mData2, mData3, mData4, mData5;
+        public String mData1, mData2, mData3, mData4, mData5, mData6, mData7, mData8;
         public Object mExtraObject;
 
         public static PolicyObject newPolicyObject(String upcode, String code, String codeName) {

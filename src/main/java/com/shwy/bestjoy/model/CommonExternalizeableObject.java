@@ -91,7 +91,7 @@ public class CommonExternalizeableObject implements Externalizable {
     }
 
     public void save() throws IOException {
-        DebugUtils.logD(TAG, "save " + cacheFile.getName());
+        DebugUtils.logD(TAG, "save " + cacheFile.getAbsolutePath());
         ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(cacheFile));
         writeExternal(os);
         os.close();

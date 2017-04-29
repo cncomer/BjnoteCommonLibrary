@@ -49,6 +49,10 @@ public final class Intents {
 	public static final String EXTRA_TITLE="extra_title";
 	public static final String EXTRA_NOTE="extra_note";
 	public static final String EXTRA_TYPE="extra_type";
+	public static final String EXTRA_SUB_TYPE="extra_sub_type";
+
+	/**是否是登录*/
+	public static final String EXTRA_LOGIN="extra_login";
 	public static final String EXTRA_SOURCE="extra_source";
 	public static final String EXTRA_TARGET="extra_target";
 	public static final String EXTRA_PASSWORD="extra_password";

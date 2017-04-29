@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 public class ComPreferencesManager {
 	
 	private static final ComPreferencesManager INSTANCE = new ComPreferencesManager();
-	private Context Context;
+	private Context context;
 	public SharedPreferences mFirstPreferManager;
 	public SharedPreferences mPreferManager;
 	
@@ -23,13 +23,13 @@ public class ComPreferencesManager {
 	}
 	
 	public void setContext(Context context) {
-		Context = context;
+		this.context = context;
 		mFirstPreferManager = context.getSharedPreferences("first_launch", Context.MODE_PRIVATE);
 		mPreferManager = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
 	public SharedPreferences createSharedPreferences(String fileName) {
-		return Context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
+		return context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
 	}
 	
 	/***
