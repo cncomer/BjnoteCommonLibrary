@@ -44,7 +44,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 	public static final String PKG_NAME = "com.shwy.bestjoy.utils";
 	
 	/**强制检查更新*/
-	public static final String ACTION_UPDATE_CHECK_FORCE = PKG_NAME + "intent.ACTION_UPDATE_CHECK_FORCE";
+	public static final String ACTION_UPDATE_CHECK_FORCE = PKG_NAME + ".intent.ACTION_UPDATE_CHECK_FORCE";
 	/**开始检查更新*/
 	public static final String ACTION_UPDATE_CHECK = PKG_NAME + ".intent.ACTION_UPDATE_CHECK";
 	/**用户强制立即检查更新*/

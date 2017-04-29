@@ -27,7 +27,7 @@ public class SpinnerBinderUtils {
     public SpinnerBinderUtils(Context context){
         mContext = context;
         mResource = android.R.layout.simple_spinner_item;
-        mDropDownResource = android.R.layout.simple_spinner_dropdown_item;
+        mDropDownResource = R.layout.support_simple_spinner_dropdown_item;
 
         defaultValue = context.getString(R.string.spinner_item_default_value);
         defaultEmptyValue = context.getString(R.string.spinner_item_empty_value);
@@ -41,7 +41,7 @@ public class SpinnerBinderUtils {
     public void setContext(Context context) {
         mContext = context;
         setResouceLayout(android.R.layout.simple_spinner_item);
-        setDropDownResourceLayout(android.R.layout.simple_spinner_dropdown_item);
+        setDropDownResourceLayout(R.layout.support_simple_spinner_dropdown_item);
         defaultValue = context.getString(R.string.spinner_item_default_value);
         defaultEmptyValue = context.getString(R.string.spinner_item_empty_value);
     }
@@ -185,6 +185,13 @@ public class SpinnerBinderUtils {
             bindView(position, view);
             return view;
         }
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            View view =  super.getDropDownView(position, convertView, parent);
+            bindView(position, view);
+            return view;
+        }
+
 
         @Override
         public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
