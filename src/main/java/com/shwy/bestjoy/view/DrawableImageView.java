@@ -16,7 +16,7 @@ import com.shwy.bestjoy.utils.DebugUtils;
 /**
  * Created by bestjoy on 15/7/28.
  */
-public class DrawableImageView extends ImageView {
+public class DrawableImageView extends android.support.v7.widget.AppCompatImageView {
     private static final String TAG = "DrawableImageView";
     private int mSrcDrawableHeight;
     private int mSrcDrawableWidth;

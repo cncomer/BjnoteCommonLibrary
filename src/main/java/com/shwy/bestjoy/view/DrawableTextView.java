@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import com.shwy.bestjoy.R;
 
@@ -15,7 +14,7 @@ import com.shwy.bestjoy.R;
 /**
  * Created by bestjoy on 15/7/28.
  */
-public class DrawableTextView extends TextView {
+public class DrawableTextView extends android.support.v7.widget.AppCompatTextView {
     private int mDrawableHeight;
     private int mDrawableWidth;
 
@@ -28,7 +27,6 @@ public class DrawableTextView extends TextView {
 
     public DrawableTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DrawableTextView);
 
         mDrawableHeight = typedArray.getDimensionPixelSize(R.styleable.DrawableTextView_drawableHeight, 0);

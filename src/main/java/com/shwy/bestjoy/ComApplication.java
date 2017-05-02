@@ -28,6 +28,7 @@ import com.shwy.bestjoy.exception.StatusException;
 import com.shwy.bestjoy.utils.AlertDialogWrapper;
 import com.shwy.bestjoy.utils.ComConnectivityManager;
 import com.shwy.bestjoy.utils.ComPreferencesManager;
+import com.shwy.bestjoy.utils.DateUtils;
 import com.shwy.bestjoy.utils.DebugUtils;
 import com.shwy.bestjoy.utils.DevicesUtils;
 import com.shwy.bestjoy.utils.FilesUtils;
@@ -876,6 +877,22 @@ public class ComApplication extends Application{
             }
         }
         return null;
+    }
+
+
+    /**
+     * 判断文件是否过期
+     * @param file
+     * @param validDays
+     * @param validTimes
+     * @return
+     */
+    public static boolean checkOldConfig(File file, int validDays, long validTimes) {
+        boolean old = true;
+        if (file.exists()) {
+            old = validDays !=-1 ? DateUtils.verifyDate(file.lastModified(), validDays):DateUtils.verifyTime(file.lastModified(), validTimes);
+        }
+        return old;
     }
 
 }
