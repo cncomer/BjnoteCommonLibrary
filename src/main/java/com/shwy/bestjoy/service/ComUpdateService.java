@@ -106,7 +106,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 	public abstract SecurityKeyValuesObject getSecurityKeyValuesObject();
 	/**得到数据库版本号*/
 	public abstract int getDeviceDatabaseVersion();
-	/**安装数据库*/
+	/**安装数据库完成了，在这个方法实现里我们需要先关闭已经打开了的数据库，然后才能重新覆盖数据库文件*/
 	public abstract void installDeviceDatabase();
 	
 	/**是否需要更新检查*/
