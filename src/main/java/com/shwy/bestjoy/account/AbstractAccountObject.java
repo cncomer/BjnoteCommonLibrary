@@ -15,6 +15,8 @@ public abstract class AbstractAccountObject extends InfoInterfaceImpl {
     public long mAccountId = -1;
     public String mAccountName = "";
     public String mAccountAvator = "";
+    public String mAccountNickName;
+
 
     public abstract void initAccountFromDatabase(Cursor cursor);
 }

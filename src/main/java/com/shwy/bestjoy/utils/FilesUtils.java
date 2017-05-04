@@ -35,6 +35,10 @@ public class FilesUtils {
 			boolean deleted = file.delete();
 			DebugUtils.logDeleteFiles(tag, "deleteFile " + file.getAbsolutePath() + ", deleted = " +deleted);
 		} else {
+
+			String tmpPath = file.getParent() + File.separator + System.currentTimeMillis();
+			File tmp = new File(tmpPath);
+			file.renameTo(tmp);
 			boolean deleted = file.delete();
 			DebugUtils.logDeleteFiles(tag, "deleteFile " + file.getAbsolutePath() + ", deleted = " +deleted);
 		}

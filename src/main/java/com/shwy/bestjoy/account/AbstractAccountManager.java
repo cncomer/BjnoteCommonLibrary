@@ -67,7 +67,7 @@ public abstract class AbstractAccountManager {
 
     public abstract void initAccountObject();
     public abstract void initAccountOtherData();
-
+    public abstract void deleteCurrentAccount();
 
     public synchronized AbstractAccountObject getAccountObject() {
         return accountObject;
@@ -89,11 +89,11 @@ public abstract class AbstractAccountManager {
      * @return
      */
     public synchronized long getCurrentAccountId() {
-        return accountObject != null ? Long.valueOf(getAccountObject().mAccountUid) : -1;
+        return accountObject != null ? Long.valueOf(accountObject.mAccountUid) : -1;
     }
     /**默认情况即使用户没有登录，系统会初始化一个演示账户，一旦用户登陆了，就会将演示账户删掉*/
     public synchronized boolean hasLoginned() {
-        return accountObject != null && getAccountObject().mAccountId > 0;
+        return accountObject != null && accountObject.mAccountId > 0;
     }
 
     /**
@@ -120,6 +120,8 @@ public abstract class AbstractAccountManager {
         return false;
 
     }
+
+
     /**
      * 更新账户，每当我们增删家和保修卡数据的时候，调用该方法可以同步当前账户信息.
      */
@@ -140,4 +142,5 @@ public abstract class AbstractAccountManager {
         }
         return SecurityUtils.MD5.md5(getAccountObject().mAccountTel + getAccountObject().mAccountPwd);
     }
+
 }
