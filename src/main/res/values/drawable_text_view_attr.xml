@@ -3,5 +3,7 @@
     <declare-styleable name="DrawableTextView">
         <attr name="drawableHeight" format="dimension"/>
         <attr name="drawableWidth" format="dimension"/>
+        <attr name="checked"/>
+
     </declare-styleable>
 </resources>

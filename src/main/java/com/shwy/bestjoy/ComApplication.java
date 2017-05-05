@@ -832,7 +832,7 @@ public class ComApplication extends Application{
      * @return
      */
     public void showChooseTip(String needValue) {
-        showMessage(getString(R.string.input_type_please_input) + needValue);
+        showMessage(getString(R.string.input_type_please_choose) + needValue);
     }
 
 

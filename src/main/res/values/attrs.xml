@@ -4,4 +4,7 @@
     <!-- ListPopupWindow compatibility -->
     <!--attr name="dropDownListViewStyle" format="reference" />
     <attr name="listPopupWindowStyle" format="reference" /-->
+
+    <attr name="enableTintColorState" format="boolean"/>
+    <attr name="checked" format="boolean"/>
 </resources>
