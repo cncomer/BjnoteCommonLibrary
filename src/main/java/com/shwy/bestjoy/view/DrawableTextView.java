@@ -27,6 +27,8 @@ public class DrawableTextView extends android.support.v7.widget.AppCompatTextVie
 
     private boolean checked = false;
 
+    private boolean enableTint = false;
+
     private static final int[] CHECKED_STATE_SET = {
             android.R.attr.state_checked
     };
@@ -52,7 +54,7 @@ public class DrawableTextView extends android.support.v7.widget.AppCompatTextVie
 
         mDrawableHeight = typedArray.getDimensionPixelSize(R.styleable.DrawableTextView_drawableHeight, 0);
         mDrawableWidth = typedArray.getDimensionPixelSize(R.styleable.DrawableTextView_drawableWidth, 0);
-
+        enableTint = typedArray.getBoolean(R.styleable.DrawableTextView_enableTint, false);
         mDrawables = this.getCompoundDrawables();
 
         reinitCompoundDrawables();
@@ -70,7 +72,7 @@ public class DrawableTextView extends android.support.v7.widget.AppCompatTextVie
            for(int index=0;index<4;index++) {
                if (mDrawables[index] != null) {
                    mDrawables[index].setBounds(bound);
-                   if (colorStateList != null) {
+                   if (enableTint && colorStateList != null) {
                        Drawable drawable = DrawableCompat.wrap(mDrawables[index]);
                        // We can now set a tint
                        // ...or a tint list

@@ -7,4 +7,5 @@
 
     <attr name="enableTintColorState" format="boolean"/>
     <attr name="checked" format="boolean"/>
+    <attr name="enableTint" format="boolean"/>
 </resources>
