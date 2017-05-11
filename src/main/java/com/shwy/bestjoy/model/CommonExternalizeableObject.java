@@ -162,7 +162,7 @@ public class CommonExternalizeableObject implements Externalizable {
 
 
     public void init() {
-        if (cacheFile.exists()) {
+        if (needInit()) {
             try {
                 readExternal(new ObjectInputStream(new FileInputStream(cacheFile)));
                 initContentValues();
@@ -172,6 +172,16 @@ public class CommonExternalizeableObject implements Externalizable {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    public boolean needInit() {
+        if (cacheFile.exists()) {
+            if (!isCachedData) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void initContentValues() {

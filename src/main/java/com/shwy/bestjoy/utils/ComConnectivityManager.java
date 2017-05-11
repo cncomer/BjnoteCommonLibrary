@@ -6,8 +6,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 
+import org.apache.http.conn.util.InetAddressUtils;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -100,5 +107,63 @@ public class ComConnectivityManager {
     	if (mContext != null) {
     		mContext.unregisterReceiver(mBroadcastReceiver);
     	}
+	}
+
+
+	/**
+	 * 获取本机当前的ip地址
+	 * @return
+	 */
+	public String getIpAddress() {
+		String ip = "";
+		NetworkInfo mobileNetworkInfo = mCm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		NetworkInfo wifiNetworkInfo = mCm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		if (mobileNetworkInfo.isConnected()) {
+			ip = getLocalIpAddress();
+		}else if(wifiNetworkInfo.isConnected()) {
+			WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+			WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+			int ipAddress = wifiInfo.getIpAddress();
+			ip = intToIp(ipAddress);
+			System.out.println("wifi_ip地址为------"+ip);
+		}
+		DebugUtils.logD(TAG, "本地ip="+ip);
+
+		return ip;
+	}
+
+	/**
+	 * 获取本机PV4地址
+	 * @return
+	 */
+	public static String getLocalIpAddress() {
+		try {
+			String ipv4;
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress()) {
+						ipv4=inetAddress.getHostAddress();
+						if (InetAddressUtils.isIPv4Address(ipv4)) {
+							return ipv4;
+						}
+					}
+				}
+			}
+		} catch (SocketException ex) {
+			DebugUtils.logE(TAG, "WifiPreference IpAddress " + ex.toString());
+		}
+
+		return null;
+	}
+
+	public static String intToIp(int ipInt) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(ipInt & 0xFF).append(".");
+		sb.append((ipInt >> 8) & 0xFF).append(".");
+		sb.append((ipInt >> 16) & 0xFF).append(".");
+		sb.append((ipInt >> 24) & 0xFF);
+		return sb.toString();
 	}
 }
