@@ -2,6 +2,8 @@ package com.shwy.bestjoy.utils;
 
 import android.text.TextUtils;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * int和数组相互转换
  * Created by bestjoy on 2017/3/29.
@@ -95,21 +97,22 @@ public class ByteIntConverter {
         len = result.length;
         int j=0;
         for(int index=0;index<len;index++) {
-            result[index] = (byte) Integer.parseInt(byteHexString.substring(j, j+=2), 16);
+            result[index] = (byte) parseInt(byteHexString.substring(j, j+=2), 16);
         }
         return result;
     }
 
     public static int convertByteHexStringToInt(String hexString) {
-        return Integer.parseInt(hexString, 16);
+        return parseInt(hexString, 16);
     }
 
     public static int convertByteHexStringToInt(String highByteHexString, String lowByteHexString) {
-        return Integer.parseInt(highByteHexString, 16)<<8 | Integer.parseInt(lowByteHexString, 16);
+        return parseInt(highByteHexString, 16)<<8 | parseInt(lowByteHexString, 16);
     }
 
     public static byte convertHexStringToByte(String hexString) {
-        return Byte.parseByte(hexString, 16);
+        int result = Integer.parseInt(hexString, 16);
+        return (byte) result;
     }
 
 
