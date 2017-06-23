@@ -10,6 +10,7 @@ import static java.lang.Integer.parseInt;
  */
 
 public class ByteIntConverter {
+    private static final String TAG = "ByteIntConverter";
 
     /**
      * 将int数值转换为占2个字节的byte数组，本方法适用于(低位在前，高位在后)的顺序。 和bytesToInt（）配套使用
@@ -55,11 +56,36 @@ public class ByteIntConverter {
     public static int twoBytesToInt(byte[] src, int offset) {
         int value;
         value = (int) (((src[offset+0] & 0xFF)<<8) | (src[offset+1] & 0xFF));
+//        DebugUtils.logD(TAG, "twoBytesToInt " + intToByteHexString(value));
         return value;
     }
 
     public static int byteToInt(byte[] src, int offset) {
         return (src[offset] & 0xFF);
+    }
+
+    /**
+     * 无符号byte转int
+     * @param src
+     * @return
+     */
+    public static int byteToInt(byte src) {
+        return (src & 0xFF);
+    }
+
+    public static String byteToByteHexString(byte src) {
+        return intToByteHexString(src & 0xFF);
+    }
+
+    public static String intToByteHexString(int src) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String hv = Integer.toHexString(src);
+        if (hv.length() < 2) {
+            stringBuilder.append(0);
+        }
+        stringBuilder.append(hv);
+
+        return stringBuilder.toString();
     }
 
     /**
@@ -71,6 +97,7 @@ public class ByteIntConverter {
                 |((src[offset+1] & 0xFF)<<16)
                 |((src[offset+2] & 0xFF)<<8)
                 |(src[offset+3] & 0xFF));
+//        DebugUtils.logD(TAG, "fourBytesToInt " + intToByteHexString(value));
         return value;
     }
 

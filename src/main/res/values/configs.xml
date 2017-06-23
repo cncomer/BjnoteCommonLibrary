@@ -4,4 +4,8 @@
          maximum (let them grow as large as the screen).  Actual values are
          specified for -large and -xlarge configurations. -->
     <dimen name="config_prefDialogWidth">320dp</dimen>
+
+
+    <bool name="config_check_app">true</bool>
+    <bool name="config_check_app_basic_database">true</bool>
 </resources>

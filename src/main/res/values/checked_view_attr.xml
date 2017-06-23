@@ -4,11 +4,15 @@
     <attr name="checkedBackground" format="reference|color" />
     <attr name="uncheckedTextColor" format="reference|color" />
     <attr name="uncheckedBackground" format="reference|color" />
-
     <declare-styleable name="CheckedTagTextView">
+        <attr name="checked"/>
         <attr name="checkedTextColor"/>
         <attr name="checkedBackground"/>
         <attr name="uncheckedTextColor"/>
         <attr name="uncheckedBackground"/>
+    </declare-styleable>
+
+    <declare-styleable name="CheckedTextView">
+        <attr name="checked"/>
     </declare-styleable>
 </resources>

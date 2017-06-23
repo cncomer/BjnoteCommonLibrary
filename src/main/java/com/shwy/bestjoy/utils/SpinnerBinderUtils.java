@@ -31,7 +31,7 @@ public class SpinnerBinderUtils {
         defaultEmptyValue = context.getString(R.string.spinner_item_empty_value);
     }
 
-    public SpinnerBinderUtils() {
+    private SpinnerBinderUtils() {
 
     }
 

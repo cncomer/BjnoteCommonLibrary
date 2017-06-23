@@ -278,6 +278,20 @@ public class CommonExternalizeableObject implements Externalizable {
         srcContent = content;
     }
 
+    /**
+     * 保存新内容
+     * @param content
+     */
+    public void saveContent(String content) {
+        srcContent = content;
+        try {
+            save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        initContentValues();
+    }
+
     public String toString() {
         return srcContent;
     }

@@ -879,6 +879,25 @@ public class ComApplication extends Application{
         return null;
     }
 
+    /**
+     * 是否运行在后台
+     * @param context
+     * @return
+     */
+    public static boolean isRunningBackground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.processName.equals(context.getPackageName())) {
+                if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
+                    DebugUtils.logD(TAG, appProcess.processName + " is in background");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * 判断文件是否过期

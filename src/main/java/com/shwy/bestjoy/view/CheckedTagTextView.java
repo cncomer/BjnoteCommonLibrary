@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import com.shwy.bestjoy.R;
 
 /**
  * Created by bestjoy on 16/7/15.
  */
-public class CheckedTagTextView extends TextView{
+public class CheckedTagTextView extends android.support.v7.widget.AppCompatTextView{
     private boolean checked = false;
 
     private int checkedTextColor, uncheckedTextColor;

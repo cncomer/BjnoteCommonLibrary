@@ -1,8 +1,7 @@
-package com.shwy.bestjoy.service;
+package com.shwy.bestjoy.update;
 
 import android.app.PendingIntent.CanceledException;
 import android.app.Service;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,7 +13,6 @@ import android.os.Message;
 import android.os.Process;
 import android.util.Log;
 
-import com.shwy.bestjoy.R;
 import com.shwy.bestjoy.utils.ComConnectivityManager;
 import com.shwy.bestjoy.utils.ComPreferencesManager;
 import com.shwy.bestjoy.utils.DateUtils;
@@ -40,50 +38,46 @@ import java.util.Date;
  * @author chenkai
  *
  */
-public abstract class ComUpdateService extends Service implements ComConnectivityManager.ConnCallback{
+public abstract class ComUpdateServiceV2 extends Service implements ComConnectivityManager.ConnCallback{
 	private static String TAG = "UpdateService";
 	private static final boolean DEBUG = false;
-	public static final String PKG_NAME = "com.shwy.bestjoy.utils";
-	
+
 	/**强制检查更新*/
-	public static final String ACTION_UPDATE_CHECK_FORCE = PKG_NAME + ".intent.ACTION_UPDATE_CHECK_FORCE";
+	public static final String ACTION_UPDATE_CHECK_FORCE = ".intent.ACTION_UPDATE_CHECK_FORCE";
 	/**开始检查更新*/
-	public static final String ACTION_UPDATE_CHECK = PKG_NAME + ".intent.ACTION_UPDATE_CHECK";
+	public static final String ACTION_UPDATE_CHECK = ".intent.ACTION_UPDATE_CHECK";
 	/**用户强制立即检查更新*/
-	public static final String ACTION_UPDATE_CHECK_FORCE_BY_USER = PKG_NAME + ".intent.ACTION_UPDATE_CHECK_FORCE_BY_USER";
+	public static final String ACTION_UPDATE_CHECK_FORCE_BY_USER = ".intent.ACTION_UPDATE_CHECK_FORCE_BY_USER";
 	/**自动检查开始了*/
-	public static final String ACTION_UPDATE_CHECK_AUTO = PKG_NAME + ".intent.ACTION_UPDATE_CHECK_AUTO";
-	/**开始下载*/
-	public static final String ACTION_DOWNLOAD_START = PKG_NAME + ".intent.ACTION_DOWNLOAD_START";
-	/**结束下载*/
-	public static final String ACTION_DOWNLOAD_END = PKG_NAME + ".intent.ACTION_DOWNLOAD_END";
-	/**下载进度*/
-	public static final String ACTION_DOWNLOAD_PROGRESS = PKG_NAME + ".intent.ACTION_DOWNLOAD_PROGRESS";
-	/**没有网络*/
-	public static final String ACTION_UNAVAILABLE_NETWORK = PKG_NAME + ".intent.ACTION_UNAVAILABLE_NETWORK";
-	
+	public static final String ACTION_UPDATE_CHECK_AUTO = ".intent.ACTION_UPDATE_CHECK_AUTO";
+
+
 	public static final int MSG_CHECK_UPDATE = 1000;
 	/**开始下载*/
-	public static final int MSG_DOWNLOAD_START = 1001;
-	/**结束下载*/
-	public static final int MSG_DOWNLOAD_END = 1002;
-	
+
 	public static final long UPDATE_DURATION_PER_HOUR = 1 * 60 * 60 * 1000; //1小时检查一次
 	public static final long UPDATE_DURATION_PER_DAY = 24 * 60 * 60 * 1000; //1天检查一次
 	public static final long UPDATE_DURATION_PER_WEEK = 7 * 24 * 60 * 60 * 1000; //7天检查一次
-	
+
 	//表示自动更新检查是否正在运行
 	public boolean mIsCheckUpdateRuinning = false;
 	/**表示服务是否正在运行*/
 	public boolean mIsServiceRuinning = false;
 	protected Handler mWorkServiceHandler, mHandler;
-	
+
 	/**下载结束广播。当接到该广播的时候，我们解析字段Intents.EXTRA_RESULT， false表示下载取消了，true表示下载完成*/
 	protected Intent mDownloadEndIntent;
 	protected Intent mNoNetworkIntent, mDownloadStartIntent, mDownloadProgressIntent;
 
+	public static enum TYPE {
+		IDLE,
+		DOWNLOADING,
+		SUCCESS
+	};
+	protected TYPE mCurrentType;
+
 	protected ServiceAppInfo mServiceAppInfo, mDatabaseServiceAppInfo;
-	
+
 	protected void checkUpdateAction() {
 		if(checkUpdate()){
 			//检查app
@@ -92,7 +86,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 			startActivity(intent);
 		} else if (checkDeviceDatabaseUpdate()) {
 			//检查数据库
-//			downloadDeviceDatabase();
+			updateDeviceDatabase();
 //			String ACTION_VIEW_UPDATE = getPackageName() + ".ACTION_VIEW_UPDATE_DB_ACTIVITY";
 //			Intent intent = new Intent(ACTION_VIEW_UPDATE);
 //			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -104,41 +98,9 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 //				e.printStackTrace();
 //			}
 
-//			String ACTION_VIEW_UPDATE = getPackageName() + ".ACTION_VIEW_UPDATE_DB_ACTIVITY";
-//			Intent intent = new Intent(ACTION_VIEW_UPDATE);
-//			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//			DebugUtils.logD(TAG, "checkUpdateAction startActivity intent=" + intent);
-//
-//			try {
-//				startActivity(intent);
-//			}catch (ActivityNotFoundException e) {
-//				e.printStackTrace();
-//				downloadDeviceDatabase();
-//			}
 
-
-
-			if (!startUpdateAppDBActivity(this)) {
-				downloadDeviceDatabase();
-			}
 		}
 	}
-
-	public static boolean startUpdateAppDBActivity(Context context) {
-		String ACTION_VIEW_UPDATE = context.getPackageName() + ".ACTION_VIEW_UPDATE_DB_ACTIVITY";
-		Intent intent = new Intent(ACTION_VIEW_UPDATE);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		DebugUtils.logD(TAG, "checkUpdateAction startActivity intent=" + intent);
-
-		try {
-			context.startActivity(intent);
-			return true;
-		} catch (ActivityNotFoundException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
 	/**得到更新下载Activity Intent*/
 	public Intent getUpdateActivity() {
 		String ACTION_VIEW_UPDATE = getPackageName() + ".ACTION_VIEW_UPDATE_ACTIVITY";
@@ -149,7 +111,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 	public abstract SecurityKeyValuesObject getSecurityKeyValuesObject();
 	/**得到数据库版本号*/
 	public abstract int getDeviceDatabaseVersion();
-
+	/**安装数据库完成了，在这个方法实现里我们需要先关闭已经打开了的数据库，然后才能重新覆盖数据库文件*/
 	public abstract void installDeviceDatabase();
 	
 	/**是否需要更新检查*/
@@ -183,11 +145,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 	public void onCreate() {
 		super.onCreate();
 		DebugUtils.logD(TAG, "onCreate");
-		mNoNetworkIntent = new Intent(ACTION_UNAVAILABLE_NETWORK);
-		mDownloadStartIntent = new Intent(ACTION_DOWNLOAD_START);
-		mDownloadEndIntent = new Intent(ACTION_DOWNLOAD_END);
-		mDownloadProgressIntent = new Intent(ACTION_DOWNLOAD_PROGRESS);
-		
+
 		mIsServiceRuinning = true;
 		
 		mServiceAppInfo = getServiceAppInfo(getPackageName());
@@ -221,9 +179,6 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 		switch(msg.what) {
 		case MSG_CHECK_UPDATE:
 			checkUpdateAction();
-			return true;
-		case MSG_DOWNLOAD_START:
-			downloadLocked(mServiceAppInfo.buildExternalDownloadAppFile());
 			return true;
 		}
 		return false;
@@ -268,21 +223,6 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 			}
 			mWorkServiceHandler.sendEmptyMessage(MSG_CHECK_UPDATE);
 			return true;
-		} else if (ACTION_DOWNLOAD_START.equals(action)) {
-			//开始下载，如果下载任务正在进行了，那么
-			synchronized(mDownloadTaskLocked) {
-				if (!mIsDownloadTaskRunning) {
-					mWorkServiceHandler.sendEmptyMessage(MSG_DOWNLOAD_START);
-				} else {
-					DebugUtils.logD(TAG, "Download task is running, so we just ignore");
-				}
-			}
-		} else if (ACTION_DOWNLOAD_END.equals(action)) {
-			synchronized(mDownloadTaskLocked) {
-				if (mIsDownloadTaskRunning) {
-					mIsDownloadTaskRunning = false;
-				}
-			}
 		}
 		return false;
 	}
@@ -294,10 +234,6 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 
 	//判断是否需要更新
 	protected boolean checkUpdate(){
-		if (!getResources().getBoolean(R.bool.config_check_app)) {
-			DebugUtils.logD(TAG, "checkUpdate config_check_app is false, not check app version");
-			return false;
-		}
 		DebugUtils.logD(TAG, "start update checking......." + mServiceAppInfo.mToken);
 		mIsCheckUpdateRuinning = true;
 		boolean needUpdate = false;
@@ -336,11 +272,6 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 	
 	//判断是否需要更新
 	protected boolean checkDeviceDatabaseUpdate(){
-		if (!getResources().getBoolean(R.bool.config_check_app_basic_database)) {
-			DebugUtils.logD(TAG, "checkDeviceDatabaseUpdate config_check_app_basic_database is false, not check app basic database version");
-			return false;
-		}
-
 			DebugUtils.logD(TAG, "start update DB checking......." + mDatabaseServiceAppInfo.mToken);
 			mIsCheckUpdateRuinning = true;
 			boolean needUpdate = false;
@@ -349,7 +280,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
                 ServiceAppInfo newServiceAppInfo = ServiceAppInfo.parse(this, mDatabaseServiceAppInfo.mToken, NetworkUtils.getContentFromInput(is));
 
                 if (newServiceAppInfo != null) {
-                    int currentVersion = mDatabaseServiceAppInfo.mVersionCode;
+                    int currentVersion = getDeviceDatabaseVersion();
                     DebugUtils.logD(TAG, "DB updateCheckTime = " + DateUtils.TOPIC_SUBJECT_DATE_TIME_FORMAT.format(new Date(mDatabaseServiceAppInfo.mCheckTime)));
                     DebugUtils.logD(TAG, "DB currentVersionCode = " + currentVersion);
                     DebugUtils.logD(TAG, "DB newVersionCode = " + newServiceAppInfo.mVersionCode);
@@ -455,7 +386,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 		sendBroadcast(mDownloadProgressIntent);
 	}
 	
-	private void downloadDeviceDatabase() {
+	private void updateDeviceDatabase() {
 		DebugUtils.logD(TAG, "enter updateDeviceDatabase()");
 		InputStream is = null;
 		OutputStream out = null;
@@ -475,8 +406,6 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 	        NetworkUtils.closeInputStream(is);
 	        DebugUtils.logD(TAG, "save to " + mDatabaseServiceAppInfo.buildLocalDownloadAppFile().getAbsolutePath());
 	        mDatabaseServiceAppInfo.save();
-
-
 	        installDeviceDatabase();
         } catch (ClientProtocolException e) {
 	        e.printStackTrace();
@@ -485,36 +414,24 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
         }
 	}
 	
-	/**
-	 * 开始下载任务，需要提供要下载的apk的版本号，如果已经有正在下载的任务，
-	 * @param context
-	 * @param downloadedVersionCode
-	 */
-	public static void startDownloadTask(Context context, String downloadedVersionCode) {
-		Intent intent = new Intent(context, ComUpdateService.class);
-		intent.setAction(ACTION_DOWNLOAD_START);
-		intent.putExtra(Intents.EXTRA_ID, downloadedVersionCode);
-		context.startService(intent);
-	}
-	
 	public static void startUpdateServiceOnAppLaunch(Context context) {
-		Intent service = new Intent(context, ComUpdateService.class);
-		service.setAction(ACTION_UPDATE_CHECK);
+		Intent service = new Intent(context, ComUpdateServiceV2.class);
+		service.setAction(context.getPackageName() + ACTION_UPDATE_CHECK);
 		context.startService(service);
 	}
 	public static void startUpdateServiceOnBootCompleted(Context context) {
-		Intent service = new Intent(context, ComUpdateService.class);
+		Intent service = new Intent(context, ComUpdateServiceV2.class);
 		service.setAction(Intent.ACTION_BOOT_COMPLETED);
 		context.startService(service);
 	}
 	public static void startUpdateServiceOnUserPresent(Context context) {
-		Intent service = new Intent(context, ComUpdateService.class);
+		Intent service = new Intent(context, ComUpdateServiceV2.class);
 		service.setAction(Intent.ACTION_USER_PRESENT);
 		context.startService(service);
 	}
 	public static void startUpdateServiceForce(Context context) {
-		Intent service = new Intent(context, ComUpdateService.class);
-		service.setAction(ACTION_UPDATE_CHECK_FORCE);
+		Intent service = new Intent(context, ComUpdateServiceV2.class);
+		service.setAction(context.getPackageName() + ACTION_UPDATE_CHECK_FORCE);
 		context.startService(service);
 	}
 }
