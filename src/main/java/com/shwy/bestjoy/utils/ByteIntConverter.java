@@ -89,7 +89,7 @@ public class ByteIntConverter {
     }
 
     /**
-     * byte数组中取int数值，本方法适用于(低位在后，高位在前)的顺序。和intToBytes2（）配套使用
+     * byte数组中取int数值，本方法适用于(低位在后，高位在前)的顺序。和intToBytes()配套使用
      */
     public static int fourBytesToInt(byte[] src, int offset) {
         int value;
@@ -102,7 +102,7 @@ public class ByteIntConverter {
     }
 
     /**
-     * byte数组中取int数值，本方法适用于(低位在前，高位在后)的顺序，和和intToBytes（）配套使用
+     * byte数组中取int数值，本方法适用于(低位在前，高位在后)的顺序，和intToBytes2()配套使用
      *
      * @param src
      *            byte数组
@@ -160,5 +160,14 @@ public class ByteIntConverter {
             }
         }
         return stringBuilder.toString().trim();
+    }
+
+
+    public static byte getBitValue(int struction, int bitPosition) {
+        return (byte) (struction >> bitPosition & 0x01);
+    }
+
+    public static byte get2BitValue(int struction, int bitPosition) {
+        return (byte) (struction >> bitPosition & 0x03);
     }
 }
