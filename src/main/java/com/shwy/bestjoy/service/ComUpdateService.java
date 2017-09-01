@@ -295,7 +295,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 	//判断是否需要更新
 	protected boolean checkUpdate(){
 		if (!getResources().getBoolean(R.bool.config_check_app)) {
-			DebugUtils.logD(TAG, "checkUpdate config_check_app is false, not check app version");
+			DebugUtils.logW(TAG, "checkUpdate config_check_app is false, not check app version");
 			return false;
 		}
 		DebugUtils.logD(TAG, "start update checking......." + mServiceAppInfo.mToken);
@@ -312,16 +312,16 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
                     mServiceAppInfo.mVersionCode = prefs.getInt(ComPreferencesManager.KEY_LATEST_VERSION, 0);
                 }
 
-                DebugUtils.logD(TAG, "APK updateCheckTime = " + DateUtils.TOPIC_SUBJECT_DATE_TIME_FORMAT.format(new Date(newServiceAppInfo.mCheckTime)));
-                DebugUtils.logD(TAG, "APK currentVersionCode = " + mServiceAppInfo.mVersionCode);
-                DebugUtils.logD(TAG, "APK newVersionCode = " + newServiceAppInfo.mVersionCode);
+                DebugUtils.logW(TAG, "APK updateCheckTime = " + DateUtils.TOPIC_SUBJECT_DATE_TIME_FORMAT.format(new Date(newServiceAppInfo.mCheckTime)));
+                DebugUtils.logW(TAG, "APK currentVersionCode = " + mServiceAppInfo.mVersionCode);
+                DebugUtils.logW(TAG, "APK newVersionCode = " + newServiceAppInfo.mVersionCode);
 
                 needUpdate = newServiceAppInfo.mVersionCode > mServiceAppInfo.mVersionCode;
                 mServiceAppInfo.copyFromServiceAppInfo(newServiceAppInfo);
                 mServiceAppInfo.save();
                if (needUpdate) {
 				   mServiceAppInfo.saveToSystem(mServiceAppInfo.mVersionCode, mServiceAppInfo.mVersionName, mServiceAppInfo.mImportance);
-                   DebugUtils.logD(TAG, "APK save mServiceAppInfo = " + mServiceAppInfo.toString());
+                   DebugUtils.logW(TAG, "APK save mServiceAppInfo = " + mServiceAppInfo.toString());
                }
             }
         } catch (IOException e) {
@@ -337,11 +337,11 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 	//判断是否需要更新
 	protected boolean checkDeviceDatabaseUpdate(){
 		if (!getResources().getBoolean(R.bool.config_check_app_basic_database)) {
-			DebugUtils.logD(TAG, "checkDeviceDatabaseUpdate config_check_app_basic_database is false, not check app basic database version");
+			DebugUtils.logW(TAG, "checkDeviceDatabaseUpdate config_check_app_basic_database is false, not check app basic database version");
 			return false;
 		}
 
-			DebugUtils.logD(TAG, "start update DB checking......." + mDatabaseServiceAppInfo.mToken);
+			DebugUtils.logW(TAG, "start update DB checking......." + mDatabaseServiceAppInfo.mToken);
 			mIsCheckUpdateRuinning = true;
 			boolean needUpdate = false;
             try {
@@ -350,15 +350,15 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
 
                 if (newServiceAppInfo != null) {
                     int currentVersion = mDatabaseServiceAppInfo.mVersionCode;
-                    DebugUtils.logD(TAG, "DB updateCheckTime = " + DateUtils.TOPIC_SUBJECT_DATE_TIME_FORMAT.format(new Date(mDatabaseServiceAppInfo.mCheckTime)));
-                    DebugUtils.logD(TAG, "DB currentVersionCode = " + currentVersion);
-                    DebugUtils.logD(TAG, "DB newVersionCode = " + newServiceAppInfo.mVersionCode);
+                    DebugUtils.logW(TAG, "DB updateCheckTime = " + DateUtils.TOPIC_SUBJECT_DATE_TIME_FORMAT.format(new Date(mDatabaseServiceAppInfo.mCheckTime)));
+                    DebugUtils.logW(TAG, "DB currentVersionCode = " + currentVersion);
+                    DebugUtils.logW(TAG, "DB newVersionCode = " + newServiceAppInfo.mVersionCode);
                     needUpdate = newServiceAppInfo.mVersionCode > currentVersion;
 
 					mDatabaseServiceAppInfo.copyFromServiceAppInfo(newServiceAppInfo);
 					mDatabaseServiceAppInfo.save();
 					if (needUpdate) {
-						DebugUtils.logD(TAG, "DB mServiceAppInfo = " + mDatabaseServiceAppInfo.toString());
+						DebugUtils.logW(TAG, "DB mServiceAppInfo = " + mDatabaseServiceAppInfo.toString());
 					}
                 }
             } catch (IOException e) {
@@ -366,7 +366,7 @@ public abstract class ComUpdateService extends Service implements ComConnectivit
             } finally{
                 mIsCheckUpdateRuinning = false;
             }
-			DebugUtils.logD(TAG, "end update DB checking......." + mDatabaseServiceAppInfo.mToken);
+			DebugUtils.logW(TAG, "end update DB checking......." + mDatabaseServiceAppInfo.mToken);
 			return needUpdate;
 		}
 

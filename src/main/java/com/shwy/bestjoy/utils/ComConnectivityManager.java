@@ -29,7 +29,7 @@ public class ComConnectivityManager {
 		//网络改变了
 		public void onConnChanged(ComConnectivityManager cm);
 	}
-	
+
 	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -43,7 +43,10 @@ public class ComConnectivityManager {
 		        		"\n"+"active:"+ (activeInfo != null ? activeInfo.getTypeName():"none"));
 		        synchronized(mConnCallbackList){
 		        	for(ConnCallback callback : mConnCallbackList) {
-		        		callback.onConnChanged(INSTANCE);
+						if (callback instanceof ConnCallback) {
+							callback.onConnChanged(INSTANCE);
+						}
+
 			        }
 		        }
 			}
@@ -88,7 +91,7 @@ public class ComConnectivityManager {
 		NetworkInfo activeInfo = mCm.getActiveNetworkInfo(); 
 		return activeInfo != null && activeInfo.isConnected() && activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
 	}
-	
+
 	public boolean isMobileConnected() {
 		NetworkInfo activeInfo = mCm.getActiveNetworkInfo(); 
 		return activeInfo != null && activeInfo.isConnected() && activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;

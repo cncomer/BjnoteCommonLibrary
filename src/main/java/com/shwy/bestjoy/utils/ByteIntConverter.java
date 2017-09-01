@@ -170,4 +170,8 @@ public class ByteIntConverter {
     public static byte get2BitValue(int struction, int bitPosition) {
         return (byte) (struction >> bitPosition & 0x03);
     }
+
+    public static byte get4BitValue(int struction, int bitPosition) {
+        return (byte) (struction >> bitPosition & 0x0f);
+    }
 }

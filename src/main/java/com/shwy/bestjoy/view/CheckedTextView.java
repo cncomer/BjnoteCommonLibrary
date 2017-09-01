@@ -62,19 +62,13 @@ public class CheckedTextView extends android.support.v7.widget.AppCompatTextView
         setChecked(!checked);
     }
 
-    @Override
-    public boolean performClick() {
-        toggle();
-        return super.performClick();
-    }
-
     public void setChecked(boolean checked) {
         if (this.checked != checked) {
             this.checked = checked;
             if (checkedChangeListener != null) {
                 checkedChangeListener.onCheckedChanged(this, checked);
             }
-            invalidate();
+            refreshDrawableState();
         }
 
     }
