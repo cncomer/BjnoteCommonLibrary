@@ -552,8 +552,14 @@ public class ComApplication extends Application{
             FileReader fstream = null;
             try {
                 fstream = new FileReader("/sys/class/net/wlan0/address");
-            } catch (FileNotFoundException e) {
-                fstream = new FileReader("/sys/class/net/eth0/address");
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+                try {
+                    fstream = new FileReader("/sys/class/net/eth0/address");
+                } catch (FileNotFoundException e2) {
+                    e2.printStackTrace();
+                }
+
             }
             BufferedReader in = null;
             if (fstream != null) {

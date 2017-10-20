@@ -82,6 +82,15 @@ public class CommonExternalizeableObject implements Externalizable {
         }
     }
 
+    public void delete() {
+        srcContent = "";
+        isCachedData = false;
+        if (cacheFile.exists()) {
+            cacheFile.delete();
+            DebugUtils.logD("CommonExternalizeableObject", "delete cached file " + cacheFile.getAbsolutePath());
+        }
+    }
+
     public File getCacheFile() {
         return cacheFile;
     }
@@ -259,9 +268,7 @@ public class CommonExternalizeableObject implements Externalizable {
                         resultObject = NetworkUtils.getServiceResultObjectFromUrl(query.buildQueryUrl(), null);
                     }
                     if (resultObject.isOpSuccessfully()) {
-                        commonExternalizeableObject.setContent(resultObject.mRawString);
-                        commonExternalizeableObject.save();
-                        commonExternalizeableObject.initContentValues();
+                        commonExternalizeableObject.saveContent(resultObject.mRawString);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -282,14 +289,16 @@ public class CommonExternalizeableObject implements Externalizable {
      * 保存新内容
      * @param content
      */
-    public void saveContent(String content) {
+    public boolean saveContent(String content) {
         srcContent = content;
         try {
             save();
+            initContentValues();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        initContentValues();
+       return false;
     }
 
     public String toString() {

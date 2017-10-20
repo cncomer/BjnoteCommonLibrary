@@ -73,9 +73,9 @@ public class ByteIntConverter {
         return (src & 0xFF);
     }
 
-    public static String byteToByteHexString(byte src) {
-        return intToByteHexString(src & 0xFF);
-    }
+//    public static String byteToByteHexString(byte src) {
+//        return intToByteHexString(src & 0xFF);
+//    }
 
     public static String intToByteHexString(int src) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -137,10 +137,10 @@ public class ByteIntConverter {
         return parseInt(highByteHexString, 16)<<8 | parseInt(lowByteHexString, 16);
     }
 
-    public static byte convertHexStringToByte(String hexString) {
-        int result = Integer.parseInt(hexString, 16);
-        return (byte) result;
-    }
+//    public static byte convertHexStringToByte(String hexString) {
+//        int result = Integer.parseInt(hexString, 16);
+//        return (byte) result;
+//    }
 
 
     public static String bytesToHexString(byte[] src, String divider){
