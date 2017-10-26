@@ -1,17 +1,17 @@
 apply plugin: 'com.android.library'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile project(path: ':bestjoybasic')
+    api fileTree(dir: 'libs', include: '*.jar')
+    api project(path: ':bestjoybasic')
+    implementation 'com.android.support:support-v4:25.1.0'
+    implementation 'com.android.support:appcompat-v7:25.1.0'
 }
 
 android {
 
 
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '26.0.2'
 
     useLibrary 'org.apache.http.legacy'
 
