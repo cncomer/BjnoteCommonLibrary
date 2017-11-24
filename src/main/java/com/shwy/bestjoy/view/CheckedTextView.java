@@ -73,6 +73,22 @@ public class CheckedTextView extends android.support.v7.widget.AppCompatTextView
 
     }
 
+    /**
+     *
+     * @param checked
+     * @param notifyChange 是否通知监听器check状态改变了
+     */
+    public void setChecked(boolean checked, boolean notifyChange) {
+        if (this.checked != checked) {
+            this.checked = checked;
+            if (notifyChange && checkedChangeListener != null) {
+                checkedChangeListener.onCheckedChanged(this, checked);
+            }
+            refreshDrawableState();
+        }
+
+    }
+
     public boolean isChecked() {
         return checked;
     }
