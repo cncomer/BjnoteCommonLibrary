@@ -7,10 +7,10 @@
     android:orientation="vertical" 
     android:gravity="center">
     <LinearLayout  
-        android:layout_width="200dip"
+        android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:minHeight="200dip"
     	android:orientation="vertical"
+		android:padding="20dip"
     	android:background="#f0313232"
     	android:gravity="center" >
         <ProgressBar android:layout_width="wrap_content"

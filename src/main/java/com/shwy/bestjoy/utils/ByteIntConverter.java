@@ -117,6 +117,18 @@ public class ByteIntConverter {
         return value;
     }
 
+    /**
+     * byte数组中取int数值，本方法适用于(低word在前，高byte在前)的顺序。和intToBytes()配套使用
+     */
+    public static int lowWordHighByteFourBytesToInt(byte[] src, int offset) {
+        int value;
+        value = (int) (((src[offset+2] & 0xFF)<<24)
+                |((src[offset+3] & 0xFF)<<16)
+                |((src[offset] & 0xFF)<<8)
+                |(src[offset+1] & 0xFF));
+        return value;
+    }
+
     public static byte[] convertByteHexStringToByte(String byteHexString) {
         byteHexString = byteHexString.replaceAll(" ", "");
         int len = byteHexString.length();

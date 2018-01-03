@@ -54,8 +54,8 @@ public class MyGridView extends GridView {
 
     @Override
     public void setNumColumns(int numColumns) {
-        super.setNumColumns(numColumns);
         mRequestedNumColumns = numColumns;
+        super.setNumColumns(numColumns);
     }
 
     public int measureWidthByChilds() {

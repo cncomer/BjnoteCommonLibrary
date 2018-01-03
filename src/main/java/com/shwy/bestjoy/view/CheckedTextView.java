@@ -12,6 +12,8 @@ import com.shwy.bestjoy.R;
  */
 public class CheckedTextView extends android.support.v7.widget.AppCompatTextView implements Checkable {
     private boolean checked = false;
+    /**是否是触发模式,触发模式下单击会更改check状态*/
+    private boolean toggleMode = true;
 
     private static final int[] CHECKED_STATE_SET = {
             android.R.attr.state_checked
@@ -58,6 +60,11 @@ public class CheckedTextView extends android.support.v7.widget.AppCompatTextView
         return drawableState;
     }
 
+
+    public void setToggleMode(boolean toggleMode) {
+        this.toggleMode = toggleMode;
+    }
+
     public void toggle() {
         setChecked(!checked);
     }
@@ -95,7 +102,7 @@ public class CheckedTextView extends android.support.v7.widget.AppCompatTextView
 
     @Override
     public boolean performClick() {
-        toggle();
+        if (toggleMode) toggle();
         return super.performClick();
     }
 }
